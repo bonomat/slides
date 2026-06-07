@@ -634,6 +634,7 @@ just a different way of letting Script look at the spending transaction.
 - **Non-interactive atomic swaps** — trade assets without online requirement.
 - **Delegation** — let someone *move* your coins, but only under script-enforced rules.
 - **Vaults** — funds can only move to your cold address, or anywhere else after a delay.
+- **Games & fun scripts** — provably-fair betting settled entirely by covenant — dice, coin flips, no trusted house.
 
 [//]: # (</v-clicks>)
 
@@ -870,56 +871,6 @@ and it's what test/htlc_test.go uses.)
 -->
 
 ---
-
-[//]: # (Slide 12 — Worked example: vault)
-
-# Example: a vault 🔒
-
-Funds can leave **instantly to your cold address** — or **anywhere else, but only after a delay.**
-
-```
-# Arkade Script — vault
-# witness: <to_cold?>
-
-OP_IF
-  # fast path — instant, but ONLY to the cold address
-  0   OP_INSPECTOUTPUTSCRIPTPUBKEY   # output 0: [program, version]
-  <cold_program>   OP_EQUALVERIFY    # must pay cold
-  <segwit_v1>      OP_EQUALVERIFY
-OP_ELSE
-  # spend path — anywhere, but only after the delay
-  <delay>   OP_CHECKSEQUENCEVERIFY   OP_DROP
-OP_ENDIF
-1
-```
-
-<div class="pt-2 grid grid-cols-2 gap-3 text-xs">
-
-<div class="p-2 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-
-**The rule** — fast path: output 0 **must** pay the committed cold address. Slow path: spend anywhere, but only once `delay` blocks have passed.
-
-</div>
-
-<div class="p-2 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
-
-**Why it's safe** — a thief with your hot key still can't move funds for `delay`. You see it coming and sweep everything to cold — instantly.
-
-</div>
-
-</div>
-
-<!--
-The vault is the poster-child covenant use case — it's the whole reason
-people want OP_VAULT. The covenant insight: the *fast* path can ONLY go
-to the cold address (enforced by INSPECTOUTPUTSCRIPTPUBKEY), and any
-other destination is gated behind a relative timelock. That delay is
-the user's reaction window.
-Real opcodes (verified in pkg/arkade/opcode.go): OP_INSPECTOUTPUTSCRIPTPUBKEY,
-OP_EQUALVERIFY, OP_CHECKSEQUENCEVERIFY, OP_IF/ELSE/ENDIF.
--->
-
----
 layout: center
 class: text-center
 ---
@@ -987,6 +938,86 @@ Walking through live, the spots to land on:
 The key insight to call out: the maker doesn't sign the fulfillment.
 The script + Emulator do. That's what makes it "non-interactive."
 With CTV/CAT this would be consensus-enforced; Banco gets you there today.
+-->
+
+---
+
+[//]: # (Slide 13b — Banco maker + taker scripts)
+
+# Banco, in arkade-script
+
+<div class="grid grid-cols-2 gap-5 pt-2">
+
+<div>
+
+**Maker — the covenant it commits** <span class="opacity-50 text-xs">`offer.ts`</span>
+
+```
+# fulfillScript — wanting BTC, full fill
+# pins the taker's fulfillment tx:
+
+0  INSPECTOUTPUTVALUE              # output 0 value
+<wantAmount> GREATERTHANOREQUAL    # … ≥ wantAmount
+VERIFY
+0  INSPECTOUTPUTSCRIPTPUBKEY       # output 0 spk
+1  EQUALVERIFY                     # … taproot (v1)
+<makerWP>  EQUAL                   # … pays the MAKER
+```
+
+<div class="text-xs opacity-70 mt-2">
+"Whoever spends me <strong>must</strong> send ≥ <code>wantAmount</code> to the maker." No maker signature needed.
+</div>
+
+</div>
+
+<div>
+
+**Taker — reconstruct leaf & hand off** <span class="opacity-50 text-xs">`taker.ts`</span>
+
+```ts
+// the fulfill leaf: 2-of-2, no taker key
+fulfillLeaf = Multisig[
+  serverPubKey,
+  computeArkadeScriptPublicKey(
+    emulatorPubkey,      // ← tweaked by
+    covenantScript,      //   the covenant
+  ),
+]
+
+// 1 build tx: output 0 → maker, ≥ wantAmount
+// 2 attach covenantScript as a packet
+// 3 submit to the Emulator
+```
+
+<div class="text-xs opacity-70 mt-2">
+The Emulator runs the covenant against the tx, signs the tweaked slot; <strong>arkd</strong> finalizes.
+</div>
+
+</div>
+
+</div>
+
+<div class="pt-3 text-xs opacity-50 text-center">
+Asset swaps swap line 1 for <code>&lt;wantTxid&gt; 0 INSPECTOUTASSETLOOKUP VERIFY</code>; partial fills add <code>MUL/DIV</code> ratio math + a self-send change leg.
+</div>
+
+<!--
+These are the real scripts from github.com/arkade-os/banco (HEAD aab5d0e).
+- Maker side: Offer.fulfillScript in src/offer.ts. The covenant is just
+  "output 0 pays the maker ≥ wantAmount". For asset-want it's the same
+  shape with INSPECTOUTASSETLOOKUP instead of INSPECTOUTPUTVALUE.
+- Taker side: Taker.fulfillOffer in src/taker.ts. The taker reconstructs
+  the fulfill leaf — a 2-of-2 Multisig[server, emulator⊕covenant] — using
+  computeArkadeScriptPublicKey(emulatorPubkey, covenantScript). Note the
+  taker's OWN key is NOT in the leaf; the taker just builds a conforming
+  tx and submits. The Emulator co-signs only because the covenant passes.
+- NOTE on naming: the banco repo still calls the daemon the "introspector"
+  in code — introspectorPubkey, IntrospectorPacket, RestIntrospectorProvider.
+  It's the same component this talk calls the Emulator; I relabeled it in
+  the slide for consistency. Mention this if someone reads the source.
+- The partial-fill scripts (btcForAsset / assetForBtc / assetForAsset) are
+  the heavy ones — ratioNum*amount/ratioDen, FINDASSETGROUPBYASSETID,
+  self-send change back to the swap address. Out of scope for the slide.
 -->
 
 ---
@@ -1099,8 +1130,8 @@ Key things to land:
 - The whole leaf is `predicate VERIFY atomicSweep`. The Emulator only
   derives its tweaked key after this evaluates true — so a winning
   signature can't exist for a losing roll or a wrong payout.
-- This is what your earlier vault example looked like in the small;
-  CoinFlip is the same machinery sizing up to a real two-party game.
+- Same machinery as Banco's covenant, sized up to a real two-party
+  game: predicate + atomicSweep, settled by the Emulator.
 -->
 
 ---
