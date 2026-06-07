@@ -1070,9 +1070,9 @@ Next slide: the actual win-leaf arkade-script.
 
 ---
 
-[//]: # (Slide 15 — CoinFlip win leaf in arkade-script)
+[//]: # (Slide 15a — CoinFlip win leaf · the predicate)
 
-# The win leaf, in arkade-script
+# The win leaf — deciding the winner
 
 ```
 # Player-win leaf — the Emulator runs this before it co-signs
@@ -1089,49 +1089,67 @@ SWAP DUP SHA256 <creatorHash> EQUALVERIFY
 # 3 · roll = (creatorDigit + playerDigit) mod n
 1 LEFT BIN2NUM   SWAP   1 LEFT BIN2NUM
 ADD  <n> MOD   <lo> <target> WITHIN    # player wins iff roll ∈ [lo, target)
-
-VERIFY                                 # predicate must hold — then…
-# 4 · atomic-sweep covenant: pin destination + amount
-INSPECTINPUTVALUE  <otherStake> EQUALVERIFY
-DUP INSPECTOUTPUTSCRIPTPUBKEY 1 EQUALVERIFY <winnerScript> EQUALVERIFY
-INSPECTOUTPUTVALUE <pot> EQUAL
 ```
 
-<div class="pt-2 grid grid-cols-2 gap-3 text-xs">
-
-<div class="p-2 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+<div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60 text-sm">
 
 **The predicate** — the Emulator's signature *is* the proof that both reveals matched their commits **and** the roll landed in the player's band. No valid roll → no signature.
 
 </div>
 
-<div class="p-2 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
-
-**The covenant** — `atomicSweep` locks the spend: output 0 pays the **winner** exactly the **pot**, and the **other escrow** must be spent in the same tx. Destination + amount, pinned.
-
-</div>
-
-</div>
-
-<div class="pt-2 text-xs opacity-50 text-center">
+<div class="pt-3 text-xs opacity-50 text-center">
 The house-win leaf is the same body + <code>OP_NOT</code>. Out-of-range-digit handling elided for clarity.
 </div>
 
 <!--
-This is the real v3 win-condition script — packages/lib/src/arkade-win.ts
-(buildVariableOddsWinArkadeScript) composed with covenants.atomicSweep
-from contract-workflows-prototype.
-Key things to land:
+Real v3 win-condition predicate — packages/lib/src/arkade-win.ts
+(buildVariableOddsWinPredicate).
 - INSPECTPACKET (0xf4): the reveals ride the spending tx as extension
   packets, NOT the tapscript witness — the witness only carries covenant
   args + multisig sigs. The Emulator pulls 0x10 (player) and 0x11 (creator).
 - The digit trick: 1 LEFT BIN2NUM reads the first byte of each reveal as
   the digit; n is capped at 128 so the digit fits one CScriptNum byte.
+- Result on the stack: 1 if the player won, else the script aborts /
+  pushes 0. The covenant on the next slide consumes this verdict.
+-->
+
+---
+
+[//]: # (Slide 15b — CoinFlip win leaf · the covenant)
+
+# …then pin the payout
+
+```
+# the predicate left `playerWins` on the stack — require it:
+VERIFY                                 # predicate must hold — then…
+
+# atomic-sweep covenant: pin destination + amount
+INSPECTINPUTVALUE  <otherStake> EQUALVERIFY
+DUP INSPECTOUTPUTSCRIPTPUBKEY 1 EQUALVERIFY <winnerScript> EQUALVERIFY
+INSPECTOUTPUTVALUE <pot> EQUAL
+```
+
+<div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#f7931a]/60 text-sm">
+
+**The covenant** — `atomicSweep` locks the spend: output 0 pays the **winner** exactly the **pot**, and the **other escrow** must be spent in the same tx. Destination + amount, pinned.
+
+</div>
+
+<div class="pt-3 text-xs opacity-50 text-center">
+Full leaf = <code>predicate · VERIFY · atomicSweep</code>. The Emulator derives its tweaked key — and signs — only when the whole thing evaluates true.
+</div>
+
+<!--
+Real v3 covenant — covenants.atomicSweep from contract-workflows-prototype,
+appended after the predicate in buildVariableOddsWinArkadeScript.
 - The whole leaf is `predicate VERIFY atomicSweep`. The Emulator only
   derives its tweaked key after this evaluates true — so a winning
   signature can't exist for a losing roll or a wrong payout.
-- Same machinery as Banco's covenant, sized up to a real two-party
-  game: predicate + atomicSweep, settled by the Emulator.
+- atomicSweep pins BOTH the destination (output 0 → winner's pkScript)
+  and the amount (= the full pot), AND requires the other escrow as an
+  input (INSPECTINPUTVALUE <otherStake>) — that's what makes the two-stake
+  sweep atomic.
+- Same machinery as Banco's covenant, sized up to a real two-party game.
 -->
 
 ---
