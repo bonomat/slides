@@ -736,49 +736,115 @@ A signer that only co-signs if your script says it's OK
 
 ---
 
-[//]: # (Slide 9 — Emulator's trick: tweaked keys)
+[//]: # (Slide 9 — What the Emulator does)
 
-# The trick: a script-committed pubkey
+# What the Emulator does
 
-The Emulator is a daemon holding a key `P`.
+The Emulator is a **remote signer** holding a key `P`.
 
-It will co-sign **any** VTXO spend — *but only if* the input commits to a script,
-and that script **evaluates true** against the spending tx.
+<div class="mt-4 p-5 rounded bg-white/5 border-l-4 border-[#c2e821]/60 text-lg">
 
-<div class="mt-6 p-5 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+It co-signs <strong>any</strong> VTXO spend — <em>but only if</em> the input commits to an <strong>arkade-script</strong>, and that script <strong style="color:#c2e821">evaluates true</strong> against the spending transaction.
 
-**Commit the script into the pubkey itself:**
+</div>
+
+<div class="pt-6 grid grid-cols-3 gap-4 text-sm">
+
+<div class="p-3 rounded bg-white/5">
+
+**1 · You ask**
+
+Hand it the spending tx (`SubmitTx`) — the VTXO you want to move, and where.
+
+</div>
+
+<div class="p-3 rounded bg-white/5">
+
+**2 · It runs your script**
+
+Against *this* transaction — its outputs, amounts, and inputs.
+
+</div>
+
+<div class="p-3 rounded bg-white/5">
+
+**3 · It signs — or not**
+
+True → co-signature. False → silence; the coin can't move that way.
+
+</div>
+
+</div>
+
+<div class="pt-5 text-sm opacity-70 text-center">
+Same covenant power as a soft-fork — enforced by an honest signer, off-chain, today.
+</div>
+
+<!--
+High-level beat: what the Emulator IS and does, before any crypto.
+A remote signer that executes committed bytecode against the spending
+tx and signs on success. The next slide explains WHY this needs a trick
+(the opcodes it runs don't exist in Bitcoin consensus).
+-->
+
+---
+
+[//]: # (Slide 9a — Opcodes Bitcoin lacks, and the trick)
+
+# Opcodes Bitcoin doesn't have
+
+<div class="text-sm opacity-80 mb-3">
+Arkade-script gives the covenant the introspection Bitcoin Script lacks — the script can read the spending tx:
+</div>
+
+<div class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm mb-4">
+  <div><code>OP_INSPECTOUTPUTVALUE</code> — an output's amount</div>
+  <div><code>OP_INSPECTINPUTVALUE</code> — another input's amount</div>
+  <div><code>OP_INSPECTOUTPUTSCRIPTPUBKEY</code> — its destination</div>
+  <div><code>OP_INSPECTPACKET</code> — attached data (args, reveals)</div>
+  <div><code>OP_CAT · OP_MUL · OP_DIV</code> — re-enabled</div>
+  <div class="opacity-60">…and more</div>
+</div>
+
+<div class="grid grid-cols-2 gap-5">
+
+<div class="p-3 rounded bg-[#ef4444]/10 border-l-4 border-[#ef4444]/60 text-sm">
+
+**None of these exist on-chain** 🚫
+
+No soft-fork has shipped them — Bitcoin can't validate a VTXO locked by them. So how do we use them *today*?
+
+</div>
+
+<div class="p-3 rounded bg-[#c2e821]/10 border-l-4 border-[#c2e821] text-sm">
+
+**The trick** 🐇
+
+Don't put them on-chain. **Commit** the script into a tweaked pubkey, and ride the bytes in an **OP_RETURN**:
 
 ```text
-P_committed = P_emulator + H_tag("ArkScriptHash", arkadeScript) · G
+P_committed = P_emulator
+            + H_tag("ArkScriptHash", script)·G
 ```
 
-</div>
-
-<div class="pt-5 grid grid-cols-2 gap-4 text-sm">
-
-<div>
-
-- **BIP-341-style taproot tweaking**, with a project-specific tag.
-- The script bytes never go on-chain in the path itself.
-- They're encoded in an OP_RETURN.
-
-</div>
-
-<div>
-
-- The Emulator **recomputes** the tweak from the revealed script.
-- If the script evaluates true against the tx, it signs.
-- Otherwise: silence. The coin can't move that way.
+The Emulator runs the script, then signs `P_committed`. The signature *is* the proof it passed.
 
 </div>
 
 </div>
 
 <!--
-This is the heart of the whole thing. The pubkey *is* a commitment
-to the script. Standard taproot tweak math, just with a custom tag. The
-signer's behaviour is "execute the committed bytecode, sign on success".
+Beat 2: motivate the trick with the opcodes.
+- arkade-script is a superset of Bitcoin Script: introspection opcodes
+  (INSPECT*), re-enabled CAT/MUL/DIV, plus INSPECTPACKET for attached data.
+- The catch: none are in Bitcoin consensus. A normal node can't validate a
+  spend gated on them — so you can't just put them in a tapscript leaf.
+- The trick (BIP-341-style tweak with a project tag "ArkScriptHash"):
+  the committed pubkey IS the commitment to the script. The Emulator holds
+  the key for P_emulator and can only derive the signing key for
+  P_committed AFTER running that exact script and seeing it pass.
+- The script bytes ride in an OP_RETURN extension on the spending tx (next
+  slides show exactly how). Standard taproot math, custom tag.
 -->
 
 ---
