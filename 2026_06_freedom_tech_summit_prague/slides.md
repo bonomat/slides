@@ -783,6 +783,68 @@ signer's behaviour is "execute the committed bytecode, sign on success".
 
 ---
 
+[//]: # (Slide 9b — What the spending tx carries)
+
+# Where does the script live?
+
+<div class="text-sm opacity-80 mb-5">
+Not in the input's tapscript. The committed script rides the <strong>spending transaction itself</strong> — as a packet in an <strong style="color:#c2e821">OP_RETURN</strong> extension output.
+</div>
+
+<div class="flex items-stretch gap-4 text-xs">
+
+<div class="flex-1 rounded-lg border border-[#c2e821]/40 bg-[#c2e821]/5 p-3">
+  <div class="text-[#c2e821] font-bold text-sm mb-2">Spending tx</div>
+  <div class="grid grid-cols-2 gap-2">
+    <div>
+      <div class="opacity-50 tracking-widest mb-1">INPUTS</div>
+      <div class="rounded bg-white text-black p-2 mb-1">Input 0 · <strong>covenant VTXO</strong><br><span class="opacity-60">Emulator-tweaked leaf</span></div>
+      <div class="rounded bg-white text-black p-2">Input 1 · other VTXO</div>
+    </div>
+    <div>
+      <div class="opacity-50 tracking-widest mb-1">OUTPUTS</div>
+      <div class="rounded bg-white text-black p-2 mb-1">Output 0 · <span style="color:#f7931a;font-weight:600">pot → winner</span></div>
+      <div class="rounded border border-[#c2e821] bg-[#c2e821]/15 p-2 text-[#c2e821] font-semibold">Output 1 · OP_RETURN<br><span class="opacity-80 font-normal">extension · 0 sats</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="flex items-center text-2xl text-[#c2e821]">→</div>
+
+<div class="flex-1 rounded-lg border border-[#c2e821]/60 bg-white/5 p-3 font-mono leading-relaxed">
+  <div class="text-[#c2e821] font-bold mb-2">EmulatorPacket <span class="opacity-50 font-normal">· one per covenant input</span></div>
+  <div><span class="opacity-50">vin</span>&nbsp;&nbsp;&nbsp;&nbsp;: 0</div>
+  <div><span class="opacity-50">script</span>&nbsp;: &lt;arkade-script bytes&gt; <span class="text-[#c2e821]">← the covenant</span></div>
+  <div><span class="opacity-50">witness</span>: [output_idx, other_input_idx]</div>
+</div>
+
+</div>
+
+<div class="pt-5 text-xs opacity-70 text-center">
+The Emulator reads the packet, re-derives <code>H_tag("ArkScriptHash", script)</code> to confirm it matches the tweaked key, runs the script against <em>this</em> tx — then signs. Apps can ride <strong>extra</strong> packets too — e.g. CoinFlip's secret reveals, pulled inside the script with <code>INSPECTPACKET</code>.
+</div>
+
+<!--
+This is the slide that grounds "the script rides in an OP_RETURN" — the
+thing that's otherwise hand-waved. Points to land:
+- The covenant script bytes are NOT in the leaf's tapscript. The leaf only
+  holds the multisig with the Emulator-tweaked key. The bytes travel with
+  the SPENDING tx, in an Ark extension output (OP_RETURN-style, 0 sats).
+- The EmulatorPacket carries, per covenant input: vin, the arkade-script
+  bytes, and the witness stack to push before running it (the covenant
+  args — e.g. output_idx + other_input_idx for atomicSweep).
+- The Emulator pulls the packet, recomputes H_tag("ArkScriptHash", script),
+  checks it matches the tweaked pubkey in that input's leaf, runs the
+  script vs this tx, signs only on success.
+- Apps can attach OTHER packets too — CoinFlip rides two reveal packets
+  (0x10 player, 0x11 creator) that the win-leaf script reads with
+  INSPECTPACKET. That's the forward reference to the CoinFlip win leaf.
+Source: addPacket in contract-workflows-prototype/src/emulator.ts;
+packets in src/packets.ts.
+-->
+
+---
+
 [//]: # (Slide 10 — Full taptree with covenant path)
 
 # VTXO, with an Emulator leaf
