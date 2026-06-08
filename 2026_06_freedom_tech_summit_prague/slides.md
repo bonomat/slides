@@ -849,7 +849,65 @@ Beat 2: motivate the trick with the opcodes.
 
 ---
 
-[//]: # (Slide 9b — What the spending tx carries)
+[//]: # (Slide 9b — The script-committed pubkey)
+
+# The script-committed pubkey
+
+<div class="text-sm opacity-80 mb-3">
+The covenant leaf is an ordinary multisig — except the Emulator's key is <strong>tweaked by the script</strong>:
+</div>
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+
+```text
+P_committed = P_emulator  +  H_tag("ArkScriptHash", arkadeScript) · G
+              └ the daemon's   └ a BIP-340 tagged hash of the exact
+                long-term key     script bytes, taken as a scalar
+```
+
+</div>
+
+<div class="pt-5 grid grid-cols-2 gap-6 text-sm">
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+
+**The pubkey *is* the commitment**
+
+Standard BIP-341 taproot tweaking, with a project tag. Anyone can recompute `P_committed` from the script — swap the script and the key changes, so the leaf is bound to **one exact script**.
+
+</div>
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+
+**Only a passing run unlocks it**
+
+The Emulator *can* derive the signing key for `P_committed` (it holds `P_emulator`'s secret + the script) — but, honest signer, it only does so **after** running that script and seeing it pass. Fail → silence.
+
+</div>
+
+</div>
+
+<div class="pt-4 text-xs opacity-60 text-center">
+The taproot "internal key + script commitment" trick — repurposed so a <em>signer</em> enforces the script, instead of consensus.
+</div>
+
+<!--
+Dedicated tweaked-key slide (pulled back out of the opcodes/trick slide).
+- The leaf's multisig slot holds P_committed, NOT the raw Emulator key.
+- Binding: P_committed is a deterministic function of the script bytes, so
+  the leaf can only be satisfied by the Emulator signing for THAT script.
+  Substitute a different script → different P_committed → leaf won't match.
+- Honesty: the Emulator could technically compute the tweaked secret any
+  time (it knows p_emulator + the script). The security model is an HONEST
+  signer that only signs after executing the committed script and seeing it
+  evaluate true against the spending tx. That's the trust assumption the
+  whole design rests on — call it out plainly.
+- Tag is the literal string "ArkScriptHash" (BIP-340 tagged hash).
+-->
+
+---
+
+[//]: # (Slide 9c — What the spending tx carries)
 
 # Where does the script live?
 
@@ -911,7 +969,7 @@ packets in src/packets.ts.
 
 ---
 
-[//]: # (Slide 9c — OP_RETURN byte-level: Banco)
+[//]: # (Slide 9d — OP_RETURN byte-level: Banco)
 
 # A real OP_RETURN, byte for byte
 
@@ -955,7 +1013,7 @@ script length is representative of the full-fill BTC covenant:
 
 ---
 
-[//]: # (Slide 9d — OP_RETURN byte-level: CoinFlip)
+[//]: # (Slide 9e — OP_RETURN byte-level: CoinFlip)
 
 # The same envelope, plus app packets
 
