@@ -845,9 +845,53 @@ packets in src/packets.ts.
 
 ---
 
-[//]: # (Slide 9c — OP_RETURN byte-level sample)
+[//]: # (Slide 9c — OP_RETURN byte-level: Banco)
 
 # A real OP_RETURN, byte for byte
+
+<div class="text-xs opacity-70 mb-1">
+Banco swap fulfillment — the simplest case: <strong>one</strong> covenant packet, empty witness, no reveals. The whole blob fits in a direct push.
+</div>
+
+<pre class="text-[12.5px] leading-snug font-mono bg-white/5 border border-white/10 rounded-lg px-4 py-3 mt-1">
+scriptPubKey of the fulfillment tx's extension output  (vout · 0 sats)
+
+<span style="color:#f7931a">6a</span>              OP_RETURN
+38              push · 56 bytes        (≤ 75 → no PUSHDATA needed)
+<span style="color:#c2e821">41 52 4b</span>        "ARK"   Arkade extension magic
+
+<span style="color:#c2e821">01</span>              packet: EmulatorPacket  (type 0x01)
+  33            payload = 51 bytes
+  01            1 entry
+  00 00         vin = 0                 u16-LE
+  2e            script = 46 bytes
+  00 cf …       the fulfill covenant  (0 INSPECTOUTPUTVALUE …)
+  00            witness = 0 bytes       (covenant reads output 0 directly)
+</pre>
+
+<div class="text-xs opacity-60 mt-1 text-center">
+"Pay the maker ≥ <code>wantAmount</code>." One packet, one entry — the Emulator runs it and co-signs. <span class="opacity-70">Next: CoinFlip rides extra packets too.</span>
+</div>
+
+<!--
+Byte-accurate. Banco's taker (src/taker.ts) attaches one packet with a
+single entry: vin 0, the fulfill covenant (Offer.fulfillScript), and an
+EMPTY witness — the covenant reads output 0 directly (0 INSPECTOUTPUTVALUE
+…), so it needs no witness args. The whole extension blob is 56 bytes,
+which fits a direct OP_RETURN push (≤75) — no PUSHDATA1, unlike CoinFlip.
+NAMING: Banco's SDK calls this type-0x01 packet an IntrospectorPacket; it's
+byte-identical to the EmulatorPacket shown here (same ARK magic 41 52 4b,
+same compactSize layout — verified in Banco's @arkade-os/sdk). The 46-byte
+script length is representative of the full-fill BTC covenant:
+0 INSPECTOUTPUTVALUE <wantAmount> GREATERTHANOREQUAL VERIFY
+0 INSPECTOUTPUTSCRIPTPUBKEY 1 EQUALVERIFY <32B makerWP> EQUAL.
+-->
+
+---
+
+[//]: # (Slide 9d — OP_RETURN byte-level: CoinFlip)
+
+# The same envelope, plus app packets
 
 <div class="text-xs opacity-70 mb-1">
 CoinFlip player-win sweep — <code>vin</code>: 2 escrow VTXOs · <code>vout 0</code>: pot&nbsp;→&nbsp;winner (P2TR) · <code>vout 1</code>: this OP_RETURN (0 sats) · <code>vout 2</code>: P2A anchor
