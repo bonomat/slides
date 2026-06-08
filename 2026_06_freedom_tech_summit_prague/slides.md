@@ -845,6 +845,62 @@ packets in src/packets.ts.
 
 ---
 
+[//]: # (Slide 9c — OP_RETURN byte-level sample)
+
+# A real OP_RETURN, byte for byte
+
+<div class="text-xs opacity-70 mb-1">
+CoinFlip player-win sweep — <code>vin</code>: 2 escrow VTXOs · <code>vout 0</code>: pot&nbsp;→&nbsp;winner (P2TR) · <code>vout 1</code>: this OP_RETURN (0 sats) · <code>vout 2</code>: P2A anchor
+</div>
+
+<pre class="text-[11.5px] leading-tight font-mono bg-white/5 border border-white/10 rounded-lg px-4 py-2 mt-1">
+scriptPubKey of vout 1 — the Arkade extension blob
+
+<span style="color:#f7931a">6a</span>              OP_RETURN
+4c ee           PUSHDATA1 · 238 bytes follow
+<span style="color:#c2e821">41 52 4b</span>        "ARK"   Arkade extension magic
+
+<span style="color:#c2e821">01</span>              packet: EmulatorPacket  (type 0x01)
+  c3            payload = 195 bytes
+  01            1 entry   (this sweep really has 2)
+  00 00         vin = 0                 u16-LE
+  ba            script = 186 bytes
+  4f a2 …       the full win-leaf arkade-script
+  04            witness = 4 bytes
+  02 00 01 01   [ output_idx=0, other_input_idx=1 ]
+
+<span style="color:#c2e821">10</span>              packet: player reveal   (type 0x10)
+  11            length = 17
+  07 9f 3c …    digit 7 ‖ 16-byte salt
+
+<span style="color:#c2e821">11</span>              packet: creator reveal  (type 0x11)
+  11            length = 17
+  04 b1 22 …    digit 4 ‖ 16-byte salt
+</pre>
+
+<div class="text-xs opacity-60 mt-1 text-center">
+<strong>EmulatorPacket</strong> = which input (<code>vin</code>) · what covenant (<code>script</code>) · the args (<code>witness</code>). Reveals ride as separate packets — pulled with <code>INSPECTPACKET</code>.
+</div>
+
+<!--
+Byte-accurate sample. Wire format verified against the vendored SDK
+(@arkade-os/sdk 0.4.32-arkade-script, dist/index.d.ts):
+- Extension: OP_RETURN | push | ARK(0x41 0x52 0x4B) | [type | varint_len | data]…
+- EmulatorPacket (type 0x01): compactSize(count) + per entry
+    u16_le(vin) + compactSize(scriptLen) + script + compactSize(witLen) + witness
+- Reveal packets (CoinFlip): type 0x10 / 0x11, payload = digit_byte ‖ salt(≥16B)
+Numbers are internally consistent: 1 entry shown (real sweep has 2), a
+186-byte win-leaf script, witness 02 00 01 01 = encodeWitness([0, 1])
+(output_idx=0 → empty item, other_input_idx=1 → 0x01). Totals:
+EmulatorPacket payload 195 (0xc3), whole blob 238 (0x4c 0xee PUSHDATA1).
+Talking point: those two 0x01 bytes in a row are the packet TYPE (0x01 =
+EmulatorPacket) then the entry COUNT (1) — easy to misread. And the
+script bytes here are the SAME bytes that were tagged-hashed into the
+tweaked pubkey; the Emulator re-hashes them to prove the match.
+-->
+
+---
+
 [//]: # (Slide 10 — Full taptree with covenant path)
 
 # VTXO, with an Emulator leaf
