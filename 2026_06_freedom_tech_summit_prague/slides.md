@@ -1361,11 +1361,11 @@ Each party funds <strong>their own</strong> escrow VTXO --> same covenant rules.
 
 <div class="flex-1 flex flex-col justify-center gap-3">
   <div class="rounded-lg bg-white text-black p-3">
-    <div class="font-semibold text-sm">Player escrow VTXO</div>
+    <div class="font-semibold text-sm">player stake VTXO</div>
     <div class="text-xs opacity-60">player funds it · <code>playerStake</code></div>
   </div>
   <div class="rounded-lg bg-white text-black p-3">
-    <div class="font-semibold text-sm">House escrow VTXO</div>
+    <div class="font-semibold text-sm">house stake VTXO</div>
     <div class="text-xs opacity-60">house funds it · <code>houseStake</code></div>
   </div>
   <div class="text-xs opacity-60 text-center">same covenant taptree · two separate VTXOs</div>
@@ -1376,8 +1376,8 @@ Each party funds <strong>their own</strong> escrow VTXO --> same covenant rules.
 <div class="flex-1 rounded-lg border border-[#c2e821]/50 bg-[#c2e821]/5 p-3">
   <div class="text-[#c2e821] font-bold text-sm mb-2">Settlement tx · 2 in → 1 out</div>
   <div class="text-xs opacity-50 tracking-widest mb-1">INPUTS</div>
-  <div class="rounded bg-white/10 p-2 mb-1 text-sm">Input 0 · player escrow</div>
-  <div class="rounded bg-white/10 p-2 mb-3 text-sm">Input 1 · house escrow</div>
+  <div class="rounded bg-white/10 p-2 mb-1 text-sm">Input 0 · player stake</div>
+  <div class="rounded bg-white/10 p-2 mb-3 text-sm">Input 1 · house stake</div>
   <div class="text-xs opacity-50 tracking-widest mb-1">OUTPUT</div>
   <div class="rounded border border-[#f7931a]/60 bg-[#f7931a]/10 p-2 text-sm">Output 0 · <strong style="color:#f7931a">whole pot → winner</strong></div>
 </div>
@@ -1385,7 +1385,7 @@ Each party funds <strong>their own</strong> escrow VTXO --> same covenant rules.
 </div>
 
 <div class="pt-4 text-xs opacity-70 text-center">
-<strong>The house server assembles &amp; submits</strong> this tx — but it's <strong>not a signer</strong>. The win leaf is a 2-of-2 <code>[arkd · Emulator]</code>: the Emulator co-signs only if the roll + payout check out (once per input), then arkd finalizes. <strong>Neither player nor house signs the payout</strong> — so whoever builds it still can't cheat.
+<strong>The house server assembles &amp; submits</strong> this tx. The win leaf is a 2-of-2 <code>[arkd & Emulator]</code>: the Emulator co-signs only if the roll + payout check out (once per input), then arkd finalizes. <strong>Neither player nor house signs the payout</strong> — so whoever builds it still can't cheat.
 </div>
 
 <!--
@@ -1427,12 +1427,6 @@ SWAP DUP SHA256 <creatorHash> EQUALVERIFY
 1 LEFT BIN2NUM   SWAP   1 LEFT BIN2NUM
 ADD  <n> MOD   <lo> <target> WITHIN    # player wins iff roll ∈ [lo, target)
 ```
-
-<div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60 text-sm">
-
-**This is *can't cheat*, in code** — the Emulator's signature *is* the proof that both reveals matched their commitments **and** the roll was computed honestly. No valid roll → no signature, so a rigged outcome can never settle.
-
-</div>
 
 <div class="pt-3 text-xs opacity-50 text-center">
 The same leaf sits on **both** escrows — the Emulator runs it once per input. House-win leaf = same body + <code>OP_NOT</code>.
