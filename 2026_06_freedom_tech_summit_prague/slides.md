@@ -1351,10 +1351,10 @@ Next slides: the win-leaf arkade-script (the roll + the atomic-sweep payout).
 
 [//]: # (Slide 14b — CoinFlip escrow setup)
 
-# How a game is escrowed
+# How a game is created
 
 <div class="text-sm opacity-80 mb-4">
-Each party funds <strong>their own</strong> escrow VTXO — same covenant rules, two coins. Settlement spends <strong>both</strong> in one transaction.
+Each party funds <strong>their own</strong> escrow VTXO --> same covenant rules. Settlement spends <strong>both</strong> in one transaction.
 </div>
 
 <div class="flex items-stretch gap-4">
@@ -1385,7 +1385,7 @@ Each party funds <strong>their own</strong> escrow VTXO — same covenant rules,
 </div>
 
 <div class="pt-4 text-xs opacity-70 text-center">
-The Emulator runs the <strong>win leaf</strong> against this tx — <strong>once per input</strong> — and co-signs only if the roll and the payout both check out. The loser's signature is never needed.
+<strong>The house server assembles &amp; submits</strong> this tx — but it's <strong>not a signer</strong>. The win leaf is a 2-of-2 <code>[arkd · Emulator]</code>: the Emulator co-signs only if the roll + payout check out (once per input), then arkd finalizes. <strong>Neither player nor house signs the payout</strong> — so whoever builds it still can't cheat.
 </div>
 
 <!--
