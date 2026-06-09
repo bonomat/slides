@@ -1159,7 +1159,7 @@ Real-world covenants, today
 
 `github.com/arkade-os/banco`
 
-**Maker** creates an offer, locks funds in a covenant VTXO, then **goes offline.** **Taker** discovers the offer later and fulfills it unilaterally.
+**Maker** creates an offer, locks funds in a covenant VTXO, then **goes offline.** **Taker** discovers the offer and fulfills it unilaterally.
 
 <div class="pt-4 grid grid-cols-2 gap-4 text-sm">
 
@@ -1288,50 +1288,53 @@ These are the real scripts from github.com/arkade-os/banco (HEAD aab5d0e).
 
 ---
 
-[//]: # (Slide 14 — Real example: CoinFlip)
+[//]: # (Slide 14 — CoinFlip: the trust model)
 
-# CoinFlip: a bet settled by covenant 🎲
+# CoinFlip 🎲 — provably fair *and* provably paid
 
 `github.com/arkade-os/coinflip`
 
-Player vs. house. Both **commit** to `SHA256(secret)`, then **reveal** — the two secrets decide the winner. Each stake sits in its **own escrow VTXO**, and the Emulator settles the pot. **The player signs nothing on the win path.**
+A *provably-fair* game only proves the **roll** was honest. The house can still **refuse to pay** a winner — or vanish with the pot. CoinFlip escrows the payout in a **covenant**, so it can't.
 
-<div class="pt-4 grid grid-cols-2 gap-4 text-sm">
+<div class="pt-5 grid grid-cols-2 gap-5">
 
-<div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**Provably fair**
+**Can't cheat the roll** 🎯
 
-Secret *byte-length* encodes a digit. `roll = (houseDigit + playerDigit) mod n`; player wins iff `roll ∈ [lo, target)`. Both sides pick at random, and the committed hash binds each before anyone reveals.
-
-</div>
-
-<div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-
-**Atomic settlement**
-
-One `2-input → 1-output` sweep pays the whole pot to the winner. Each leaf's covenant pins the **other** escrow as an input — a single-stake sweep can't satisfy it. Neither side can abort and run.
+Commit–reveal: player and house each commit `SHA256(secret)` *before* either reveals. `roll = (houseDigit + playerDigit) mod n` — neither side can bias the outcome.
 
 </div>
 
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
+
+**Can't stall the payout** 🔒
+
+The house escrows **its own stake** into the same covenant up front. On a win, the player sweeps the **whole pot** straight through the covenant — the house's signature isn't needed. Nothing to withhold, nothing to walk off with.
+
 </div>
 
-<div class="pt-3 text-xs opacity-70 text-center">
-Both outcomes covenant-pinned · the operator only <em>submits</em>, never signs · every collab leaf has a CSV unilateral-exit mirror
+</div>
+
+<div class="pt-5 text-sm opacity-80 text-center">
+Two stakes → one covenant. The winner signs nothing extra; and if arkd or the house disappears, a <strong>unilateral CSV exit</strong> still pays the winner on-chain.
 </div>
 
 <!--
-CoinFlip is the second flagship Emulator app, alongside Banco.
-The story to tell:
-- Two escrows, one per party, into the same taptree — settlement is
-  per-party so neither can abort and steal the other's stake.
-- The win is settled entirely by [arkd_server, emu_tweaked]. The operator's
-  key isn't even in the multisig — it just *submits* the unsigned PSBT.
-  The Emulator runs the covenant and signs; arkd co-signs. Player signs nothing.
-- Current escrow is the v3 10-leaf taptree: 5 collab leaves + 5 CSV-gated
-  unilateral-exit mirrors. The win/forfeit exits keep the emu-tweaked key,
-  so atomicity survives arkd going dark; only plain refund drops the Emulator.
-Next slide: the actual win-leaf arkade-script.
+Redesigned around the trust model (was: "provably fair / atomic settlement").
+The key insight to land — fairness ≠ payout:
+- A classic provably-fair game proves the RANDOMNESS is honest, but says
+  nothing about settlement. The house can verify it lost and just… not pay,
+  or stall forever. "Provably fair" is necessary but not sufficient.
+- CoinFlip's fix: the house must escrow ITS OWN stake into the same covenant
+  before the flip. The pot (playerStake + houseStake) is locked up front.
+  On a player win, the player sweeps the whole pot through the covenant leaf
+  — no house signature, no house cooperation. So the house literally can't
+  stall the payout, and can't walk away with the player's stake either.
+- Belt-and-suspenders: every collaborative leaf has a CSV unilateral-exit
+  mirror, so even if arkd or the house vanishes, the winner claims on-chain.
+- "Provably fair AND provably paid" is the one-liner.
+Next slides: the win-leaf arkade-script (the roll + the atomic-sweep payout).
 -->
 
 ---
