@@ -26,7 +26,7 @@ Covenants on Bitcoin without softfork on Arkade
 </div>
 
 <div class="pt-12 text-sm opacity-60">
-bonomat
+@bonomat
 </div>
 <div class="pt-2 text-xs opacity-60">
 Freedom Tech Summit Prague · June 2026
@@ -60,8 +60,7 @@ layoutClass: gap-8
 [//]: # (<v-clicks>)
 
 - **Not A Bitcoin L2** Pre-signed bitcoin transactions anchored to a single on-chain output - for fast, cheap, off-chain payments.
-- **VTXOs** = *virtual* UTXOs that live inside that shared batch output.
-- An operator (**`arkd`**) batches many users into one onchain tx.
+- **VTXOs** = *virtual* UTXOs that live inside that shared batch output (batched into one onchain tx).
 - Every VTXO is a **2-of-2** between user and operator + 1 one unilateral exit path.
 - Trade-off: instant + non-custodial, but **every move needs the operator to co-sign**.
 
@@ -88,8 +87,8 @@ layoutClass: gap-8
     <div class="vtxo" style="top: 8px;">VTXO 1</div>
     <div class="vtxo" style="top: 81px;">VTXO 2</div>
     <div class="vtxo" style="top: 154px;">VTXO 3</div>
-    <div class="vtxo" style="top: 227px;">VTXO 4</div>
-    <div class="caption"><span class="caption-hl">1</span> onchain output &rarr; <span class="caption-hl">4</span> virtual UTXOs</div>
+    <div class="vtxo" style="top: 227px;">VTXO N</div>
+    <div class="caption"><span class="caption-hl">1</span> onchain output &rarr; <span class="caption-hl">N</span> virtual UTXOs</div>
   </div>
 </div>
 
@@ -341,7 +340,7 @@ vtxoScript = Taproot(
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**Collaborative path** — *fast, off-chain*
+**Collaborative path**
 
 User **and** operator co-sign every move. Instant settlement, no on-chain footprint.
 
@@ -349,9 +348,9 @@ User **and** operator co-sign every move. Instant settlement, no on-chain footpr
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
 
-**Unilateral exit** — *the safety valve*
+**Unilateral exit**
 
-After `exitDelay`, the user alone can claim the VTXO on-chain. The operator can **never** trap funds.
+After `exitDelay`, the user alone can claim the VTXO on-chain. The operator can**not** steal funds.
 
 </div>
 
@@ -558,7 +557,7 @@ Atomic swaps between Arkade assets, or cross-chain to Lightning / mainchain.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
 
-**🛠 Arkade Script — advanced scripting**
+**🛠 Arkade Script **
 
 Extra opcodes on top of Bitcoin Script: introspection, hashing, arithmetic. Vaults, **covenants**.
 
@@ -584,7 +583,7 @@ class: text-center
 # Covenants
 
 <div class="text-lg opacity-70 mt-4 font-normal">
-The constraint Bitcoin Script can't express — yet
+The constraint Bitcoin Script can't express (yet)
 </div>
 
 ---
@@ -615,7 +614,7 @@ The constraint Bitcoin Script can't express — yet
 </div>
 
 <div class="pt-8 text-lg">
-A spending constraint that depends on the <em>transaction itself</em> —
+A spending constraint that depends on the <em>transaction itself</em>,
 not just signatures and preimages.
 </div>
 
@@ -634,7 +633,9 @@ just a different way of letting Script look at the spending transaction.
 - **Non-interactive atomic swaps** — trade assets without online requirement.
 - **Delegation** — let someone *move* your coins, but only under script-enforced rules.
 - **Vaults** — funds can only move to your cold address, or anywhere else after a delay.
-- **Games & fun scripts** — provably-fair betting settled entirely by covenant — dice, coin flips, no trusted house.
+- **Games & fun scripts** — provably-fair betting settled entirely by covenant (e.g. dice, coin flips).
+- **Derivatives** — advanced financial products such as options, futures, etc.  
+
 
 [//]: # (</v-clicks>)
 
@@ -734,64 +735,91 @@ class: text-center
 A signer that only co-signs if your script says it's OK
 </div>
 
----
+[//]: # (---)
+[//]: # ()
+[//]: # ([//]: # &#40;Slide 9 — What the Emulator does&#41;)
+[//]: # ()
+[//]: # (# What the Emulator does)
 
-[//]: # (Slide 9 — What the Emulator does)
+[//]: # ()
+[//]: # (The Emulator is a **remote signer** holding a key `P`.)
 
-# What the Emulator does
+[//]: # ()
+[//]: # (<div class="mt-4 p-5 rounded bg-white/5 border-l-4 border-[#c2e821]/60 text-lg">)
 
-The Emulator is a **remote signer** holding a key `P`.
+[//]: # ()
+[//]: # (It co-signs <strong>any</strong> VTXO spend — <em>but only if</em> the input commits to an <strong>arkade-script</strong>, and that script <strong style="color:#c2e821">evaluates true</strong> against the spending transaction.)
 
-<div class="mt-4 p-5 rounded bg-white/5 border-l-4 border-[#c2e821]/60 text-lg">
+[//]: # ()
+[//]: # (</div>)
 
-It co-signs <strong>any</strong> VTXO spend — <em>but only if</em> the input commits to an <strong>arkade-script</strong>, and that script <strong style="color:#c2e821">evaluates true</strong> against the spending transaction.
+[//]: # ()
+[//]: # (<div class="pt-6 grid grid-cols-3 gap-4 text-sm">)
 
-</div>
+[//]: # ()
+[//]: # (<div class="p-3 rounded bg-white/5">)
 
-<div class="pt-6 grid grid-cols-3 gap-4 text-sm">
+[//]: # ()
+[//]: # (**1 · You ask**)
 
-<div class="p-3 rounded bg-white/5">
+[//]: # ()
+[//]: # (Hand it the spending tx &#40;`SubmitTx`&#41; — the VTXO you want to move, and where.)
 
-**1 · You ask**
+[//]: # ()
+[//]: # (</div>)
 
-Hand it the spending tx (`SubmitTx`) — the VTXO you want to move, and where.
+[//]: # ()
+[//]: # (<div class="p-3 rounded bg-white/5">)
 
-</div>
+[//]: # ()
+[//]: # (**2 · It runs your script**)
 
-<div class="p-3 rounded bg-white/5">
+[//]: # ()
+[//]: # (Against *this* transaction — its outputs, amounts, and inputs.)
 
-**2 · It runs your script**
+[//]: # ()
+[//]: # (</div>)
 
-Against *this* transaction — its outputs, amounts, and inputs.
+[//]: # ()
+[//]: # (<div class="p-3 rounded bg-white/5">)
 
-</div>
+[//]: # ()
+[//]: # (**3 · It signs — or not**)
 
-<div class="p-3 rounded bg-white/5">
+[//]: # ()
+[//]: # (True → co-signature. False → silence; the coin can't move that way.)
 
-**3 · It signs — or not**
+[//]: # ()
+[//]: # (</div>)
 
-True → co-signature. False → silence; the coin can't move that way.
+[//]: # ()
+[//]: # (</div>)
 
-</div>
+[//]: # ()
+[//]: # (<div class="pt-5 text-sm opacity-70 text-center">)
 
-</div>
+[//]: # (Same covenant power as a soft-fork — enforced by an honest signer, off-chain, today.)
 
-<div class="pt-5 text-sm opacity-70 text-center">
-Same covenant power as a soft-fork — enforced by an honest signer, off-chain, today.
-</div>
+[//]: # (</div>)
 
-<!--
-High-level beat: what the Emulator IS and does, before any crypto.
-A remote signer that executes committed bytecode against the spending
-tx and signs on success. The next slide explains WHY this needs a trick
-(the opcodes it runs don't exist in Bitcoin consensus).
--->
+[//]: # ()
+[//]: # (<!--)
+
+[//]: # (High-level beat: what the Emulator IS and does, before any crypto.)
+
+[//]: # (A remote signer that executes committed bytecode against the spending)
+
+[//]: # (tx and signs on success. The next slide explains WHY this needs a trick)
+
+[//]: # (&#40;the opcodes it runs don't exist in Bitcoin consensus&#41;.)
+
+[//]: # (-->)
 
 ---
 
 [//]: # (Slide 9a — Opcodes Bitcoin lacks, and the trick)
 
-# Opcodes Bitcoin doesn't have
+# New Opcodes
 
 <div class="text-sm opacity-80 mb-3">
 Arkade-script gives the covenant the introspection Bitcoin Script lacks — the script can read the spending tx:
@@ -812,7 +840,7 @@ Arkade-script gives the covenant the introspection Bitcoin Script lacks — the 
 
 **None of these exist on-chain** 🚫
 
-No soft-fork has shipped them — Bitcoin can't validate a VTXO locked by them. So how do we use them *today*?
+No soft-fork has shipped them --> Bitcoin can't validate a VTXO locked by them. So how do we use them *today*?
 
 </div>
 
