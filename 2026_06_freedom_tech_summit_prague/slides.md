@@ -1349,6 +1349,62 @@ Next slides: the win-leaf arkade-script (the roll + the atomic-sweep payout).
 
 ---
 
+[//]: # (Slide 14b — CoinFlip escrow setup)
+
+# How a game is escrowed
+
+<div class="text-sm opacity-80 mb-4">
+Each party funds <strong>their own</strong> escrow VTXO — same covenant rules, two coins. Settlement spends <strong>both</strong> in one transaction.
+</div>
+
+<div class="flex items-stretch gap-4">
+
+<div class="flex-1 flex flex-col justify-center gap-3">
+  <div class="rounded-lg bg-white text-black p-3">
+    <div class="font-semibold text-sm">Player escrow VTXO</div>
+    <div class="text-xs opacity-60">player funds it · <code>playerStake</code></div>
+  </div>
+  <div class="rounded-lg bg-white text-black p-3">
+    <div class="font-semibold text-sm">House escrow VTXO</div>
+    <div class="text-xs opacity-60">house funds it · <code>houseStake</code></div>
+  </div>
+  <div class="text-xs opacity-60 text-center">same covenant taptree · two separate VTXOs</div>
+</div>
+
+<div class="flex items-center text-3xl text-[#c2e821]">→</div>
+
+<div class="flex-1 rounded-lg border border-[#c2e821]/50 bg-[#c2e821]/5 p-3">
+  <div class="text-[#c2e821] font-bold text-sm mb-2">Settlement tx · 2 in → 1 out</div>
+  <div class="text-xs opacity-50 tracking-widest mb-1">INPUTS</div>
+  <div class="rounded bg-white/10 p-2 mb-1 text-sm">Input 0 · player escrow</div>
+  <div class="rounded bg-white/10 p-2 mb-3 text-sm">Input 1 · house escrow</div>
+  <div class="text-xs opacity-50 tracking-widest mb-1">OUTPUT</div>
+  <div class="rounded border border-[#f7931a]/60 bg-[#f7931a]/10 p-2 text-sm">Output 0 · <strong style="color:#f7931a">whole pot → winner</strong></div>
+</div>
+
+</div>
+
+<div class="pt-4 text-xs opacity-70 text-center">
+The Emulator runs the <strong>win leaf</strong> against this tx — <strong>once per input</strong> — and co-signs only if the roll and the payout both check out. The loser's signature is never needed.
+</div>
+
+<!--
+Setup slide added because the win-leaf code slides jumped straight into
+the script without showing the structure. The facts (verified in
+packages/lib/src/transactions-v3.ts):
+- TWO escrow VTXOs per game: getPlayerEscrowScriptV3 (refundPubkey =
+  player.pubkey) and getHouseEscrowScriptV3 (refundPubkey = creator.pubkey).
+- Same taptree EXCEPT the refund leaf (each party's own unilateral get-
+  -money-back path), so two distinct addresses, identical covenant rules.
+- Settlement = buildCovenantSweepTransactionV3: 2 inputs (both escrows)
+  → 1 output (full pot to the winner's address). Per-input EmulatorPacket
+  carries the arkade-script; the Emulator runs the win leaf for EACH input.
+- So "the script" on the next slides is ONE leaf, present on both escrows,
+  evaluated once per covenant input — not two different scripts.
+-->
+
+---
+
 [//]: # (Slide 15a — CoinFlip win leaf · the predicate)
 
 <div class="text-xs tracking-[0.25em] text-[#c2e821] opacity-80 mb-1">① CAN'T CHEAT THE ROLL</div>
@@ -1379,7 +1435,7 @@ ADD  <n> MOD   <lo> <target> WITHIN    # player wins iff roll ∈ [lo, target)
 </div>
 
 <div class="pt-3 text-xs opacity-50 text-center">
-The house-win leaf is the same body + <code>OP_NOT</code>. Out-of-range-digit handling elided for clarity.
+The same leaf sits on **both** escrows — the Emulator runs it once per input. House-win leaf = same body + <code>OP_NOT</code>.
 </div>
 
 <!--
