@@ -1428,8 +1428,24 @@ SWAP DUP SHA256 <creatorHash> EQUALVERIFY
 ADD  <n> MOD   <lo> <target> WITHIN    # player wins iff roll ∈ [lo, target)
 ```
 
-<div class="pt-3 text-xs opacity-50 text-center">
-The same leaf sits on **both** escrows — the Emulator runs it once per input. House-win leaf = same body + <code>OP_NOT</code>.
+<div class="pt-3 grid grid-cols-2 gap-3 text-xs">
+
+<div class="p-2 rounded bg-[#c2e821]/10 border-l-4 border-[#c2e821]">
+
+**Example** — `n=6`, win band `[0,2)`: &nbsp;`4 + 3 = 7` → `7 mod 6 = 1` → `1 ∈ [0,2)` ✓ **player wins**
+
+</div>
+
+<div class="p-2 rounded bg-[#f7931a]/10 border-l-4 border-[#f7931a]">
+
+Different reveal: &nbsp;`4 + 5 = 9` → `9 mod 6 = 3` → `3 ∉ [0,2)` ✗ **house wins**
+
+</div>
+
+</div>
+
+<div class="pt-2 text-xs opacity-50 text-center">
+Same leaf on <strong>both</strong> escrows · house-win leaf = same body + <code>OP_NOT</code>.
 </div>
 
 <!--
