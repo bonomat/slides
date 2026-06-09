@@ -1341,6 +1341,8 @@ Next slides: the win-leaf arkade-script (the roll + the atomic-sweep payout).
 
 [//]: # (Slide 15a — CoinFlip win leaf · the predicate)
 
+<div class="text-xs tracking-[0.25em] text-[#c2e821] opacity-80 mb-1">① CAN'T CHEAT THE ROLL</div>
+
 # The win leaf — deciding the winner
 
 ```
@@ -1362,7 +1364,7 @@ ADD  <n> MOD   <lo> <target> WITHIN    # player wins iff roll ∈ [lo, target)
 
 <div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60 text-sm">
 
-**The predicate** — the Emulator's signature *is* the proof that both reveals matched their commits **and** the roll landed in the player's band. No valid roll → no signature.
+**This is *can't cheat*, in code** — the Emulator's signature *is* the proof that both reveals matched their commitments **and** the roll was computed honestly. No valid roll → no signature, so a rigged outcome can never settle.
 
 </div>
 
@@ -1386,6 +1388,8 @@ Real v3 win-condition predicate — packages/lib/src/arkade-win.ts
 
 [//]: # (Slide 15b — CoinFlip win leaf · the covenant)
 
+<div class="text-xs tracking-[0.25em] text-[#f7931a] opacity-80 mb-1">② CAN'T STALL THE PAYOUT</div>
+
 # …then pin the payout
 
 ```
@@ -1400,7 +1404,7 @@ INSPECTOUTPUTVALUE <pot> EQUAL
 
 <div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#f7931a]/60 text-sm">
 
-**The covenant** — `atomicSweep` locks the spend: output 0 pays the **winner** exactly the **pot**, and the **other escrow** must be spent in the same tx. Destination + amount, pinned.
+**This is *can't stall*, in code** — `atomicSweep` pins output 0 to pay the **winner** the **whole pot**, and forces the **other escrow** into the same tx. The winner sweeps both stakes with **no house signature** — the payout can't be withheld.
 
 </div>
 
