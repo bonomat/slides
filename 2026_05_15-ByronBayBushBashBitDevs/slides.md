@@ -538,7 +538,7 @@ The on-chain footprint is still just the original commitment tx.
 
 **⚡ Instant Bitcoin payments**
 
-Lightning-grade speed — no per-user channel to open, no inbound liquidity to source. One VTXO, many spends.
+Lightning-grade speed — no per-user channel to open, no inbound liquidity to source.
 
 </div>
 

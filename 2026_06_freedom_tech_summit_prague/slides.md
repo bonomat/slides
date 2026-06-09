@@ -1191,7 +1191,6 @@ Alice holds **\$100**, wants **sats**:
 </div>
 
 <div class="pt-3 text-xs opacity-70 text-center">
-Live walkthrough:
 <a href="https://github.com/arkade-os/banco/blob/master/src/maker.ts" target="_blank"><code>src/maker.ts</code></a> ·
 <a href="https://github.com/arkade-os/banco/blob/master/src/taker.ts" target="_blank"><code>src/taker.ts</code></a> ·
 <a href="https://github.com/arkade-os/banco/blob/master/src/offer.ts" target="_blank"><code>src/offer.ts</code></a>
@@ -1411,7 +1410,7 @@ packages/lib/src/transactions-v3.ts):
 
 <div class="text-xs tracking-[0.25em] text-[#c2e821] opacity-80 mb-1">① CAN'T CHEAT THE ROLL</div>
 
-# The win leaf — deciding the winner
+# CoinFlip covenants script
 
 ```
 # Player-win leaf — the Emulator runs this before it co-signs
