@@ -1294,30 +1294,40 @@ These are the real scripts from github.com/arkade-os/banco (HEAD aab5d0e).
 
 `github.com/arkade-os/coinflip`
 
-A *provably-fair* game only proves the **roll** was honest. The house can still **refuse to pay** a winner — or vanish with the pot. CoinFlip escrows the payout in a **covenant**, so it can't.
+<div class="grid grid-cols-2 gap-6 pt-6">
 
-<div class="pt-5 grid grid-cols-2 gap-5">
+<div class="p-5 rounded-lg bg-[#ef4444]/10 border-l-4 border-[#ef4444]/70">
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+<div class="text-xs tracking-[0.2em] text-[#ef4444] opacity-90 mb-3">A "PROVABLY-FAIR" GAME</div>
 
-**Can't cheat the roll** 🎯
+Proves the **roll** is honest — and nothing else.
 
-Commit–reveal: player and house each commit `SHA256(secret)` *before* either reveals. `roll = (houseDigit + playerDigit) mod n` — neither side can bias the outcome.
+<div class="mt-3">
 
-</div>
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
-
-**Can't stall the payout** 🔒
-
-The house escrows **its own stake** into the same covenant up front. On a win, the player sweeps the **whole pot** straight through the covenant — the house's signature isn't needed. Nothing to withhold, nothing to walk off with.
+- House can **refuse to pay** a winner
+- …or **stall** indefinitely
+- …or **vanish** with the pot
 
 </div>
 
 </div>
 
-<div class="pt-5 text-sm opacity-80 text-center">
-Two stakes → one covenant. The winner signs nothing extra; and if arkd or the house disappears, a <strong>unilateral CSV exit</strong> still pays the winner on-chain.
+<div class="p-5 rounded-lg bg-[#c2e821]/10 border-l-4 border-[#c2e821]">
+
+<div class="text-xs tracking-[0.2em] text-[#c2e821] opacity-90 mb-3">COINFLIP'S COVENANT</div>
+
+Both player **and house** escrow into **one covenant** up front.
+
+<div class="mt-3">
+
+- Commit–reveal keeps the roll **unbiasable**
+- Winner sweeps the **whole pot** — no house signature
+- House gone? **Unilateral CSV exit** still pays
+
+</div>
+
+</div>
+
 </div>
 
 <!--
