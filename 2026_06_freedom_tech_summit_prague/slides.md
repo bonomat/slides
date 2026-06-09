@@ -1484,11 +1484,13 @@ DUP INSPECTOUTPUTSCRIPTPUBKEY 1 EQUALVERIFY <winnerScript> EQUALVERIFY
 INSPECTOUTPUTVALUE <pot> EQUAL
 ```
 
-<div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#f7931a]/60 text-sm">
+[//]: # (<div class="pt-4 p-3 rounded bg-white/5 border-l-4 border-[#f7931a]/60 text-sm">)
 
-**This is *can't stall*, in code** — `atomicSweep` pins output 0 to pay the **winner** the **whole pot**, and forces the **other escrow** into the same tx. The winner sweeps both stakes with **no house signature** — the payout can't be withheld.
+[//]: # ()
+[//]: # (**This is *can't stall*, in code** — `atomicSweep` pins output 0 to pay the **winner** the **whole pot**, and forces the **other escrow** into the same tx. The winner sweeps both stakes with **no house signature** — the payout can't be withheld.)
 
-</div>
+[//]: # ()
+[//]: # (</div>)
 
 <div class="pt-3 text-xs opacity-50 text-center">
 Full leaf = <code>predicate · VERIFY · atomicSweep</code>. The Emulator derives its tweaked key — and signs — only when the whole thing evaluates true.
