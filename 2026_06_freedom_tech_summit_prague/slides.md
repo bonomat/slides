@@ -1423,22 +1423,22 @@ packages/lib/src/transactions-v3.ts):
 DUP SHA256 <playerHash>  EQUALVERIFY
 SWAP DUP SHA256 <creatorHash> EQUALVERIFY
 
-# 3 · roll = (creatorDigit + playerDigit) mod n
-1 LEFT BIN2NUM   SWAP   1 LEFT BIN2NUM
-ADD  <n> MOD   <lo> <target> WITHIN    # player wins iff roll ∈ [lo, target)
+# 3 · the coin: roll = (creatorBit + playerBit) mod 2
+1 LEFT BIN2NUM   SWAP   1 LEFT BIN2NUM  # first byte of each reveal → its bit (0/1)
+ADD  2 MOD   0 1 WITHIN                 # player wins iff roll = 0  (the bits match)
 ```
 
 <div class="pt-3 grid grid-cols-2 gap-3 text-xs">
 
 <div class="p-2 rounded bg-[#c2e821]/10 border-l-4 border-[#c2e821]">
 
-**Example** — `n=6`, win band `[0,2)`: &nbsp;`4 + 3 = 7` → `7 mod 6 = 1` → `1 ∈ [0,2)` ✓ **player wins**
+**Bits match** → player: &nbsp;`1 + 1 = 2` → `2 mod 2 = 0` → `0 ∈ [0,1)` ✓ **player wins**
 
 </div>
 
 <div class="p-2 rounded bg-[#f7931a]/10 border-l-4 border-[#f7931a]">
 
-Different reveal: &nbsp;`4 + 5 = 9` → `9 mod 6 = 3` → `3 ∉ [0,2)` ✗ **house wins**
+**Bits differ** → house: &nbsp;`0 + 1 = 1` → `1 mod 2 = 1` → `1 ∉ [0,1)` ✗ **house wins**
 
 </div>
 
@@ -1456,6 +1456,11 @@ Real v3 win-condition predicate — packages/lib/src/arkade-win.ts
   args + multisig sigs. The Emulator pulls 0x10 (player) and 0x11 (creator).
 - The digit trick: 1 LEFT BIN2NUM reads the first byte of each reveal as
   the digit; n is capped at 128 so the digit fits one CScriptNum byte.
+- Shown specialized to the COIN: n=2, band [0,1), so each digit is a bit and
+  the player wins when the two bits match (a 50/50, break-even — no rake).
+  The SAME leaf is parameterized: dice/roulette/rocket commit a larger n +
+  narrower [lo,target) band for lower odds / higher multiplier. The player
+  picks n/lo/target at /play; the house sizes its stake (the edge).
 - Result on the stack: 1 if the player won, else the script aborts /
   pushes 0. The covenant on the next slide consumes this verdict.
 -->
