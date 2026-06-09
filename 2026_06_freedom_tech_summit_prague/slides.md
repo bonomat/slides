@@ -535,7 +535,7 @@ The on-chain footprint is still just the original commitment tx.
 
 **⚡ Instant Bitcoin payments**
 
-Lightning-grade speed — no per-user channel to open, no inbound liquidity to source. One VTXO, many spends.
+Lightning-grade speed: no per-user channels to open, no liquidity management. 
 
 </div>
 
@@ -543,7 +543,7 @@ Lightning-grade speed — no per-user channel to open, no inbound liquidity to s
 
 **💵 Other asset and stablecoins**
 
-Issued assets ride inside VTXOs - same unilateral-exit guarantees as native BTC.
+Issued assets inside VTXOs.
 
 </div>
 
@@ -551,15 +551,15 @@ Issued assets ride inside VTXOs - same unilateral-exit guarantees as native BTC.
 
 **💱 Trading & atomic swaps**
 
-Atomic swaps between Arkade assets, or cross-chain to Lightning / mainchain.
+Atomic swaps between Arkade assets, or cross-chain to Lightning / onchain.
 
 </div>
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
 
-**🛠 Arkade Script **
+**🛠 Arkade Script**
 
-Extra opcodes on top of Bitcoin Script: introspection, hashing, arithmetic. Vaults, **covenants**.
+Extra opcodes on top of Bitcoin Script: introspection, hashing, arithmetic, **covenants**.
 
 </div>
 
@@ -631,7 +631,6 @@ just a different way of letting Script look at the spending transaction.
 
 - **Lightning async receive** — pay-on-preimage without both parties online at swap time.
 - **Non-interactive atomic swaps** — trade assets without online requirement.
-- **Delegation** — let someone *move* your coins, but only under script-enforced rules.
 - **Vaults** — funds can only move to your cold address, or anywhere else after a delay.
 - **Games & fun scripts** — provably-fair betting settled entirely by covenant (e.g. dice, coin flips).
 - **Derivatives** — advanced financial products such as options, futures, etc.  
@@ -690,7 +689,7 @@ The common thread: each one wants the script to <strong>see the spending transac
 
 `OP_CTV` · `OP_CAT` · `OP_CSFS` · `OP_VAULT` · `SIGHASH_ANYPREVOUT`
 
-Each one is years of debate, safety review, and politics. We've been "almost there" for a while now.
+Each one is years of debate, safety review, and politics. We've been "**almost there**" for a while now.
 
 </div>
 
@@ -700,7 +699,7 @@ Each one is years of debate, safety review, and politics. We've been "almost the
 
 Run a signer that **only co-signs if your script says it's OK**.
 
-Same expressive power. Ships today. No fork required.
+No fork required.
 
 </div>
 
@@ -826,11 +825,11 @@ Arkade-script gives the covenant the introspection Bitcoin Script lacks — the 
 </div>
 
 <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm mb-4">
-  <div><code>OP_INSPECTOUTPUTVALUE</code> — an output's amount</div>
-  <div><code>OP_INSPECTINPUTVALUE</code> — another input's amount</div>
-  <div><code>OP_INSPECTOUTPUTSCRIPTPUBKEY</code> — its destination</div>
-  <div><code>OP_INSPECTPACKET</code> — attached data (args, reveals)</div>
-  <div><code>OP_CAT · OP_MUL · OP_DIV</code> — re-enabled</div>
+  <div><code>OP_INSPECTOUTPUTVALUE</code>: an output's amount</div>
+  <div><code>OP_INSPECTINPUTVALUE</code>: another input's amount</div>
+  <div><code>OP_INSPECTOUTPUTSCRIPTPUBKEY</code>: its destination</div>
+  <div><code>OP_INSPECTPACKET</code>: attached data (args, reveals)</div>
+  <div><code>OP_CAT · OP_MUL · OP_DIV</code></div>
   <div class="opacity-60">…and more</div>
 </div>
 
@@ -874,7 +873,7 @@ Beat 2: motivate the trick with the opcodes.
 - arkade-script is a superset of Bitcoin Script: introspection opcodes
   (INSPECT*), re-enabled CAT/MUL/DIV, plus INSPECTPACKET for attached data.
 - The catch: none are in Bitcoin consensus. A normal node can't validate a
-  spend gated on them — so you can't just put them in a tapscript leaf.
+  spend gated on them : so you can't just put them in a tapscript leaf.
 - The trick (BIP-341-style tweak with a project tag "ArkScriptHash"):
   the committed pubkey IS the commitment to the script. The Emulator holds
   the key for P_emulator and can only derive the signing key for
@@ -1178,11 +1177,14 @@ No maker signature at fulfillment.
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**Three taptree leaves**
+**A swap, concretely**
 
-- **Fulfill** — covenant + Emulator co-sign
-- **Cancel** — maker reclaims after CLTV
-- **Exit** — unilateral CSV fallback
+Alice holds **\$100**, wants **sats**:
+
+1. Locks the **\$100** in a covenant VTXO
+2. Covenant: *"spendable only if ≥ X sats pay Alice"*
+3. Goes **offline** — anyone may fulfill
+4. Taker takes the \$100, pays Alice ≥ X sats — one atomic tx
 
 </div>
 
