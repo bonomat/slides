@@ -1290,7 +1290,7 @@ These are the real scripts from github.com/arkade-os/banco (HEAD aab5d0e).
 
 [//]: # (Slide 14 — CoinFlip: the trust model)
 
-# CoinFlip 🎲 — provably fair *and* provably paid
+# CoinFlip - provably fair *and* provably paid
 
 `github.com/arkade-os/coinflip`
 
@@ -1321,8 +1321,8 @@ Both player **and house** escrow into **one covenant** up front.
 <div class="mt-3">
 
 - Commit–reveal keeps the roll **unbiasable**
-- Winner sweeps the **whole pot** — no house signature
-- House gone? **Unilateral CSV exit** still pays
+- Funds from **both** parties committed
+- Winner claims **unilaterally**
 
 </div>
 
