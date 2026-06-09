@@ -834,7 +834,7 @@ Arkade-script gives the covenant the introspection Bitcoin Script lacks — the 
   <div class="opacity-60">…and more</div>
 </div>
 
-<div class="grid grid-cols-2 gap-5">
+<div class="grid grid-cols-1 gap-5">
 
 <div class="p-3 rounded bg-[#ef4444]/10 border-l-4 border-[#ef4444]/60 text-sm">
 
@@ -844,20 +844,28 @@ No soft-fork has shipped them --> Bitcoin can't validate a VTXO locked by them. 
 
 </div>
 
-<div class="p-3 rounded bg-[#c2e821]/10 border-l-4 border-[#c2e821] text-sm">
+[//]: # (<div class="p-3 rounded bg-[#c2e821]/10 border-l-4 border-[#c2e821] text-sm">)
 
-**The trick** 🐇
+[//]: # ()
+[//]: # (**The trick** 🐇)
 
-Don't put them on-chain. **Commit** the script into a tweaked pubkey, and ride the bytes in an **OP_RETURN**:
+[//]: # ()
+[//]: # (Don't put them on-chain. **Commit** the script into a tweaked pubkey, and ride the bytes in an **OP_RETURN**:)
 
-```text
-P_committed = P_emulator
-            + H_tag("ArkScriptHash", script)·G
-```
+[//]: # ()
+[//]: # (```text)
 
-The Emulator runs the script, then signs `P_committed`. The signature *is* the proof it passed.
+[//]: # (P_committed = P_emulator)
 
-</div>
+[//]: # (            + H_tag&#40;"ArkScriptHash", script&#41;·G)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (The Emulator runs the script, then signs `P_committed`. The signature *is* the proof it passed.)
+
+[//]: # ()
+[//]: # (</div>)
 
 </div>
 
@@ -909,7 +917,7 @@ Standard BIP-341 taproot tweaking, with a project tag. Anyone can recompute `P_c
 
 **Only a passing run unlocks it**
 
-The Emulator *can* derive the signing key for `P_committed` (it holds `P_emulator`'s secret + the script) — but, honest signer, it only does so **after** running that script and seeing it pass. Fail → silence.
+The Emulator *can* derive the signing key for `P_committed` (it holds `P_emulator`'s secret + the script). It only does so **after** running that script and seeing it pass.
 
 </div>
 
@@ -1043,7 +1051,7 @@ script length is representative of the full-fill BTC covenant:
 
 [//]: # (Slide 9e — OP_RETURN byte-level: CoinFlip)
 
-# The same envelope, plus app packets
+# CoinFlip script
 
 <div class="text-xs opacity-70 mb-1">
 CoinFlip player-win sweep — <code>vin</code>: 2 escrow VTXOs · <code>vout 0</code>: pot&nbsp;→&nbsp;winner (P2TR) · <code>vout 1</code>: this OP_RETURN (0 sats) · <code>vout 2</code>: P2A anchor
