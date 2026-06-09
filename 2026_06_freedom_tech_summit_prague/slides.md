@@ -1509,64 +1509,107 @@ appended after the predicate in buildVariableOddsWinArkadeScript.
 - Same machinery as Banco's covenant, sized up to a real two-party game.
 -->
 
----
+[//]: # (---)
+[//]: # ()
+[//]: # ([//]: # &#40;Slide 15c — CoinFlip fallback ladder&#41;)
+[//]: # ()
+[//]: # (<div class="text-xs tracking-[0.25em] text-[#f7931a] opacity-80 mb-1">② CAN'T STALL — THE SAFETY NET</div>)
+[//]: # ()
+[//]: # (# The win path needs both reveals — so what if the server goes silent?)
+[//]: # ()
+[//]: # ()
+[//]: # (<div class="text-sm opacity-80 mb-4">)
 
-[//]: # (Slide 15c — CoinFlip fallback ladder)
+[//]: # (The win leaf can't settle without the server's reveal. A fallback ladder makes sure a silent server can never freeze the pot:)
 
-<div class="text-xs tracking-[0.25em] text-[#f7931a] opacity-80 mb-1">② CAN'T STALL — THE SAFETY NET</div>
+[//]: # (</div>)
 
-# The win path needs both reveals — so what if the server goes silent?
+[//]: # ()
+[//]: # (<div class="flex flex-col gap-3">)
 
-<div class="text-sm opacity-80 mb-4">
-The win leaf can't settle without the server's reveal. A fallback ladder makes sure a silent server can never freeze the pot:
-</div>
+[//]: # ()
+[//]: # (<div class="flex items-center gap-4 p-3 rounded-lg bg-[#c2e821]/10 border-l-4 border-[#c2e821]">)
 
-<div class="flex flex-col gap-3">
+[//]: # (  <div class="text-sm font-semibold w-48 shrink-0">Both reveal <span class="opacity-60 font-normal">· happy path</span></div>)
 
-<div class="flex items-center gap-4 p-3 rounded-lg bg-[#c2e821]/10 border-l-4 border-[#c2e821]">
-  <div class="text-sm font-semibold w-48 shrink-0">Both reveal <span class="opacity-60 font-normal">· happy path</span></div>
-  <div class="text-2xl text-[#c2e821] shrink-0">→</div>
-  <div class="text-sm">the <strong>win leaf</strong> settles · pot → winner <span class="opacity-50">· needs server + arkd + Emulator</span></div>
-</div>
+[//]: # (  <div class="text-2xl text-[#c2e821] shrink-0">→</div>)
 
-<div class="flex items-center gap-4 p-3 rounded-lg bg-[#f7931a]/10 border-l-4 border-[#f7931a]">
-  <div class="text-sm font-semibold w-48 shrink-0">Server won't reveal</div>
-  <div class="text-2xl text-[#f7931a] shrink-0">→</div>
-  <div class="text-sm">player takes the <strong>whole pot</strong> via the <strong>forfeit leaf</strong>, after a timelock <span class="opacity-50">· arkd + Emulator only — forfeit checks the <em>player's</em> reveal alone, not the server's</span></div>
-</div>
+[//]: # (  <div class="text-sm">the <strong>win leaf</strong> settles · pot → winner <span class="opacity-50">· needs server + arkd + Emulator</span></div>)
 
-<div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border-l-4 border-[#ef4444]/70">
-  <div class="text-sm font-semibold w-48 shrink-0">arkd &amp; Emulator gone too</div>
-  <div class="text-2xl text-[#ef4444]/80 shrink-0">→</div>
-  <div class="text-sm">unilateral <strong>CSV exit</strong> on-chain · each side reclaims its <strong>own stake</strong> <span class="opacity-50">· needs nobody</span></div>
-</div>
+[//]: # (</div>)
 
-</div>
+[//]: # ()
+[//]: # (<div class="flex items-center gap-4 p-3 rounded-lg bg-[#f7931a]/10 border-l-4 border-[#f7931a]">)
 
-<div class="pt-4 text-xs opacity-70 text-center">
-Withholding never pays: on a <strong>player</strong> win the pot goes to the player either way; on a <strong>house</strong> win, staying silent <em>forfeits</em> it to the player. So the server always reveals.
-</div>
+[//]: # (  <div class="text-sm font-semibold w-48 shrink-0">Server won't reveal</div>)
 
-<!--
-The "can't stall" payoff slide — answers the question the win-leaf slides
-provoke ("the win path needs the server's reveal — what if it withholds?").
-Three rungs, escalating failure (verified in script-v3.ts + the trust model):
-1. Happy path — both reveal → win leaf (leaf 1/2) settles, pot → winner.
-   Signers: arkd + emu_tweaked; server reveals its secret so the predicate
-   can run. (The server/house holds no key; "server reveals" = it publishes
-   creatorSecret as the 0x11 packet.)
-2. Server silent → forfeit. Leaf 3 playerForfeit (CLTV, [player, arkd, emu])
-   or, if arkd censors, leaf 7 playerForfeitExit (CSV on-chain, [player, emu]
-   + SHA256(playerSecret) check). Covenant = atomicSweep → player gets the
-   WHOLE pot. Crucially the forfeit needs ONLY the player's reveal, so a
-   server that withholds creatorSecret can't block it. Player pre-builds this
-   PSBT at /play.
-3. arkd AND emu both unavailable → leaf 8 refundExit (CSV [funder], no
-   covenant): each funder reclaims only its OWN stake on-chain. The lone
-   non-covenant exit — last resort.
-Incentive footnote: withholding is never profitable, so a rational server
-always reveals; the ladder only matters against a broken/malicious one.
--->
+[//]: # (  <div class="text-2xl text-[#f7931a] shrink-0">→</div>)
+
+[//]: # (  <div class="text-sm">player takes the <strong>whole pot</strong> via the <strong>forfeit leaf</strong>, after a timelock <span class="opacity-50">· arkd + Emulator only — forfeit checks the <em>player's</em> reveal alone, not the server's</span></div>)
+
+[//]: # (</div>)
+
+[//]: # ()
+[//]: # (<div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border-l-4 border-[#ef4444]/70">)
+
+[//]: # (  <div class="text-sm font-semibold w-48 shrink-0">arkd &amp; Emulator gone too</div>)
+
+[//]: # (  <div class="text-2xl text-[#ef4444]/80 shrink-0">→</div>)
+
+[//]: # (  <div class="text-sm">unilateral <strong>CSV exit</strong> on-chain · each side reclaims its <strong>own stake</strong> <span class="opacity-50">· needs nobody</span></div>)
+
+[//]: # (</div>)
+
+[//]: # ()
+[//]: # (</div>)
+
+[//]: # ()
+[//]: # (<div class="pt-4 text-xs opacity-70 text-center">)
+
+[//]: # (Withholding never pays: on a <strong>player</strong> win the pot goes to the player either way; on a <strong>house</strong> win, staying silent <em>forfeits</em> it to the player. So the server always reveals.)
+
+[//]: # (</div>)
+
+[//]: # ()
+[//]: # (<!--)
+
+[//]: # (The "can't stall" payoff slide — answers the question the win-leaf slides)
+
+[//]: # (provoke &#40;"the win path needs the server's reveal — what if it withholds?"&#41;.)
+
+[//]: # (Three rungs, escalating failure &#40;verified in script-v3.ts + the trust model&#41;:)
+
+[//]: # (1. Happy path — both reveal → win leaf &#40;leaf 1/2&#41; settles, pot → winner.)
+
+[//]: # (   Signers: arkd + emu_tweaked; server reveals its secret so the predicate)
+
+[//]: # (   can run. &#40;The server/house holds no key; "server reveals" = it publishes)
+
+[//]: # (   creatorSecret as the 0x11 packet.&#41;)
+
+[//]: # (2. Server silent → forfeit. Leaf 3 playerForfeit &#40;CLTV, [player, arkd, emu]&#41;)
+
+[//]: # (   or, if arkd censors, leaf 7 playerForfeitExit &#40;CSV on-chain, [player, emu])
+
+[//]: # (   + SHA256&#40;playerSecret&#41; check&#41;. Covenant = atomicSweep → player gets the)
+
+[//]: # (   WHOLE pot. Crucially the forfeit needs ONLY the player's reveal, so a)
+
+[//]: # (   server that withholds creatorSecret can't block it. Player pre-builds this)
+
+[//]: # (   PSBT at /play.)
+
+[//]: # (3. arkd AND emu both unavailable → leaf 8 refundExit &#40;CSV [funder], no)
+
+[//]: # (   covenant&#41;: each funder reclaims only its OWN stake on-chain. The lone)
+
+[//]: # (   non-covenant exit — last resort.)
+
+[//]: # (Incentive footnote: withholding is never profitable, so a rational server)
+
+[//]: # (always reveals; the ladder only matters against a broken/malicious one.)
+
+[//]: # (-->)
 
 ---
 layout: center
