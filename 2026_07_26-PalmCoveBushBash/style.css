@@ -1,0 +1,13 @@
+/* Satora brand palette — global overrides
+   https://docs.satora.io/design/logo-colors */
+
+:root {
+  --slidev-theme-primary: #a3c410;
+}
+
+/* Headings: seriph's default is too dark on the #0A0908 background.
+   Use Satora lime-light, which is the brand color for dark surfaces. */
+.slidev-layout h1,
+.slidev-layout h2 {
+  color: #c2e821 !important;
+}
