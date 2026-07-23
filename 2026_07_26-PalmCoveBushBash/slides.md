@@ -87,11 +87,12 @@ layoutClass: gap-8
 
 # Lightning in 60 seconds
 
-- On-chain Bitcoin: ~**7 tps**, fees spike, every payment hits the chain. That doesn't buy coffee.
+- On-chain Bitcoin: slow, fees spikes, not private.
 - Lightning's answer: a **payment channel**: one on-chain **2-of-2 multisig** between two parties.
 - Inside it, they re-sign the balance split **off-chain**, as often as they like. Only open + close touch the chain.
-- Don't have a channel to your counterparty? **Route** through others; HTLCs make every hop atomic.
-- Result: instant, cheap, high-volume payments. It genuinely works: WoS, exchanges, most of retail BTC payments today.
+- No direct channel? **Route** through others; HTLCs make every hop atomic.
+ 
+--> Result: instant, cheap, high-volume payments. It works™️: exchanges, most of retail BTC payments today.
 
 ::right::
 
@@ -149,43 +150,13 @@ open/close, online requirement) so the limitations slide lands.
 
 # Where Lightning hurts
 
-<div class="grid grid-cols-2 gap-4 pt-4">
+- 💸 **A channel per user**: Onboarding the next billion = billions of channel opens.
+- 📥 **Inbound liquidity**: You can't *receive* until someone locks coins toward you. New users must buy or beg for inbound capacity.
+- 🔌 **Always online**: receiving needs your node up. Miss a revocation, and a stale-state close can cost you. Hence watchtowers.
+- ⚠️ **Force-close pain**: unhappy path = on-chain tx at the worst time, timelocked funds, fee spikes.
+- 🧭 **Routing failures**: larger payments might fail to find a path.
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-
-**💸 A channel per user**
-
-Every participant needs an on-chain tx to enter (and exit). Onboarding the next billion = billions of channel opens. High fees make small channels uneconomic.
-
-</div>
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-
-**📥 Inbound liquidity**
-
-You can't *receive* until someone locks coins toward you. New users must buy or beg for inbound capacity.
-
-</div>
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-
-**🔌 Always online**
-
-Receiving needs your node up. Miss a revocation, and a stale-state close can cost you. Hence watchtowers.
-
-</div>
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-
-**⚠️ Force-close pain**
-
-Unhappy path = on-chain tx at the worst time, timelocked funds, fee spikes. Routing failures on big payments round it out.
-
-</div>
-
-</div>
-
-<div class="pt-5 text-center text-sm opacity-80">
+<div class="pt-8 text-center text-sm opacity-80">
 In practice most users ended up on <strong>custodial</strong> Lightning wallets, the very thing we were trying to avoid.
 </div>
 
@@ -219,18 +190,17 @@ layoutClass: gap-8
 
 # The promise
 
-- Flip Lightning's model: instead of a channel *per pair*, put **many users inside one shared on-chain output**.
-- Ownership moves **off-chain**, coordinated by an **operator**, but every user keeps a **pre-signed unilateral exit** to L1.
-- What the brochure says:
-  - ⚡ instant, cheap payments, **no inbound liquidity problem**
-  - 📱 **receive while offline**, no node to run
-  - 🧾 no per-user on-chain footprint to get paid
-  - 🔑 still **self-custodial**: exit without permission
-- Spark, Bark and Arkade are three different ways to cash that cheque:
+- Instead of one tx/*2 users*, one tx/**n users**.
+- ⚡ instant, cheap payments, **no inbound liquidity problem**
+- 📱 **receive while offline**, no node to run
+- 🧾 no per-user on-chain footprint to get paid
+- 🔑 still **self-custodial**: exit without permission
+
+--> Spark, Bark and Arkade are three different implementations:
 
 <div class="mt-3 p-4 border-l-4 border-[#c2e821] bg-[#c2e821]/10">
 
-**How little can you trust the operator<br/>while still getting all of the above?**
+How do they work and differ?
 
 </div>
 
@@ -241,6 +211,10 @@ layoutClass: gap-8
 **The axes we'll compare on:**
 
 <div class="grid grid-cols-1 gap-3 pt-4 text-sm">
+
+<div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+⚙️ <strong>Technical implementation</strong>: how does it work under the hood?
+</div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 🔐 <strong>Trust model</strong>: what exactly must be honest?
