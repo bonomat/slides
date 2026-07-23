@@ -22,7 +22,7 @@ toc: false
 ### *Three ways to share a UTXO.*
 
 <div class="pt-8 opacity-80">
-Bitcoin L2s without a soft fork — what they promise, what you trust
+Bitcoin L2s without a soft fork: what they promise, what you trust
 </div>
 
 <div class="pt-12 text-sm opacity-60">
@@ -42,7 +42,7 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Slide — Ark)
+[//]: # (Slide: Ark)
 
 # Ark
 
@@ -59,7 +59,7 @@ class: text-center
 </style>
 
 <!--
-Two of the three protocols literally descend from the Ark paper —
+Two of the three protocols literally descend from the Ark paper,
 and Spark is what you build when you don't want to wait for the flood.
 -->
 
@@ -68,14 +68,14 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 01 — Lightning)
+[//]: # (Breather 01: Lightning)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 01 / 06</div>
 
 # Lightning
 
 <div class="text-lg opacity-70 mt-4 font-normal">
-Bitcoin's first L2 — and where it hurts
+Bitcoin's first L2, and where it hurts
 </div>
 
 ---
@@ -83,15 +83,15 @@ layout: two-cols
 layoutClass: gap-8
 ---
 
-[//]: # (Slide — Lightning in 60 seconds)
+[//]: # (Slide: Lightning in 60 seconds)
 
 # Lightning in 60 seconds
 
 - On-chain Bitcoin: ~**7 tps**, fees spike, every payment hits the chain. That doesn't buy coffee.
-- Lightning's answer: a **payment channel** — one on-chain **2-of-2 multisig** between two parties.
+- Lightning's answer: a **payment channel**: one on-chain **2-of-2 multisig** between two parties.
 - Inside it, they re-sign the balance split **off-chain**, as often as they like. Only open + close touch the chain.
-- Don't have a channel to your counterparty? **Route** through others — HTLCs make every hop atomic.
-- Result: instant, cheap, high-volume payments. It genuinely works — WoS, exchanges, most of retail BTC payments today.
+- Don't have a channel to your counterparty? **Route** through others; HTLCs make every hop atomic.
+- Result: instant, cheap, high-volume payments. It genuinely works: WoS, exchanges, most of retail BTC payments today.
 
 ::right::
 
@@ -118,7 +118,7 @@ layoutClass: gap-8
   <polyline class="ln-arrow" points="190,206 195,210 190,214" />
   <line class="ln-line" x1="285" y1="210" x2="370" y2="210" />
   <polyline class="ln-arrow" points="365,206 370,210 365,214" />
-  <text class="ln-htlc" x="240" y="255" text-anchor="middle">routing: HTLC → HTLC — atomic via one preimage</text>
+  <text class="ln-htlc" x="240" y="255" text-anchor="middle">routing: HTLC → HTLC, atomic via one preimage</text>
 </svg>
 </div>
 
@@ -138,14 +138,14 @@ layoutClass: gap-8
 </style>
 
 <!--
-Keep this fast — most of the room knows Lightning. The point of the
+Keep this fast, most of the room knows Lightning. The point of the
 slide is to set up the *structure* (per-pair channel, on-chain
 open/close, online requirement) so the limitations slide lands.
 -->
 
 ---
 
-[//]: # (Slide — Lightning limitations)
+[//]: # (Slide: Lightning limitations)
 
 # Where Lightning hurts
 
@@ -171,7 +171,7 @@ You can't *receive* until someone locks coins toward you. New users must buy or 
 
 **🔌 Always online**
 
-Receiving needs your node up. Miss a revocation, and a stale-state close can cost you — hence watchtowers.
+Receiving needs your node up. Miss a revocation, and a stale-state close can cost you. Hence watchtowers.
 
 </div>
 
@@ -186,7 +186,7 @@ Unhappy path = on-chain tx at the worst time, timelocked funds, fee spikes. Rout
 </div>
 
 <div class="pt-5 text-center text-sm opacity-80">
-In practice most users ended up on <strong>custodial</strong> Lightning wallets — the very thing we were trying to avoid.
+In practice most users ended up on <strong>custodial</strong> Lightning wallets, the very thing we were trying to avoid.
 </div>
 
 <!--
@@ -200,7 +200,7 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 02 — The L2 promise)
+[//]: # (Breather 02: The L2 promise)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 02 / 06</div>
 
@@ -215,17 +215,17 @@ layout: two-cols
 layoutClass: gap-8
 ---
 
-[//]: # (Slide — The L2 promise)
+[//]: # (Slide: The L2 promise)
 
 # The promise
 
 - Flip Lightning's model: instead of a channel *per pair*, put **many users inside one shared on-chain output**.
-- Ownership moves **off-chain**, coordinated by an **operator** — but every user keeps a **pre-signed unilateral exit** to L1.
+- Ownership moves **off-chain**, coordinated by an **operator**, but every user keeps a **pre-signed unilateral exit** to L1.
 - What the brochure says:
-  - ⚡ instant, cheap payments — **no inbound liquidity problem**
+  - ⚡ instant, cheap payments, **no inbound liquidity problem**
   - 📱 **receive while offline**, no node to run
   - 🧾 no per-user on-chain footprint to get paid
-  - 🔑 still **self-custodial** — exit without permission
+  - 🔑 still **self-custodial**: exit without permission
 - Spark, Bark and Arkade are three different ways to cash that cheque:
 
 <div class="mt-3 p-4 border-l-4 border-[#c2e821] bg-[#c2e821]/10">
@@ -243,19 +243,19 @@ layoutClass: gap-8
 <div class="grid grid-cols-1 gap-3 pt-4 text-sm">
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-🔐 <strong>Trust model</strong> — what exactly must be honest?
+🔐 <strong>Trust model</strong>: what exactly must be honest?
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-🚪 <strong>Exit</strong> — how do you leave without permission?
+🚪 <strong>Exit</strong>: how do you leave without permission?
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-⏰ <strong>Liveness</strong> — what happens if you go offline?
+⏰ <strong>Liveness</strong>: what happens if you go offline?
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
-🛠 <strong>Programmability</strong> — can you build on it?
+🛠 <strong>Programmability</strong>: can you build on it?
 </div>
 
 </div>
@@ -273,14 +273,14 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 03 — Spark)
+[//]: # (Breather 03: Spark)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 03 / 06</div>
 
 # Spark
 
 <div class="text-lg opacity-70 mt-4 font-normal">
-Statechains — "we deleted the old key, trust us"
+Statechains: "we deleted the old key, trust us"
 </div>
 
 ---
@@ -288,13 +288,13 @@ layout: two-cols
 layoutClass: gap-8
 ---
 
-[//]: # (Slide — Spark: how it works)
+[//]: # (Slide: Spark: how it works)
 
 # Spark: key handover
 
-- Built by **Lightspark** on **statechains** — ownership of a UTXO moves by handing over *key material*, not by new transactions.
+- Built by **Lightspark** on **statechains**: ownership of a UTXO moves by handing over *key material*, not by new transactions.
 - A **federation of Spark Operators** (Lightspark, Flashnet, Breez) holds one key share; you hold the other. Address = aggregate key (FROST threshold Schnorr).
-- **Your signature is always required** — operators alone can't move funds.
+- **Your signature is always required**; operators alone can't move funds.
 - Transfer = SE **tweaks its share** so `sender + SE` becomes `receiver + SE`, then **deletes the old share** and signs a new exit tx with a **lower timelock**.
 - No on-chain tx per transfer. No expiry. **Receive while offline.**
 
@@ -354,7 +354,7 @@ timelocks so the newest owner can always confirm before older owners.
 
 ---
 
-[//]: # (Slide — Spark: trust & reality check)
+[//]: # (Slide: Spark: trust & reality check)
 
 # Spark: what you actually trust
 
@@ -366,8 +366,8 @@ timelocks so the newest owner can always confirm before older owners.
 
 - Instant, free Spark→Spark transfers, **no liquidity provisioning**, no rounds, no expiry.
 - Offline receive; no on-chain footprint to get paid.
-- Lightning via SSPs (0.25%) — no channels for the user.
-- **Stablecoins live**: BTKN tokens — **USDT** and **USDB** — plus real adoption: **Wallet of Satoshi**, Theya, Blitz.
+- Lightning via SSPs (0.25%), no channels for the user.
+- **Stablecoins live**: BTKN tokens (**USDT** and **USDB**), plus real adoption: **Wallet of Satoshi**, Theya, Blitz.
 
 </div>
 
@@ -379,14 +379,14 @@ timelocks so the newest owner can always confirm before older owners.
 - If a threshold of operators keeps shares and colludes with a past owner → **your coin can be double-spent**.
 - Federation is 3 named companies. Liveness of the federation required for every transfer.
 - Unilateral exit: beta, chain of txs, uneconomical below **~16k sats**.
-- **No scripts, no contracts** — payments only.
+- **No scripts, no contracts**. Payments only.
 
 </div>
 
 </div>
 
 <div class="pt-4 text-center text-sm opacity-70">
-Statechains trade <em>provable</em> finality for UX. Spark makes that trade very well — but it is the trade.
+Statechains trade <em>provable</em> finality for UX. Spark makes that trade very well, but it is the trade.
 </div>
 
 <!--
@@ -401,14 +401,14 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 04 — Bark)
+[//]: # (Breather 04: Bark)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 04 / 06</div>
 
 # Bark
 
 <div class="text-lg opacity-70 mt-4 font-normal">
-Covenantless Ark — pre-sign everything, trust no one (mostly)
+Covenantless Ark: pre-sign everything, trust no one (mostly)
 </div>
 
 ---
@@ -416,12 +416,12 @@ layout: two-cols
 layoutClass: gap-8
 ---
 
-[//]: # (Slide — Bark: how it works)
+[//]: # (Slide: Bark: how it works)
 
 # Bark: pre-signed trees
 
-- Built by **Second** (Steven Roose, ex-Blockstream). **Mainnet since June 2026** — `ark.second.tech`.
-- A **VTXO** = chain of **pre-signed txs** you can broadcast any time. No covenants, no new opcodes — today's Bitcoin.
+- Built by **Second** (Steven Roose, ex-Blockstream). **Mainnet since June 2026** at `ark.second.tech`.
+- A **VTXO** = chain of **pre-signed txs** you can broadcast any time. No covenants, no new opcodes, works on today's Bitcoin.
 - Every ~1–2h the server runs a **round**: one on-chain tx funds a **quad tree** of pre-signed splits; leaves are user VTXOs. 256 users = 5 txs deep.
 - Tree paths: cooperative **n-of-n MuSig2** (users + server) or timelocked recovery.
 - Old-for-new swap is atomic via **hash-locked forfeits**.
@@ -479,7 +479,7 @@ for Kotlin/Swift/RN/Flutter/Go/Python/WASM; barkd daemon with REST API.
 
 ---
 
-[//]: # (Slide — Bark: expiry, arkoor, the honest costs)
+[//]: # (Slide: Bark: expiry, arkoor, the honest costs)
 
 # Bark: the fine print
 
@@ -489,9 +489,9 @@ for Kotlin/Swift/RN/Flutter/Go/Python/WASM; barkd daemon with REST API.
 
 **The good**
 
-- Board/refresh VTXOs are **trustless** — real unilateral exit, pure Bitcoin txs.
+- Board/refresh VTXOs are **trustless**: real unilateral exit, pure Bitcoin txs.
 - Instant **arkoor** payments off-round; offline receive.
-- Lightning both ways via server as gateway (HTLC-on-VTXO) — no channels.
+- Lightning both ways via server as gateway (HTLC-on-VTXO), no channels.
 - Open protocol, **self-hostable server** (`captaind`), Rust, full SDK.
 
 </div>
@@ -500,10 +500,10 @@ for Kotlin/Swift/RN/Flutter/Go/Python/WASM; barkd daemon with REST API.
 
 **The catch**
 
-- VTXOs **expire (~30 days)** — miss the refresh and the server can sweep. You pay liquidity cost each refresh (~0.07%).
+- VTXOs **expire (~30 days)**: miss the refresh and the server can sweep. You pay liquidity cost each refresh (~0.07%).
 - Refresh needs you **online during a round** (delegation helps phones).
 - **Arkoor** payments: until refreshed, receiver trusts *sender + server don't collude*. Chains of them inherit that.
-- Server must front **all liquidity** for every round — capital-heavy.
+- Server must front **all liquidity** for every round. Capital-heavy.
 
 </div>
 
@@ -527,7 +527,7 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 05 — Arkade)
+[//]: # (Breather 05: Arkade)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 05 / 06</div>
 
@@ -542,13 +542,13 @@ layout: two-cols
 layoutClass: gap-8
 ---
 
-[//]: # (Slide — Arkade: how it works)
+[//]: # (Slide: Arkade: how it works)
 
 # Arkade: Ark, then keep going
 
 - Built by **Ark Labs**. Mainnet quietly since **Aug 2025** (Baltic Honeybadger), public beta **Oct 2025**. Backed by **Tether** ($5.2M seed).
 - Same Ark base as Bark: **VTXOs** in batch outputs, commitment txs, forfeits, expiry + renewal, unilateral exit (**1008-block CSV**).
-- On top: a **Virtual Mempool** — a DAG of chained off-chain txs. Operator co-sign = *preconfirmation*, instantly spendable.
+- On top: a **Virtual Mempool**: a DAG of chained off-chain txs. Operator co-sign = *preconfirmation*, instantly spendable.
 - **Checkpoint txs** + forfeits protect the operator; **intent delegation** renews your VTXOs while you're offline.
 
 ::right::
@@ -605,7 +605,7 @@ layoutClass: gap-8
 </style>
 
 <!--
-Deliberately the same diagram as my Byron Bay talk — Arkade regulars
+Deliberately the same diagram as my Byron Bay talk; Arkade regulars
 have seen this. Batch root is n-of-n MuSig2 of all owners + operator;
 sub-dust VTXOs via OP_RETURN; VTXO states: preconfirmed → settled →
 recoverable → spent.
@@ -613,9 +613,9 @@ recoverable → spent.
 
 ---
 
-[//]: # (Slide — Arkade: programmability)
+[//]: # (Slide: Arkade: programmability)
 
-# Arkade: the differentiator — scripts
+# Arkade: scripts are the differentiator
 
 <div class="grid grid-cols-2 gap-6 pt-2">
 
@@ -623,7 +623,7 @@ recoverable → spent.
 
 **Arkade Script**
 
-Bitcoin Script + **Elements-style introspection opcodes** — `OP_INSPECTOUTPUTVALUE`, `OP_INSPECTINPUTSCRIPTPUBKEY`, …
+Bitcoin Script + **Elements-style introspection opcodes**: `OP_INSPECTOUTPUTVALUE`, `OP_INSPECTINPUTSCRIPTPUBKEY`, …
 
 The script can *see the spending tx* → **covenants, today**: vaults, HTLCs, non-interactive swaps, payment channels *inside* VTXOs.
 
@@ -633,7 +633,7 @@ The script can *see the spending tx* → **covenants, today**: vaults, HTLCs, no
 
 **Enforced by whom?**
 
-Not by L1. The covenant path runs on the **cooperative path**, validated inside a **TEE-isolated signer** — operator can't read your txs (E2E-encrypted), can't skip the script, attests its code remotely.
+Not by L1. The covenant path runs on the **cooperative path**, validated inside a **TEE-isolated signer**. The operator can't read your txs (E2E-encrypted), can't skip the script, attests its code remotely.
 
 Unilateral exit leaf stays **pure Bitcoin Script**.
 
@@ -644,22 +644,22 @@ Unilateral exit leaf stays **pure Bitcoin Script**.
 <div class="grid grid-cols-3 gap-3 pt-4 text-sm">
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-💵 <strong>Arkade Assets</strong> — issued assets on VTXOs; USDT coming (Tether-backed).
+💵 <strong>Arkade Assets</strong>: issued assets on VTXOs; USDT coming (Tether-backed).
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-⚡ <strong>Lightning</strong> — Boltz submarine swaps with virtual HTLCs, both directions.
+⚡ <strong>Lightning</strong>: Boltz submarine swaps with virtual HTLCs, both directions.
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-⚠️ <strong>Honest cons</strong> — single operator, TEE trust, expiry/renewal burden, tooling still alpha.
+⚠️ <strong>Honest cons</strong>: single operator, TEE trust, expiry/renewal burden, tooling still alpha.
 </div>
 
 </div>
 
 <!--
 This is the same Introspector/emulator story from my Prague and Byron
-talks — a co-signer that only signs if the committed script evaluates
+talks: a co-signer that only signs if the committed script evaluates
 true. Contract catalog in the docs: escrow, HTLC, Spilman + Dryja-Poon
 channels, chain swaps, non-interactive swaps (Banco). If a TEE-skeptic
 asks: yes, SGX-style attestation is the trust anchor; exit path never
@@ -671,7 +671,7 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 06 — Head to head)
+[//]: # (Breather 06: Head to head)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 06 / 06</div>
 
@@ -679,7 +679,7 @@ class: text-center
 
 ---
 
-[//]: # (Slide — the big table)
+[//]: # (Slide: the big table)
 
 # The scorecard
 
@@ -690,11 +690,11 @@ class: text-center
 | **Design** | Statechains, key handover | Ark, covenantless, pre-signed trees | Ark + virtual mempool + scripts |
 | **Operator** | Federation: Lightspark, Flashnet, Breez | Single server, **self-hostable** | Single operator (Ark Labs) + TEE signer |
 | **You trust…** | threshold *deleted* old key shares (unverifiable) | trustless once refreshed; arkoor: sender+server no-collusion | operator/TEE won't co-sign conflicts |
-| **Expiry** | none — leaves live forever | **~30 days**, refresh in rounds | batch expiry, renew via batch swap / delegation |
+| **Expiry** | none, leaves live forever | **~30 days**, refresh in rounds | batch expiry, renew via batch swap / delegation |
 | **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV | unroll tree + chain, 1008-block CSV |
 | **Offline receive** | ✅ fully | ✅ arkoor (trust until refresh) | ✅ preconfirmed |
 | **Lightning** | via SSPs, 0.25% | server is the LN gateway | Boltz swaps, virtual HTLCs |
-| **Assets** | BTKN: **USDT + USDB live** | — | Arkade Assets, USDT planned |
+| **Assets** | BTKN: **USDT + USDB live** | none | Arkade Assets, USDT planned |
 | **Programmability** | none | Bitcoin Script only | **introspection covenants** |
 | **Mainnet** | beta since Apr 2025 · WoS, Theya, Blitz | since Jun 2026 · Noah, BTCPay | Aug 2025 / beta Oct 2025 · Boltz, Bull Bitcoin |
 
@@ -707,7 +707,7 @@ class: text-center
 </style>
 
 <!--
-Slow down here — this is the slide people photograph.
+Slow down here, this is the slide people photograph.
 Point out the diagonal: each column is strongest exactly where the
 others are weakest. Spark = UX + stablecoins, Bark = sovereignty,
 Arkade = programmability.
@@ -715,7 +715,7 @@ Arkade = programmability.
 
 ---
 
-[//]: # (Slide — same dream, three bets)
+[//]: # (Slide: same dream, three bets)
 
 # Same dream, three bets
 
@@ -725,7 +725,7 @@ Arkade = programmability.
 
 **Spark bets on UX**
 
-If the federation behaves, you get the best payments experience on Bitcoin — free, instant, offline, with real stablecoins. The cost: finality you can't prove.
+If the federation behaves, you get the best payments experience on Bitcoin: free, instant, offline, with real stablecoins. The cost: finality you can't prove.
 
 </div>
 
@@ -733,7 +733,7 @@ If the federation behaves, you get the best payments experience on Bitcoin — f
 
 **Bark bets on Bitcoin**
 
-Pure pre-signed transactions, real exits, self-hostable — and a roadmap that gets *better* if CTV/CSFS activate. The cost: expiry, rounds, liveness.
+Pure pre-signed transactions, real exits, self-hostable, and a roadmap that gets *better* if CTV/CSFS activate. The cost: expiry, rounds, liveness.
 
 </div>
 
@@ -741,7 +741,7 @@ Pure pre-signed transactions, real exits, self-hostable — and a roadmap that g
 
 **Arkade bets on builders**
 
-Covenants and assets today via an emulated script layer. If you want to *build* — swaps, vaults, channels — this is the sandbox. The cost: operator + TEE trust.
+Covenants and assets today via an emulated script layer. If you want to *build* (swaps, vaults, channels), this is the sandbox. The cost: operator + TEE trust.
 
 </div>
 
@@ -764,7 +764,7 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Slide — closing)
+[//]: # (Slide: closing)
 
 # Questions?
 
