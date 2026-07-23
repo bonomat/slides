@@ -943,6 +943,8 @@ layoutClass: gap-8
 - On top: a **Virtual Mempool**: a DAG of chained off-chain txs. Operator co-sign = *preconfirmation*, instantly
   spendable.
 - **Checkpoint txs** + forfeits protect the operator; **intent delegation** renews your VTXOs while you're offline.
+- **Arkade Script**: Bitcoin Script + introspection opcodes → **covenants**: vaults, swaps, channels.
+- **Arkade Assets**: issued assets living on VTXOs; **USDT** coming (Tether-backed).
 
 ::right::
 
@@ -1006,56 +1008,47 @@ recoverable → spent.
 
 ---
 
-[//]: # (Slide: Arkade: programmability)
+[//]: # (Slide: Arkade: the fine print)
 
-# Arkade: scripts are the differentiator
+# Arkade: the fine print
 
-<div class="grid grid-cols-2 gap-6 pt-2">
+<div class="grid grid-cols-2 gap-6 pt-4">
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**Arkade Script**
+**The good**
 
-Bitcoin Script + **Elements-style introspection opcodes**: `OP_INSPECTOUTPUTVALUE`, `OP_INSPECTINPUTSCRIPTPUBKEY`, …
-
-The script can *see the spending tx* → **covenants, today**: vaults, HTLCs, non-interactive swaps, payment channels
-*inside* VTXOs.
-
-</div>
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
-
-**Enforced by whom?**
-
-Not by L1. The covenant path runs on the **cooperative path**, validated inside a **TEE-isolated signer**. The operator
-can't read your txs (E2E-encrypted), can't skip the script, attests its code remotely.
-
-Unilateral exit leaf stays **pure Bitcoin Script**.
+- Everything Ark gives: instant preconfirmed payments, offline receive, unilateral exit.
+- **Covenants today**: Arkade Script sees the spending tx; vaults, non-interactive swaps, channels *inside* VTXOs.
+- **Assets on VTXOs**, same exit guarantees; USDT coming.
+- Lightning via **independent swap providers**: Satora, Boltz.
 
 </div>
 
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
+
+**The catch**
+
+- **Single operator** (Ark Labs); preconfirmations trust it not to co-sign a conflict.
+- Covenants are **not L1-enforced**: they run in a **TEE co-signer** (the Emulator, attested)
+- Same Ark **expiry + renewal** burden (delegation helps).
+
 </div>
 
-<div class="grid grid-cols-3 gap-3 pt-4 text-sm">
-
-<div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-💵 <strong>Arkade Assets</strong>: issued assets on VTXOs; USDT coming (Tether-backed).
 </div>
 
-<div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-⚡ <strong>Lightning</strong>: Satora/Boltz submarine swaps with HTLCs, both directions.
-</div>
+<div class="pt-4 p-3 border-l-4 border-[#f7931a] bg-[#f7931a]/10 text-sm">
 
-<div class="p-3 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-⚠️ <strong>Honest cons</strong>: single operator, TEE trust, expiry/renewal burden, tooling still alpha.
-</div>
+Focused on builders: a programmable execution layer on Bitcoin.
 
 </div>
 
 <!--
 This is the same Introspector/emulator story from my Prague and Byron
 talks: a co-signer that only signs if the committed script evaluates
-true. Contract catalog in the docs: escrow, HTLC, Spilman + Dryja-Poon
+true. Arkade Script = Bitcoin Script + Elements-style introspection
+opcodes (OP_INSPECTOUTPUTVALUE, OP_INSPECTINPUTSCRIPTPUBKEY, ...).
+Contract catalog in the docs: escrow, HTLC, Spilman + Dryja-Poon
 channels, chain swaps, non-interactive swaps (Banco). If a TEE-skeptic
 asks: yes, SGX-style attestation is the trust anchor; exit path never
 depends on it.
@@ -1080,18 +1073,18 @@ class: text-center
 
 <div class="compare-table text-xs pt-2">
 
-|                     | **Spark**                                                 | **Bark**                                                     | **Arkade**                                             |
-|---------------------|-----------------------------------------------------------|--------------------------------------------------------------|--------------------------------------------------------|
-| **Design**          | Statechains, key handover                                 | Ark, pre-signed trees, no covenants                          | Ark + virtual mempool + scripts                        |
-| **Operator**        | Federation: Lightspark, Flashnet, Breez                   | Single server, **self-hostable**                             | Single operator (Ark Labs) + TEE signer                |
-| **You trust…**      | threshold *deleted* old key shares (unverifiable)         | trustless once refreshed; arkoor: sender+server no-collusion | operator/TEE won't co-sign conflicts                   |
-| **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | batch expiry, renew via batch swap / delegation        |
-| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                    |
-| **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                         |
-| **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
-| **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                            |
-| **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                            |
-| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin |
+|                     | **Spark**                                                 | **Bark**                                                     | **Arkade**                                                     |
+|---------------------|-----------------------------------------------------------|--------------------------------------------------------------|----------------------------------------------------------------|
+| **Design**          | Statechains, key handover                                 | Ark, pre-signed trees, no covenants                          | Ark + virtual mempool + scripts                                |
+| **Operator**        | Federation: Lightspark, Flashnet, Breez                   | Single server, **self-hostable**                             | Single operator (Ark Labs) + TEE signer                        |
+| **You trust…**      | threshold *deleted* old key shares (unverifiable)         | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion |
+| **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | batch expiry, renew via batch swap / delegation                |
+| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                            |
+| **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                                 |
+| **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                             |
+| **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                                    |
+| **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                                    |
+| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin         |
 
 </div>
 
