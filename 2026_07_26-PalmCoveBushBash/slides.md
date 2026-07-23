@@ -91,7 +91,7 @@ layoutClass: gap-8
 - Lightning's answer: a **payment channel**: one on-chain **2-of-2 multisig** between two parties.
 - Inside it, they re-sign the balance split **off-chain**, as often as they like. Only open + close touch the chain.
 - No direct channel? **Route** through others; HTLCs make every hop atomic.
- 
+
 --> Result: instant, cheap, high-volume payments. It works™️: exchanges, most of retail BTC payments today.
 
 ::right::
@@ -151,8 +151,10 @@ open/close, online requirement) so the limitations slide lands.
 # Where Lightning hurts
 
 - 💸 **A channel per user**: Onboarding the next billion = billions of channel opens.
-- 📥 **Inbound liquidity**: You can't *receive* until someone locks coins toward you. New users must buy or beg for inbound capacity.
-- 🔌 **Always online**: receiving needs your node up. Miss a revocation, and a stale-state close can cost you. Hence watchtowers.
+- 📥 **Inbound liquidity**: You can't *receive* until someone locks coins toward you. New users must buy or beg for
+  inbound capacity.
+- 🔌 **Always online**: receiving needs your node up. Miss a revocation, and a stale-state close can cost you. Hence
+  watchtowers.
 - ⚠️ **Force-close pain**: unhappy path = on-chain tx at the worst time, timelocked funds, fee spikes.
 - 🧭 **Routing failures**: larger payments might fail to find a path.
 
@@ -454,7 +456,8 @@ layoutClass: gap-8
 - **Your signature is always required.**
 - Transfer: SE **tweaks its share**, **deletes the old one**, signs a new exit tx with a **lower timelock**.
 - No on-chain tx. **Offline receive.**
-- **No expiry**: timelocks are *relative*, and the root's operator keys are **destroyed**. Nobody can ever sweep the UTXO.
+- **No expiry**: timelocks are *relative*, and the root's operator keys are **destroyed**. Nobody can ever sweep the
+  UTXO.
 
 ::right::
 
@@ -676,7 +679,8 @@ layoutClass: gap-8
 - The **Ark server** periodically broadcasts **round tx** that funds a **shared output**, fronting the liquidity.
 - This output splits into a **pre-signed tree** (**VTXOs**: virtual UTXOs owned by users).
 - Every tree node: cooperative **n-of-n** (everyone below + server) or **timelocked recovery**.
-- VTXOs **expire**: after the round's lifetime the server **sweeps** the shared output to recover its liquidity; users **refresh** into a new round before that.
+- VTXOs **expire**: after the round's lifetime the server **sweeps** the shared output to recover its liquidity; users *
+  *refresh** into a new round before that.
 - Old-for-new swap is atomic via **hash-locked forfeits**.
 
 ::right::
@@ -847,17 +851,21 @@ interactivity, not this capital float.
 
 # Bark: Ark on mainnet
 
-- **Second** (Steven Roose, ex-Blockstream), Rust, $5.1M raised.
-- First public Ark mainnet: **9 June 2026**, server `ark.second.tech`.
-- **Covenantless** ("clArk"): each round's tree is signed interactively with **MuSig2**; be online or **delegate** your refresh.
-- Rounds every **~1–2 h**; quad trees keep exits shallow.
-- Between rounds: instant **arkoor** sends, statechain-flavored (server co-signs, you trust it not to double-sign until you refresh).
-- Ships today: `bark` CLI + SDK (Kotlin, Swift, RN, Flutter, Go, Python, WASM), `barkd` daemon, self-hostable server `captaind`, BTCPay plugin, Noah wallet.
+- **Second** (Steven, Erik, Neil, ex-Blockstream).
+- First public Ark mainnet: **June 2026**.
+- No covenants needed: each round's tree is **signed interactively** by all participants; be online or **delegate** your
+  refresh.
+- Rounds roughly **hourly**, VTXO lifetime **~30 days** (both server-configurable); quad trees instead of binary trees,
+  keep exits shallow.
+- Payments = **arkoor** (*"Ark out-of-round"*): instant, server co-signs, statechain-flavored until refreshed.
+- In production: Arkee, Bark, Noah
 
 <!--
-The arkoor line is the "Bark = Ark + statechain" claim from the family
-tree slide, paid off. Signet demo runs 30s rounds; mainnet docs warn
-"don't store more than you're willing to lose", start small.
+Terminology note: the docs dropped the old "clArk / covenantless Ark"
+branding; it's just the Ark protocol, implemented by bark (client) and
+captaind (server). The arkoor line is the "Bark = Ark + statechain"
+claim from the family tree slide, paid off. Wallet restore needs
+mnemonic AND a backup of the wallet's data directory.
 -->
 
 ---
@@ -873,7 +881,7 @@ tree slide, paid off. Signet demo runs 30s rounds; mainnet docs warn
 **The good**
 
 - Board/refresh VTXOs are **trustless**: real unilateral exit, pure Bitcoin txs.
-- Instant **arkoor** payments off-round; offline receive.
+- Instant **arkoor** payments; offline receive.
 - Lightning both ways via server as gateway (HTLC-on-VTXO), no channels.
 - Open protocol, **self-hostable server** (`captaind`), Rust, full SDK.
 
@@ -883,10 +891,11 @@ tree slide, paid off. Signet demo runs 30s rounds; mainnet docs warn
 
 **The catch**
 
-- VTXOs **expire (~30 days)**: miss the refresh and the server can sweep. You pay liquidity cost each refresh (~0.07%).
-- Refresh needs you **online during a round** (delegation helps phones).
-- **Arkoor** payments: until refreshed, receiver trusts *sender + server don't collude*. Chains of them inherit that.
-- Server must front **all liquidity** for every round. Capital-heavy.
+- VTXOs **expire (~30 days)**: Liquidity cost each refresh (~0.07%).
+- Refresh needs **online during a round** (can be delegated).
+- **Arkoor** payments: receiver trusts *sender + server don't collude*.
+- Server is also the **only Lightning/swap provider**: every LN payment routes through it; LN receive trusts a server
+  key deletion.
 
 </div>
 
@@ -894,7 +903,7 @@ tree slide, paid off. Signet demo runs 30s rounds; mainnet docs warn
 
 <div class="pt-4 p-3 border-l-4 border-[#f7931a] bg-[#f7931a]/10 text-sm">
 
-**The bet:** ship covenantless today; when **CTV + CSFS** activate, rounds go non-interactive and refresh works while you sleep (Roose's *hArk* / *Erk* designs). Bark is also a lobbying vehicle for the soft fork.
+Focused on fast and easy payments.
 
 </div>
 
@@ -927,11 +936,12 @@ layoutClass: gap-8
 
 [//]: # (Slide: Arkade: how it works)
 
-# Arkade: Ark, then keep going
+# Arkade: Ark + Statechain + extended Scripts
 
-- Built by **Ark Labs**. Mainnet quietly since **Aug 2025** (Baltic Honeybadger), public beta **Oct 2025**. Backed by **Tether** ($5.2M seed).
-- Same Ark base as Bark: **VTXOs** in batch outputs, commitment txs, forfeits, expiry + renewal, unilateral exit (**1008-block CSV**).
-- On top: a **Virtual Mempool**: a DAG of chained off-chain txs. Operator co-sign = *preconfirmation*, instantly spendable.
+- Built by **Ark Labs**. Mainnet quietly since **Aug 2025** (Baltic Honeybadger), public beta **Oct 2025**.
+- Same Ark base as Bark: **VTXOs** in batch outputs, commitment txs, forfeits, expiry + renewal, unilateral exit.
+- On top: a **Virtual Mempool**: a DAG of chained off-chain txs. Operator co-sign = *preconfirmation*, instantly
+  spendable.
 - **Checkpoint txs** + forfeits protect the operator; **intent delegation** renews your VTXOs while you're offline.
 
 ::right::
@@ -1008,7 +1018,8 @@ recoverable → spent.
 
 Bitcoin Script + **Elements-style introspection opcodes**: `OP_INSPECTOUTPUTVALUE`, `OP_INSPECTINPUTSCRIPTPUBKEY`, …
 
-The script can *see the spending tx* → **covenants, today**: vaults, HTLCs, non-interactive swaps, payment channels *inside* VTXOs.
+The script can *see the spending tx* → **covenants, today**: vaults, HTLCs, non-interactive swaps, payment channels
+*inside* VTXOs.
 
 </div>
 
@@ -1016,7 +1027,8 @@ The script can *see the spending tx* → **covenants, today**: vaults, HTLCs, no
 
 **Enforced by whom?**
 
-Not by L1. The covenant path runs on the **cooperative path**, validated inside a **TEE-isolated signer**. The operator can't read your txs (E2E-encrypted), can't skip the script, attests its code remotely.
+Not by L1. The covenant path runs on the **cooperative path**, validated inside a **TEE-isolated signer**. The operator
+can't read your txs (E2E-encrypted), can't skip the script, attests its code remotely.
 
 Unilateral exit leaf stays **pure Bitcoin Script**.
 
@@ -1031,7 +1043,7 @@ Unilateral exit leaf stays **pure Bitcoin Script**.
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-⚡ <strong>Lightning</strong>: Boltz submarine swaps with virtual HTLCs, both directions.
+⚡ <strong>Lightning</strong>: Satora/Boltz submarine swaps with HTLCs, both directions.
 </div>
 
 <div class="p-3 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
@@ -1068,18 +1080,18 @@ class: text-center
 
 <div class="compare-table text-xs pt-2">
 
-|  | **Spark** | **Bark** | **Arkade** |
-| --- | --- | --- | --- |
-| **Design** | Statechains, key handover | Ark, covenantless, pre-signed trees | Ark + virtual mempool + scripts |
-| **Operator** | Federation: Lightspark, Flashnet, Breez | Single server, **self-hostable** | Single operator (Ark Labs) + TEE signer |
-| **You trust…** | threshold *deleted* old key shares (unverifiable) | trustless once refreshed; arkoor: sender+server no-collusion | operator/TEE won't co-sign conflicts |
-| **Expiry** | none, leaves live forever | **~30 days**, refresh in rounds | batch expiry, renew via batch swap / delegation |
-| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV | unroll tree + chain, 1008-block CSV |
-| **Offline receive** | ✅ fully | ✅ arkoor (trust until refresh) | ✅ preconfirmed |
-| **Lightning** | via SSPs, 0.25% | server is the LN gateway | Boltz swaps, virtual HTLCs |
-| **Assets** | BTKN: **USDT + USDB live** | none | Arkade Assets, USDT planned |
-| **Programmability** | none | Bitcoin Script only | **introspection covenants** |
-| **Mainnet** | beta since Apr 2025 · WoS, Theya, Blitz | since Jun 2026 · Noah, BTCPay | Aug 2025 / beta Oct 2025 · Boltz, Bull Bitcoin |
+|                     | **Spark**                                                 | **Bark**                                                     | **Arkade**                                             |
+|---------------------|-----------------------------------------------------------|--------------------------------------------------------------|--------------------------------------------------------|
+| **Design**          | Statechains, key handover                                 | Ark, pre-signed trees, no covenants                          | Ark + virtual mempool + scripts                        |
+| **Operator**        | Federation: Lightspark, Flashnet, Breez                   | Single server, **self-hostable**                             | Single operator (Ark Labs) + TEE signer                |
+| **You trust…**      | threshold *deleted* old key shares (unverifiable)         | trustless once refreshed; arkoor: sender+server no-collusion | operator/TEE won't co-sign conflicts                   |
+| **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | batch expiry, renew via batch swap / delegation        |
+| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                    |
+| **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                         |
+| **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
+| **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                            |
+| **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                            |
+| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin |
 
 </div>
 
@@ -1108,7 +1120,8 @@ Arkade = programmability.
 
 **Spark bets on UX**
 
-If the federation behaves, you get the best payments experience on Bitcoin: free, instant, offline, with real stablecoins. The cost: finality you can't prove.
+If the federation behaves, you get the best payments experience on Bitcoin: free, instant, offline, with real
+stablecoins. The cost: finality you can't prove.
 
 </div>
 
@@ -1116,7 +1129,8 @@ If the federation behaves, you get the best payments experience on Bitcoin: free
 
 **Bark bets on Bitcoin**
 
-Pure pre-signed transactions, real exits, self-hostable, and a roadmap that gets *better* if CTV/CSFS activate. The cost: expiry, rounds, liveness.
+Pure pre-signed transactions, real exits, self-hostable, and a roadmap that gets *better* if CTV/CSFS activate. The
+cost: expiry, rounds, liveness.
 
 </div>
 
@@ -1124,7 +1138,8 @@ Pure pre-signed transactions, real exits, self-hostable, and a roadmap that gets
 
 **Arkade bets on builders**
 
-Covenants and assets today via an emulated script layer. If you want to *build* (swaps, vaults, channels), this is the sandbox. The cost: operator + TEE trust.
+Covenants and assets today via an emulated script layer. If you want to *build* (swaps, vaults, channels), this is the
+sandbox. The cost: operator + TEE trust.
 
 </div>
 
