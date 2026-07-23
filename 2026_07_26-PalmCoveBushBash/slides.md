@@ -42,6 +42,32 @@ layout: center
 class: text-center
 ---
 
+[//]: # (Slide — Ark)
+
+# Ark
+
+<img src="./images/ark.png" class="ark-img" alt="Noah's Ark" />
+
+<style>
+.ark-img {
+  display: block;
+  margin: 24px auto 0;
+  max-height: 380px;
+  width: auto;
+  border-radius: 8px;
+}
+</style>
+
+<!--
+Two of the three protocols literally descend from the Ark paper —
+and Spark is what you build when you don't want to wait for the flood.
+-->
+
+---
+layout: center
+class: text-center
+---
+
 [//]: # (Breather 01 — Lightning)
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 01 / 06</div>
