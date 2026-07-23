@@ -247,9 +247,192 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 03: Spark)
+[//]: # (Breather 03: Technical comparison)
 
-<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 03 / 06</div>
+<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 03 / 07</div>
+
+# Technical Comparison
+
+<div class="text-lg opacity-70 mt-4 font-normal">
+Same promise, three architectures
+</div>
+
+---
+
+[//]: # (Slide: Family tree)
+
+# The family tree
+
+<svg viewBox="0 0 760 340" class="tree-svg" xmlns="http://www.w3.org/2000/svg">
+  <line class="tr-line" x1="210" y1="104" x2="140" y2="216" />
+  <line class="tr-line" x1="210" y1="104" x2="380" y2="216" />
+  <line class="tr-line" x1="210" y1="104" x2="620" y2="216" />
+  <line class="tr-line" x1="550" y1="104" x2="380" y2="216" />
+  <line class="tr-line" x1="550" y1="104" x2="620" y2="216" />
+  <rect class="tr-parent" x="120" y="40" width="180" height="64" rx="8" />
+  <text class="tr-pt" x="210" y="66" text-anchor="middle">Statechains</text>
+  <text class="tr-ps" x="210" y="88" text-anchor="middle">ownership = key handover</text>
+  <rect class="tr-parent" x="460" y="40" width="180" height="64" rx="8" />
+  <text class="tr-pt" x="550" y="66" text-anchor="middle">Ark</text>
+  <text class="tr-ps" x="550" y="88" text-anchor="middle">shared UTXO + pre-signed exit</text>
+  <rect class="tr-child" x="60" y="216" width="160" height="64" rx="8" />
+  <text class="tr-ct" x="140" y="242" text-anchor="middle">Spark</text>
+  <text class="tr-cs" x="140" y="264" text-anchor="middle">pure statechain</text>
+  <rect class="tr-child" x="300" y="216" width="160" height="64" rx="8" />
+  <text class="tr-ct" x="380" y="242" text-anchor="middle">Bark</text>
+  <text class="tr-cs" x="380" y="264" text-anchor="middle">Ark + statechain</text>
+  <rect class="tr-child" x="540" y="216" width="160" height="64" rx="8" />
+  <text class="tr-ct" x="620" y="242" text-anchor="middle">Arkade</text>
+  <text class="tr-cs" x="620" y="264" text-anchor="middle">Ark + statechain</text>
+  <text class="tr-annot" x="380" y="325" text-anchor="middle">Bark and Arkade: Ark rounds for settlement, statechain-style handover for instant sends</text>
+</svg>
+
+<style>
+.tree-svg { display: block; width: 100%; max-width: 960px; height: auto; margin: 8px auto 0; font-family: 'Geist', -apple-system, sans-serif; }
+.tree-svg .tr-line { stroke: #c2e821; stroke-width: 1.5; }
+.tree-svg .tr-parent { fill: rgba(194,232,33,0.12); stroke: #c2e821; stroke-width: 1.5; }
+.tree-svg .tr-pt { fill: #c2e821; font-size: 18px; font-weight: 700; }
+.tree-svg .tr-ps { fill: rgba(255,255,255,0.6); font-size: 10px; }
+.tree-svg .tr-child { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.tree-svg .tr-ct { fill: #000; font-size: 16px; font-weight: 700; }
+.tree-svg .tr-cs { fill: #737373; font-size: 10.5px; }
+.tree-svg .tr-annot { fill: rgba(255,255,255,0.6); font-size: 11px; font-style: italic; }
+</style>
+
+<!--
+The joke writes itself: Ark is ark. The useful insight: Spark is the
+only pure statechain. Bark and Arkade both settle through Ark rounds
+(batch output, pre-signed exit trees) but their instant payments
+(arkoor / preconfirmations) are statechain-flavored: the server co-signs
+a handover and you trust it not to sign a conflicting one until the
+next round settles you. So the real spectrum is how much statechain
+trust you hold, and for how long.
+-->
+
+---
+
+[//]: # (Slide: Statechains explained)
+
+# Statechains: how Spark moves coins
+
+<svg viewBox="0 0 960 400" class="sc-svg" xmlns="http://www.w3.org/2000/svg">
+  <rect class="sc-utxo" x="30" y="60" width="250" height="96" rx="10" />
+  <text class="sc-ut" x="155" y="98" text-anchor="middle">On-chain UTXO</text>
+  <text class="sc-us" x="155" y="120" text-anchor="middle">2-of-2: owner + SE share</text>
+  <text class="sc-us" x="155" y="138" text-anchor="middle">root keys destroyed: unsweepable</text>
+  <line class="sc-hand" x1="90" y1="156" x2="70" y2="238" />
+  <line class="sc-hand" x1="155" y1="156" x2="155" y2="238" />
+  <line class="sc-hand" x1="220" y1="156" x2="240" y2="238" />
+  <circle class="sc-leaf" cx="70" cy="266" r="28" />
+  <text class="sc-lt" x="70" y="263" text-anchor="middle">leaf</text>
+  <text class="sc-ls" x="70" y="277" text-anchor="middle">50k</text>
+  <circle class="sc-leaf" cx="155" cy="266" r="28" />
+  <text class="sc-lt" x="155" y="263" text-anchor="middle">leaf</text>
+  <text class="sc-ls" x="155" y="277" text-anchor="middle">30k</text>
+  <circle class="sc-leaf now" cx="240" cy="266" r="28" />
+  <text class="sc-lt" x="240" y="263" text-anchor="middle">leaf</text>
+  <text class="sc-ls" x="240" y="277" text-anchor="middle">20k</text>
+  <text class="sc-annot" x="155" y="330" text-anchor="middle">split off-chain into a tree of leaves;</text>
+  <text class="sc-annot" x="155" y="348" text-anchor="middle">leaves split &amp; merge on the fly</text>
+  <line class="sc-link" x1="268" y1="256" x2="420" y2="72" />
+  <line class="sc-link" x1="268" y1="266" x2="420" y2="196" />
+  <line class="sc-link" x1="268" y1="276" x2="420" y2="320" />
+  <text class="sc-ht" x="330" y="250" text-anchor="middle">one leaf's life:</text>
+  <rect class="sc-owner" x="420" y="40" width="180" height="64" rx="8" />
+  <text class="sc-ot" x="510" y="66" text-anchor="middle">Alice + SE</text>
+  <text class="sc-os" x="510" y="86" text-anchor="middle">deposit</text>
+  <rect class="sc-exit old" x="660" y="40" width="270" height="64" rx="8" />
+  <text class="sc-et" x="795" y="66" text-anchor="middle">exit tx: Alice, timelock 400</text>
+  <text class="sc-ed" x="795" y="86" text-anchor="middle">🗑 old SE share deleted</text>
+  <line class="sc-strike" x1="672" y1="72" x2="918" y2="72" />
+  <line class="sc-hand" x1="510" y1="104" x2="510" y2="164" />
+  <polyline class="sc-arrow" points="506,159 510,164 514,159" />
+  <text class="sc-ht" x="524" y="140" text-anchor="start">handover: tweak + delete</text>
+  <rect class="sc-owner" x="420" y="164" width="180" height="64" rx="8" />
+  <text class="sc-ot" x="510" y="190" text-anchor="middle">Bob + SE</text>
+  <text class="sc-os" x="510" y="210" text-anchor="middle">instant, off-chain</text>
+  <rect class="sc-exit old" x="660" y="164" width="270" height="64" rx="8" />
+  <text class="sc-et" x="795" y="190" text-anchor="middle">exit tx: Bob, timelock 300</text>
+  <text class="sc-ed" x="795" y="210" text-anchor="middle">🗑 old SE share deleted</text>
+  <line class="sc-strike" x1="672" y1="196" x2="918" y2="196" />
+  <line class="sc-hand" x1="510" y1="228" x2="510" y2="288" />
+  <polyline class="sc-arrow" points="506,283 510,288 514,283" />
+  <text class="sc-ht" x="524" y="264" text-anchor="start">handover: tweak + delete</text>
+  <rect class="sc-owner now" x="420" y="288" width="180" height="64" rx="8" />
+  <text class="sc-ot" x="510" y="314" text-anchor="middle">Carol + SE</text>
+  <text class="sc-os" x="510" y="334" text-anchor="middle">current owner</text>
+  <rect class="sc-exit now" x="660" y="288" width="270" height="64" rx="8" />
+  <text class="sc-et now" x="795" y="314" text-anchor="middle">exit tx: Carol, timelock 200</text>
+  <text class="sc-ed now" x="795" y="334" text-anchor="middle">lowest timelock exits first</text>
+  <text class="sc-annot" x="480" y="390" text-anchor="middle">the coin never moves; who can sign for it moves, and the newest owner always wins the exit race</text>
+</svg>
+
+<style>
+.sc-svg { display: block; width: 100%; max-width: 940px; height: auto; margin: 8px auto 0; font-family: 'Geist', -apple-system, sans-serif; }
+.sc-svg .sc-utxo { fill: rgba(194,232,33,0.12); stroke: #c2e821; stroke-width: 2; }
+.sc-svg .sc-ut { fill: #c2e821; font-size: 18px; font-weight: 700; }
+.sc-svg .sc-us { fill: rgba(255,255,255,0.65); font-size: 12px; }
+.sc-svg .sc-link { stroke: rgba(194,232,33,0.35); stroke-width: 1; stroke-dasharray: 4 4; }
+.sc-svg .sc-leaf { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.sc-svg .sc-leaf.now { stroke: #c2e821; stroke-width: 2; stroke-dasharray: none; }
+.sc-svg .sc-lt { fill: #000; font-size: 12px; font-weight: 700; }
+.sc-svg .sc-ls { fill: #737373; font-size: 10px; }
+.sc-svg .sc-owner { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.sc-svg .sc-owner.now { stroke: #c2e821; stroke-width: 2; stroke-dasharray: none; }
+.sc-svg .sc-ot { fill: #000; font-size: 15px; font-weight: 700; }
+.sc-svg .sc-os { fill: #737373; font-size: 11px; }
+.sc-svg .sc-exit { fill: none; }
+.sc-svg .sc-exit.old { stroke: rgba(255,255,255,0.25); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.sc-svg .sc-exit.now { fill: rgba(247,147,26,0.1); stroke: #f7931a; stroke-width: 2; }
+.sc-svg .sc-et { fill: rgba(255,255,255,0.5); font-size: 13px; font-weight: 600; }
+.sc-svg .sc-et.now { fill: #f7931a; }
+.sc-svg .sc-ed { fill: rgba(255,255,255,0.4); font-size: 11px; }
+.sc-svg .sc-ed.now { fill: rgba(247,147,26,0.8); }
+.sc-svg .sc-strike { stroke: rgba(239,68,68,0.6); stroke-width: 1.5; }
+.sc-svg .sc-hand { stroke: #c2e821; stroke-width: 1.5; }
+.sc-svg .sc-arrow { stroke: #c2e821; stroke-width: 1.5; fill: none; }
+.sc-svg .sc-ht { fill: rgba(255,255,255,0.7); font-size: 11px; font-style: italic; }
+.sc-svg .sc-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
+</style>
+
+<!--
+Classic statechains are indivisible: you hand over the whole coin.
+Spark fixes this with the tree on the left: root = the on-chain UTXO,
+branches = internal txs with no timelocks connecting root to leaves,
+leaves = user-owned txs each with a relative-timelock exit. Leaves
+split instantly for payments and merge back together; child keys
+mathematically combine to equal parent keys, so value moves flexibly
+without touching the chain. Exit = broadcast the branch chain
+root-to-leaf. (Source: spark.money/research/what-is-spark-bitcoin-layer-2)
+
+Then the right side, per leaf: Alice deposits into a 2-of-2 with the
+Spark Entity and pre-signs an exit tx (timelock 400). To pay Bob, the SE
+tweaks its key share so Alice's key no longer completes the aggregate,
+deletes the old share, and co-signs a NEW exit for Bob with a lower
+timelock (300). Same again for Carol (200). Decrementing timelocks mean
+the latest owner can always confirm their exit before any earlier
+owner's stale exit becomes valid. The entire security model hangs on
+that deletion actually happening, which sets up the Spark trust slide.
+
+Q&A ammo, "don't the timelocks run out after N transfers?": no
+timebomb. The timelocks are RELATIVE (CSV): X blocks after the parent
+branch tx is mined, so nothing counts down while the coin is off-chain
+(this is Spark's fix over Mercury statechains, which used absolute
+timelocks). The decrement only orders the broadcast race: current
+owner's lower CSV confirms first. It does cap the number of transfers
+per leaf though; when headroom runs low, the wallet swaps value into a
+fresh leaf (leaves split/merge off-chain with SE cooperation, new leaf
+= full timelock). Exact step size and floor are not published.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+[//]: # (Breather 04: Spark)
+
+<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 04 / 07</div>
 
 # Spark
 
@@ -266,11 +449,12 @@ layoutClass: gap-8
 
 # Spark: key handover
 
-- Built by **Lightspark** on **statechains**: ownership of a UTXO moves by handing over *key material*, not by new transactions.
-- A **federation of Spark Operators** (Lightspark, Flashnet, Breez) holds one key share; you hold the other. Address = aggregate key (FROST threshold Schnorr).
-- **Your signature is always required**; operators alone can't move funds.
-- Transfer = SE **tweaks its share** so `sender + SE` becomes `receiver + SE`, then **deletes the old share** and signs a new exit tx with a **lower timelock**.
-- No on-chain tx per transfer. No expiry. **Receive while offline.**
+- Built by **Lightspark** on **statechains**.
+- **Operator federation** (Lightspark, Flashnet, Breez) holds one key share, you hold the other.
+- **Your signature is always required.**
+- Transfer: SE **tweaks its share**, **deletes the old one**, signs a new exit tx with a **lower timelock**.
+- No on-chain tx. **Offline receive.**
+- **No expiry**: timelocks are *relative*, and the root's operator keys are **destroyed**. Nobody can ever sweep the UTXO.
 
 ::right::
 
@@ -280,8 +464,8 @@ layoutClass: gap-8
   <text class="sp-t" x="85" y="53" text-anchor="middle">Alice's key</text>
   <text class="sp-s" x="85" y="71" text-anchor="middle">sk_alice</text>
   <rect class="sp-box se" x="20" y="120" width="130" height="54" rx="6" />
-  <text class="sp-t" x="85" y="143" text-anchor="middle">SE key share</text>
-  <text class="sp-s" x="85" y="161" text-anchor="middle">sk_se</text>
+  <text class="sp-t se" x="85" y="143" text-anchor="middle">SE key share</text>
+  <text class="sp-s se" x="85" y="161" text-anchor="middle">sk_se</text>
   <line class="sp-line" x1="150" y1="102" x2="220" y2="102" />
   <polyline class="sp-arrow" points="215,98 220,102 215,106" />
   <text class="sp-label" x="185" y="90" text-anchor="middle">transfer</text>
@@ -289,8 +473,8 @@ layoutClass: gap-8
   <text class="sp-t" x="295" y="53" text-anchor="middle">Bob's key</text>
   <text class="sp-s" x="295" y="71" text-anchor="middle">sk_bob</text>
   <rect class="sp-box se" x="230" y="120" width="130" height="54" rx="6" />
-  <text class="sp-t" x="295" y="143" text-anchor="middle">SE key share</text>
-  <text class="sp-s" x="295" y="161" text-anchor="middle">sk_se + tweak</text>
+  <text class="sp-t se" x="295" y="143" text-anchor="middle">SE key share</text>
+  <text class="sp-s se" x="295" y="161" text-anchor="middle">sk_se + tweak</text>
   <rect class="sp-box agg" x="105" y="215" width="170" height="54" rx="27" />
   <text class="sp-t" x="190" y="238" text-anchor="middle">same P2TR address</text>
   <text class="sp-s" x="190" y="256" text-anchor="middle">aggregate key unchanged</text>
@@ -310,8 +494,9 @@ The coin never moves. <strong>Who can sign for it</strong> moves.
 .spark-svg .sp-box.se { fill: rgba(194,232,33,0.12); stroke: #c2e821; stroke-dasharray: none; }
 .spark-svg .sp-box.agg { fill: #a3c410; stroke: none; }
 .spark-svg .sp-t { fill: #000; font-size: 13px; font-weight: 600; }
-.spark-svg .sp-box.se + text.sp-t { fill: #000; }
 .spark-svg .sp-s { fill: #555; font-size: 10px; }
+.spark-svg .sp-t.se { fill: #fff; }
+.spark-svg .sp-s.se { fill: rgba(255,255,255,0.75); }
 .spark-svg .sp-line { stroke: #c2e821; stroke-width: 1.5; }
 .spark-svg .sp-line.dim { stroke: rgba(194,232,33,0.4); stroke-dasharray: 4 4; }
 .spark-svg .sp-arrow { stroke: #c2e821; stroke-width: 1.5; fill: none; }
@@ -341,19 +526,19 @@ timelocks so the newest owner can always confirm before older owners.
 - Instant, free Spark→Spark transfers, **no liquidity provisioning**, no rounds, no expiry.
 - Offline receive; no on-chain footprint to get paid.
 - Lightning via SSPs (0.25%), no channels for the user.
-- **Stablecoins live**: BTKN tokens (**USDT** and **USDB**), plus real adoption: **Wallet of Satoshi**, Theya, Blitz.
+- **Stablecoins live**: BTKN tokens (**USDT** and **USDB**), implemented by: Wallet of Satoshi, Blitz, Breez
 
 </div>
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
-**The catch**
+**The ugly**
 
-- Security = federation **actually deleted** the old key share. **Deletion is cryptographically unverifiable.**
-- If a threshold of operators keeps shares and colludes with a past owner → **your coin can be double-spent**.
-- Federation is 3 named companies. Liveness of the federation required for every transfer.
+- Security = SE **actually deleted** the old key.
+- Federation is 3 companies. Liveness of the federation required for every transfer.
 - Unilateral exit: beta, chain of txs, uneconomical below **~16k sats**.
-- **No scripts, no contracts**. Payments only.
+- No scripts, no contracts. Payments only.
+- **If SE keeps shares and colludes with past owner → **your coin can be double-spent**.**
 
 </div>
 
@@ -371,18 +556,111 @@ criticism. Mainnet beta since April 2025.
 -->
 
 ---
+
+[//]: # (Slide: Spark tree and the root)
+
+# The Spark tree: anchored at the root
+
+<svg viewBox="0 0 960 540" class="sr-svg" xmlns="http://www.w3.org/2000/svg">
+  <line class="sr-line" x1="480" y1="118" x2="480" y2="200" />
+  <line class="sr-divider" x1="30" y1="162" x2="930" y2="162" />
+  <text class="sr-dt" x="920" y="155" text-anchor="end">everything below stays off-chain ↓</text>
+  <line class="sr-line" x1="480" y1="278" x2="260" y2="330" />
+  <line class="sr-line" x1="480" y1="278" x2="700" y2="330" />
+  <line class="sr-line" x1="260" y1="386" x2="160" y2="432" />
+  <line class="sr-line" x1="260" y1="386" x2="360" y2="432" />
+  <line class="sr-line" x1="700" y1="386" x2="610" y2="432" />
+  <line class="sr-line" x1="700" y1="386" x2="700" y2="432" />
+  <line class="sr-line" x1="700" y1="386" x2="790" y2="432" />
+  <rect class="sr-root" x="320" y="24" width="320" height="94" rx="10" />
+  <text class="sr-rt" x="480" y="54" text-anchor="middle">Root: on-chain UTXO · 100k sats</text>
+  <text class="sr-rs" x="480" y="76" text-anchor="middle">depositor + SE aggregate key (2-of-2)</text>
+  <text class="sr-rs" x="480" y="94" text-anchor="middle">SE root share destroyed after signing</text>
+  <text class="sr-never" x="480" y="140" text-anchor="middle">no timelock · never expires · only the pre-signed tree can spend it</text>
+  <rect class="sr-split" x="310" y="200" width="340" height="78" rx="10" />
+  <text class="sr-st" x="480" y="228" text-anchor="middle">first off-chain tx: the split</text>
+  <text class="sr-ss" x="480" y="250" text-anchor="middle">spends the root → two outputs</text>
+  <text class="sr-ss" x="480" y="268" text-anchor="middle">pre-signed, held in wallets, never broadcast</text>
+  <rect class="sr-out" x="190" y="330" width="140" height="56" rx="8" />
+  <text class="sr-ot" x="260" y="353" text-anchor="middle">10k sats</text>
+  <text class="sr-os" x="260" y="371" text-anchor="middle">output 0</text>
+  <rect class="sr-out" x="630" y="330" width="140" height="56" rx="8" />
+  <text class="sr-ot" x="700" y="353" text-anchor="middle">90k sats</text>
+  <text class="sr-os" x="700" y="371" text-anchor="middle">output 1</text>
+  <circle class="sr-leaf" cx="160" cy="466" r="34" />
+  <text class="sr-lt" x="160" y="462" text-anchor="middle">Alice</text>
+  <text class="sr-ls" x="160" y="478" text-anchor="middle">4k · CSV exit</text>
+  <circle class="sr-leaf" cx="360" cy="466" r="34" />
+  <text class="sr-lt" x="360" y="462" text-anchor="middle">Bob</text>
+  <text class="sr-ls" x="360" y="478" text-anchor="middle">6k · CSV exit</text>
+  <circle class="sr-more" cx="610" cy="466" r="26" />
+  <text class="sr-mt" x="610" y="471" text-anchor="middle">…</text>
+  <circle class="sr-more" cx="700" cy="466" r="26" />
+  <text class="sr-mt" x="700" y="471" text-anchor="middle">…</text>
+  <circle class="sr-more" cx="790" cy="466" r="26" />
+  <text class="sr-mt" x="790" y="471" text-anchor="middle">…</text>
+  <text class="sr-ms" x="700" y="516" text-anchor="middle">split further, on demand, as payments happen</text>
+  <text class="sr-annot" x="290" y="530" text-anchor="middle">leaves change hands by key handover; the root never notices</text>
+</svg>
+
+<style>
+.sr-svg { display: block; width: 100%; max-width: 940px; height: auto; margin: 8px auto 0; font-family: 'Geist', -apple-system, sans-serif; }
+.sr-svg .sr-line { stroke: rgba(194,232,33,0.5); stroke-width: 1.5; }
+.sr-svg .sr-root { fill: rgba(194,232,33,0.15); stroke: #c2e821; stroke-width: 3; }
+.sr-svg .sr-rt { fill: #c2e821; font-size: 19px; font-weight: 700; }
+.sr-svg .sr-rs { fill: rgba(255,255,255,0.75); font-size: 12px; }
+.sr-svg .sr-never { fill: #f7931a; font-size: 13px; font-weight: 600; }
+.sr-svg .sr-split { fill: rgba(247,147,26,0.12); stroke: #f7931a; stroke-width: 3; }
+.sr-svg .sr-st { fill: #f7931a; font-size: 17px; font-weight: 700; }
+.sr-svg .sr-ss { fill: rgba(255,255,255,0.75); font-size: 12px; }
+.sr-svg .sr-divider { stroke: rgba(255,255,255,0.25); stroke-width: 1; stroke-dasharray: 4 4; }
+.sr-svg .sr-dt { fill: rgba(255,255,255,0.5); font-size: 11px; font-style: italic; }
+.sr-svg .sr-out { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.sr-svg .sr-ot { fill: #f7931a; font-size: 14px; font-weight: 700; }
+.sr-svg .sr-os { fill: #737373; font-size: 11px; }
+.sr-svg .sr-leaf { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.sr-svg .sr-lt { fill: #000; font-size: 13px; font-weight: 700; }
+.sr-svg .sr-ls { fill: #737373; font-size: 10px; }
+.sr-svg .sr-more { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.35); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.sr-svg .sr-mt { fill: rgba(255,255,255,0.6); font-size: 16px; font-weight: 700; }
+.sr-svg .sr-ms { fill: rgba(255,255,255,0.5); font-size: 11px; font-style: italic; }
+.sr-svg .sr-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
+</style>
+
+<!--
+The root detail that surprises people: it starts as a 2-of-2 aggregate
+between the depositor and the SE, they pre-sign the branch txs, and then
+the SE DESTROYS its root key share. From that moment the pre-signed
+tree is the only possible way to spend the UTXO: covenant-like behavior
+without a covenant. No absolute timelock anywhere means the tree can sit
+off-chain forever: this is exactly why Spark has no expiry while Ark
+rounds do (the Ark server needs its fronted liquidity back, Spark fronts
+nothing). Leaves at the bottom keep changing hands via key handover;
+the root never notices.
+
+Q&A ammo, "does the root UTXO have multiple outputs?": no, one output.
+The tree is entirely virtual: the branch tx is a pre-signed,
+unbroadcast tx that WOULD spend the root and create N outputs; each of
+those feeds the next pre-signed tx down to the leaves. Nothing is
+broadcast in normal operation. Unilateral exit = broadcast the path
+root to your leaf, tx by tx, then wait out the CSV. Deeper leaf =
+more txs = pricier exit. Splitting a leaf = pre-signing new child txs
+below it. Same virtual-tree trick as Bark's round trees.
+-->
+
+---
 layout: center
 class: text-center
 ---
 
-[//]: # (Breather 04: Bark)
+[//]: # (Breather 05: Ark)
 
-<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 04 / 06</div>
+<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 05 / 07</div>
 
-# Bark
+# Ark
 
 <div class="text-lg opacity-70 mt-4 font-normal">
-Covenantless Ark: pre-sign everything, trust no one (mostly)
+The original protocol: shared UTXOs, rounds, and trees
 </div>
 
 ---
@@ -390,14 +668,15 @@ layout: two-cols
 layoutClass: gap-8
 ---
 
-[//]: # (Slide: Bark: how it works)
+[//]: # (Slide: Ark: the original protocol)
 
-# Bark: pre-signed trees
+# Ark: rounds and trees
 
-- Built by **Second** (Steven Roose, ex-Blockstream). **Mainnet since June 2026** at `ark.second.tech`.
-- A **VTXO** = chain of **pre-signed txs** you can broadcast any time. No covenants, no new opcodes, works on today's Bitcoin.
-- Every ~1–2h the server runs a **round**: one on-chain tx funds a **quad tree** of pre-signed splits; leaves are user VTXOs. 256 users = 5 txs deep.
-- Tree paths: cooperative **n-of-n MuSig2** (users + server) or timelocked recovery.
+- Proposed by **Burak (2023)**: one UTXO among many users, renew it in **rounds**.
+- The **Ark server** periodically broadcasts **round tx** that funds a **shared output**, fronting the liquidity.
+- This output splits into a **pre-signed tree** (**VTXOs**: virtual UTXOs owned by users).
+- Every tree node: cooperative **n-of-n** (everyone below + server) or **timelocked recovery**.
+- VTXOs **expire**: after the round's lifetime the server **sweeps** the shared output to recover its liquidity; users **refresh** into a new round before that.
 - Old-for-new swap is atomic via **hash-locked forfeits**.
 
 ::right::
@@ -429,7 +708,7 @@ layoutClass: gap-8
 </div>
 
 <div class="pt-2 text-xs opacity-70 text-center">
-Unilateral exit = broadcast your branch, wait out a <strong>~144-block CSV</strong>, leave.
+Unilateral exit = broadcast your branch, wait out a CSV delay, leave. Works until expiry.
 </div>
 
 <style>
@@ -445,10 +724,123 @@ Unilateral exit = broadcast your branch, wait out a <strong>~144-block CSV</stro
 </style>
 
 <!--
-Quad trees keep exit depth logarithmic. Rounds have 5 phases: intent →
-tree signing → round tx broadcast → forfeit signing → claim. Signet demo
-rounds every 30s; mainnet expected 1-2h. Written in Rust; SDK bindings
-for Kotlin/Swift/RN/Flutter/Go/Python/WASM; barkd daemon with REST API.
+Rounds have 5 phases: intent → tree signing → round tx broadcast →
+forfeit signing → claim. Trees are wide (quad) to keep exit depth
+logarithmic: 256 users = 5 txs deep. The expiry is the crucial
+difference vs Spark: the server fronts every round's liquidity and the
+sweep path is how it gets it back. Original Ark wanted covenants (CTV)
+to make the tree non-interactive; without them, everyone signs.
+-->
+
+---
+
+[//]: # (Slide: The Ark tree with amounts)
+
+# The Ark round tree
+
+<svg viewBox="0 0 960 540" class="at-svg" xmlns="http://www.w3.org/2000/svg">
+  <line class="at-line" x1="480" y1="118" x2="480" y2="200" />
+  <line class="at-divider" x1="30" y1="162" x2="930" y2="162" />
+  <text class="at-dt" x="920" y="155" text-anchor="end">everything below stays off-chain ↓</text>
+  <line class="at-line" x1="480" y1="270" x2="260" y2="330" />
+  <line class="at-line" x1="480" y1="270" x2="700" y2="330" />
+  <line class="at-line" x1="260" y1="386" x2="160" y2="432" />
+  <line class="at-line" x1="260" y1="386" x2="360" y2="432" />
+  <line class="at-line" x1="700" y1="386" x2="610" y2="432" />
+  <line class="at-line" x1="700" y1="386" x2="790" y2="432" />
+  <rect class="at-root" x="300" y="24" width="360" height="94" rx="10" />
+  <text class="at-rt" x="480" y="54" text-anchor="middle">Round tx: on-chain · 100k sats</text>
+  <text class="at-rs" x="480" y="76" text-anchor="middle">one shared output, liquidity fronted by the server</text>
+  <text class="at-rs" x="480" y="94" text-anchor="middle">n-of-n: all users in this round + server</text>
+  <text class="at-sweep" x="480" y="140" text-anchor="middle">⏳ expires after ~30 days · then the server can sweep it · refresh before that</text>
+  <rect class="at-branch" x="320" y="200" width="320" height="70" rx="10" />
+  <text class="at-bt" x="480" y="228" text-anchor="middle">pre-signed tree of branch txs</text>
+  <text class="at-bs" x="480" y="250" text-anchor="middle">signed by everyone before the round tx broadcasts</text>
+  <rect class="at-note" x="40" y="185" width="240" height="112" rx="8" />
+  <text class="at-nt" x="52" y="209" text-anchor="start">💰 Why front liquidity?</text>
+  <text class="at-ns" x="52" y="231" text-anchor="start">Users swap old VTXOs for new ones.</text>
+  <text class="at-ns" x="52" y="248" text-anchor="start">The server must fund the new round</text>
+  <text class="at-ns" x="52" y="265" text-anchor="start">tx now, but only collects the old</text>
+  <text class="at-ns" x="52" y="282" text-anchor="start">round's coins later.</text>
+  <rect class="at-note" x="680" y="185" width="240" height="112" rx="8" />
+  <text class="at-nt" x="692" y="209" text-anchor="start">⏳ Why expiry?</text>
+  <text class="at-ns" x="692" y="231" text-anchor="start">Expiry is when the server sweeps</text>
+  <text class="at-ns" x="692" y="248" text-anchor="start">the old round and gets its capital</text>
+  <text class="at-ns" x="692" y="265" text-anchor="start">back. Without it, every round locks</text>
+  <text class="at-ns" x="692" y="282" text-anchor="start">the server's money forever.</text>
+  <rect class="at-out" x="190" y="330" width="140" height="56" rx="8" />
+  <text class="at-ot" x="260" y="353" text-anchor="middle">40k sats</text>
+  <text class="at-os" x="260" y="371" text-anchor="middle">output 0</text>
+  <rect class="at-out" x="630" y="330" width="140" height="56" rx="8" />
+  <text class="at-ot" x="700" y="353" text-anchor="middle">60k sats</text>
+  <text class="at-os" x="700" y="371" text-anchor="middle">output 1</text>
+  <circle class="at-leaf" cx="160" cy="466" r="34" />
+  <text class="at-lt" x="160" y="462" text-anchor="middle">Alice</text>
+  <text class="at-ls" x="160" y="478" text-anchor="middle">25k VTXO</text>
+  <circle class="at-leaf" cx="360" cy="466" r="34" />
+  <text class="at-lt" x="360" y="462" text-anchor="middle">Bob</text>
+  <text class="at-ls" x="360" y="478" text-anchor="middle">15k VTXO</text>
+  <circle class="at-leaf" cx="610" cy="466" r="34" />
+  <text class="at-lt" x="610" y="462" text-anchor="middle">Carol</text>
+  <text class="at-ls" x="610" y="478" text-anchor="middle">20k VTXO</text>
+  <circle class="at-leaf" cx="790" cy="466" r="34" />
+  <text class="at-lt" x="790" y="462" text-anchor="middle">Dave</text>
+  <text class="at-ls" x="790" y="478" text-anchor="middle">40k VTXO</text>
+  <text class="at-annot" x="480" y="530" text-anchor="middle">same virtual-tree trick as Spark, but: the anchor expires, and the whole tree is signed by everyone up front</text>
+</svg>
+
+<style>
+.at-svg { display: block; width: 100%; max-width: 940px; height: auto; margin: 8px auto 0; font-family: 'Geist', -apple-system, sans-serif; }
+.at-svg .at-line { stroke: rgba(194,232,33,0.5); stroke-width: 1.5; }
+.at-svg .at-divider { stroke: rgba(255,255,255,0.25); stroke-width: 1; stroke-dasharray: 4 4; }
+.at-svg .at-dt { fill: rgba(255,255,255,0.5); font-size: 11px; font-style: italic; }
+.at-svg .at-root { fill: rgba(194,232,33,0.15); stroke: #c2e821; stroke-width: 3; }
+.at-svg .at-rt { fill: #c2e821; font-size: 19px; font-weight: 700; }
+.at-svg .at-rs { fill: rgba(255,255,255,0.75); font-size: 12px; }
+.at-svg .at-sweep { fill: #f7931a; font-size: 13px; font-weight: 600; }
+.at-svg .at-branch { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.at-svg .at-note { fill: rgba(247,147,26,0.08); stroke: rgba(247,147,26,0.5); stroke-width: 1; }
+.at-svg .at-nt { fill: #f7931a; font-size: 13px; font-weight: 700; }
+.at-svg .at-ns { fill: rgba(255,255,255,0.7); font-size: 11px; }
+.at-svg .at-bt { fill: #000; font-size: 15px; font-weight: 700; }
+.at-svg .at-bs { fill: #737373; font-size: 11px; }
+.at-svg .at-out { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.at-svg .at-ot { fill: #f7931a; font-size: 14px; font-weight: 700; }
+.at-svg .at-os { fill: #737373; font-size: 11px; }
+.at-svg .at-leaf { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.at-svg .at-lt { fill: #000; font-size: 13px; font-weight: 700; }
+.at-svg .at-ls { fill: #737373; font-size: 10px; }
+.at-svg .at-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
+</style>
+
+<!--
+Deliberately the same layout as the Spark tree slide two chapters
+earlier, so the audience can diff them visually. Three differences to
+say out loud: (1) the root is the SERVER's money, not the depositor's,
+which is why it must expire and be swept back; (2) the tree is fully
+signed up front by every participant in the round, n-of-n, which is
+the interactivity cost covenants would remove; (3) leaves are VTXOs
+that must refresh into a new round before expiry or the sweep eats
+them.
+-->
+
+---
+
+[//]: # (Slide: Bark implementation)
+
+# Bark: Ark on mainnet
+
+- **Second** (Steven Roose, ex-Blockstream), Rust, $5.1M raised.
+- First public Ark mainnet: **9 June 2026**, server `ark.second.tech`.
+- **Covenantless** ("clArk"): each round's tree is signed interactively with **MuSig2**; be online or **delegate** your refresh.
+- Rounds every **~1–2 h**; quad trees keep exits shallow.
+- Between rounds: instant **arkoor** sends, statechain-flavored (server co-signs, you trust it not to double-sign until you refresh).
+- Ships today: `bark` CLI + SDK (Kotlin, Swift, RN, Flutter, Go, Python, WASM), `barkd` daemon, self-hostable server `captaind`, BTCPay plugin, Noah wallet.
+
+<!--
+The arkoor line is the "Bark = Ark + statechain" claim from the family
+tree slide, paid off. Signet demo runs 30s rounds; mainnet docs warn
+"don't store more than you're willing to lose", start small.
 -->
 
 ---
@@ -501,9 +893,9 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 05: Arkade)
+[//]: # (Breather 06: Arkade)
 
-<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 05 / 06</div>
+<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 06 / 07</div>
 
 # Arkade
 
@@ -645,9 +1037,9 @@ layout: center
 class: text-center
 ---
 
-[//]: # (Breather 06: Head to head)
+[//]: # (Breather 07: Head to head)
 
-<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 06 / 06</div>
+<div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 07 / 07</div>
 
 # Head to Head
 
