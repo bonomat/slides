@@ -604,7 +604,7 @@ criticism. Mainnet beta since April 2025.
 </svg>
 
 <style>
-.sr-svg { display: block; width: 100%; max-width: 940px; height: auto; margin: 8px auto 0; font-family: 'Geist', -apple-system, sans-serif; }
+.sr-svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; font-family: 'Geist', -apple-system, sans-serif; }
 .sr-svg .sr-line { stroke: rgba(194,232,33,0.5); stroke-width: 1.5; }
 .sr-svg .sr-root { fill: rgba(194,232,33,0.15); stroke: #c2e821; stroke-width: 3; }
 .sr-svg .sr-rt { fill: #c2e821; font-size: 19px; font-weight: 700; }
@@ -742,12 +742,12 @@ to make the tree non-interactive; without them, everyone signs.
   <line class="at-line" x1="480" y1="118" x2="480" y2="200" />
   <line class="at-divider" x1="30" y1="162" x2="930" y2="162" />
   <text class="at-dt" x="920" y="155" text-anchor="end">everything below stays off-chain ↓</text>
-  <line class="at-line" x1="480" y1="270" x2="260" y2="330" />
-  <line class="at-line" x1="480" y1="270" x2="700" y2="330" />
-  <line class="at-line" x1="260" y1="386" x2="160" y2="432" />
-  <line class="at-line" x1="260" y1="386" x2="360" y2="432" />
-  <line class="at-line" x1="700" y1="386" x2="610" y2="432" />
-  <line class="at-line" x1="700" y1="386" x2="790" y2="432" />
+  <line class="at-line" x1="480" y1="270" x2="160" y2="318" />
+  <line class="at-line" x1="480" y1="270" x2="360" y2="318" />
+  <line class="at-line" x1="480" y1="270" x2="610" y2="318" />
+  <line class="at-line" x1="480" y1="270" x2="790" y2="318" />
+  <line class="at-oline" x1="160" y1="382" x2="95" y2="432" />
+  <line class="at-oline" x1="160" y1="382" x2="235" y2="432" />
   <rect class="at-root" x="300" y="24" width="360" height="94" rx="10" />
   <text class="at-rt" x="480" y="54" text-anchor="middle">Round tx: on-chain · 100k sats</text>
   <text class="at-rs" x="480" y="76" text-anchor="middle">one shared output, liquidity fronted by the server</text>
@@ -768,29 +768,35 @@ to make the tree non-interactive; without them, everyone signs.
   <text class="at-ns" x="692" y="248" text-anchor="start">the old round and gets its capital</text>
   <text class="at-ns" x="692" y="265" text-anchor="start">back. Without it, every round locks</text>
   <text class="at-ns" x="692" y="282" text-anchor="start">the server's money forever.</text>
-  <rect class="at-out" x="190" y="330" width="140" height="56" rx="8" />
-  <text class="at-ot" x="260" y="353" text-anchor="middle">40k sats</text>
-  <text class="at-os" x="260" y="371" text-anchor="middle">output 0</text>
-  <rect class="at-out" x="630" y="330" width="140" height="56" rx="8" />
-  <text class="at-ot" x="700" y="353" text-anchor="middle">60k sats</text>
-  <text class="at-os" x="700" y="371" text-anchor="middle">output 1</text>
-  <circle class="at-leaf" cx="160" cy="466" r="34" />
-  <text class="at-lt" x="160" y="462" text-anchor="middle">Alice</text>
-  <text class="at-ls" x="160" y="478" text-anchor="middle">25k VTXO</text>
-  <circle class="at-leaf" cx="360" cy="466" r="34" />
-  <text class="at-lt" x="360" y="462" text-anchor="middle">Bob</text>
-  <text class="at-ls" x="360" y="478" text-anchor="middle">15k VTXO</text>
-  <circle class="at-leaf" cx="610" cy="466" r="34" />
-  <text class="at-lt" x="610" y="462" text-anchor="middle">Carol</text>
-  <text class="at-ls" x="610" y="478" text-anchor="middle">20k VTXO</text>
-  <circle class="at-leaf" cx="790" cy="466" r="34" />
-  <text class="at-lt" x="790" y="462" text-anchor="middle">Dave</text>
-  <text class="at-ls" x="790" y="478" text-anchor="middle">40k VTXO</text>
-  <text class="at-annot" x="480" y="530" text-anchor="middle">same virtual-tree trick as Spark, but: the anchor expires, and the whole tree is signed by everyone up front</text>
+  <circle class="at-leaf" cx="160" cy="350" r="32" />
+  <text class="at-lt" x="160" y="346" text-anchor="middle">Alice</text>
+  <text class="at-ls" x="160" y="362" text-anchor="middle">25k VTXO</text>
+  <circle class="at-leaf" cx="360" cy="350" r="32" />
+  <text class="at-lt" x="360" y="346" text-anchor="middle">Bob</text>
+  <text class="at-ls" x="360" y="362" text-anchor="middle">15k VTXO</text>
+  <circle class="at-leaf" cx="610" cy="350" r="32" />
+  <text class="at-lt" x="610" y="346" text-anchor="middle">Carol</text>
+  <text class="at-ls" x="610" y="362" text-anchor="middle">20k VTXO</text>
+  <circle class="at-leaf" cx="790" cy="350" r="32" />
+  <text class="at-lt" x="790" y="346" text-anchor="middle">Dave</text>
+  <text class="at-ls" x="790" y="362" text-anchor="middle">40k VTXO</text>
+  <circle class="at-leaf oor" cx="95" cy="460" r="28" />
+  <text class="at-lt" x="95" y="456" text-anchor="middle">Erin</text>
+  <text class="at-ls" x="95" y="472" text-anchor="middle">10k</text>
+  <circle class="at-leaf oor" cx="235" cy="460" r="28" />
+  <text class="at-lt" x="235" y="456" text-anchor="middle">Alice</text>
+  <text class="at-ls" x="235" y="472" text-anchor="middle">15k change</text>
+  <text class="at-ols" x="165" y="510" text-anchor="middle">out-of-round spend: instant, off-chain</text>
+  <rect class="at-note" x="480" y="420" width="450" height="88" rx="8" />
+  <text class="at-nt" x="492" y="444" text-anchor="start">🔁 This layer behaves like a statechain</text>
+  <text class="at-ns" x="492" y="466" text-anchor="start">The server co-signs the handover and promises not to sign a conflict.</text>
+  <text class="at-ns" x="492" y="483" text-anchor="start">Until Erin refreshes into a round, she trusts server + sender</text>
+  <text class="at-ns" x="492" y="500" text-anchor="start">not to collude, just like statechain key deletion.</text>
+  <text class="at-annot" x="480" y="532" text-anchor="middle">same virtual-tree trick as Spark, but: the anchor expires, and the whole tree is signed by everyone up front</text>
 </svg>
 
 <style>
-.at-svg { display: block; width: 100%; max-width: 940px; height: auto; margin: 8px auto 0; font-family: 'Geist', -apple-system, sans-serif; }
+.at-svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; font-family: 'Geist', -apple-system, sans-serif; }
 .at-svg .at-line { stroke: rgba(194,232,33,0.5); stroke-width: 1.5; }
 .at-svg .at-divider { stroke: rgba(255,255,255,0.25); stroke-width: 1; stroke-dasharray: 4 4; }
 .at-svg .at-dt { fill: rgba(255,255,255,0.5); font-size: 11px; font-style: italic; }
@@ -804,10 +810,10 @@ to make the tree non-interactive; without them, everyone signs.
 .at-svg .at-ns { fill: rgba(255,255,255,0.7); font-size: 11px; }
 .at-svg .at-bt { fill: #000; font-size: 15px; font-weight: 700; }
 .at-svg .at-bs { fill: #737373; font-size: 11px; }
-.at-svg .at-out { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
-.at-svg .at-ot { fill: #f7931a; font-size: 14px; font-weight: 700; }
-.at-svg .at-os { fill: #737373; font-size: 11px; }
 .at-svg .at-leaf { fill: #fff; stroke: #C0C0C0; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.at-svg .at-leaf.oor { stroke: #f7931a; }
+.at-svg .at-oline { stroke: #f7931a; stroke-width: 1.5; stroke-dasharray: 5 4; }
+.at-svg .at-ols { fill: rgba(247,147,26,0.8); font-size: 11px; font-style: italic; }
 .at-svg .at-lt { fill: #000; font-size: 13px; font-weight: 700; }
 .at-svg .at-ls { fill: #737373; font-size: 10px; }
 .at-svg .at-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
@@ -822,6 +828,17 @@ signed up front by every participant in the round, n-of-n, which is
 the interactivity cost covenants would remove; (3) leaves are VTXOs
 that must refresh into a new round before expiry or the sweep eats
 them.
+
+Q&A ammo, "why can't users provide the liquidity on-chain?": boarding
+IS user-funded (round tx spends the user's own coins). The fronting is
+only for refreshes: the refresher's value is locked in the OLD round's
+shared output, spendable only n-of-n by everyone in that round
+(unobtainable: offline users, people who exited) or via the server's
+timelocked sweep. So the user forfeits the old claim to the server
+(user+server sigs only) and the server pays fresh value now, recovering
+the swept old output at expiry. That timing gap is the float, and it's
+why refresh is priced like a loan. CTV removes the signing
+interactivity, not this capital float.
 -->
 
 ---
