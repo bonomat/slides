@@ -455,8 +455,7 @@ layoutClass: gap-8
 - **Your signature is always required.**
 - Transfer: SE **tweaks its share**, **deletes the old one**, signs a new exit tx with a **lower timelock**.
 - No on-chain tx. **Offline receive.**
-- **No expiry**: timelocks are *relative*, and the root's operator keys are **destroyed**. Nobody can ever sweep the
-  UTXO.
+- **Relative timelocks**: to unilaterally exit.
 
 ::right::
 
@@ -512,48 +511,11 @@ threshold t-of-n reconstructs; tweaks are applied to the shares without
 ever exposing the tweak itself. Exit txs use decrementing relative
 timelocks so the newest owner can always confirm before older owners.
 -->
-
----
-
-[//]: # (Slide: Spark: trust & reality check)
-
-# Spark: what you actually trust
-
-<div class="grid grid-cols-2 gap-6 pt-4">
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
-
-**Pros**
-
-- Instant, free Spark→Spark transfers, **no liquidity provisioning**, no rounds, no expiry.
-- Offline receive; no on-chain footprint to get paid.
-- Lightning via SSPs (0.25%), no channels for the user.
-- **Stablecoins live**: BTKN tokens (**USDT** and **USDB**), implemented by: Wallet of Satoshi, Blitz, Breez
-
-</div>
-
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
-
-**Cons**
-
-- Security = SE **actually deleted** the old key.
-- Federation is 3 companies. Liveness of the federation required for every transfer.
-- Unilateral exit: yes, chain of txs
-- No scripts, no contracts. Multisig only.
-- Closed source spark core (btc custody, seed storage, lightning swaps)
-- **Where does the liquidity come from?**
-- **Who is facilitating lightning payments?**
-
-</div>
-
-</div>
-
-
 ---
 
 [//]: # (Slide: Spark tree and the root)
 
-# The Spark tree: anchored at the root
+# The Spark tree: trust the depositor
 
 <svg viewBox="0 0 960 540" class="sr-svg" xmlns="http://www.w3.org/2000/svg">
   <line class="sr-line" x1="480" y1="118" x2="480" y2="200" />
@@ -641,6 +603,43 @@ root to your leaf, tx by tx, then wait out the CSV. Deeper leaf =
 more txs = pricier exit. Splitting a leaf = pre-signing new child txs
 below it. Same virtual-tree trick as Bark's round trees.
 -->
+---
+
+[//]: # (Slide: Spark: trust & reality check)
+
+# Spark: what you actually trust
+
+<div class="grid grid-cols-2 gap-6 pt-4">
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+
+**Pros**
+
+- Instant, free Spark→Spark transfers, **no liquidity provisioning**, no rounds, no expiry.
+- Offline receive; no on-chain footprint to get paid.
+- Lightning via SSPs (0.25%), no channels for the user.
+- **Stablecoins live**: BTKN tokens (**USDT** and **USDB**), implemented by: Wallet of Satoshi, Blitz, Breez
+
+</div>
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
+
+**Cons**
+
+- Security = SE **actually deleted** the old key.
+- Federation is 3 companies. Liveness of the federation required for every transfer.
+- Unilateral exit: yes, chain of txs
+- No scripts, no contracts. Multisig only.
+- Closed source spark core (btc custody, seed storage, lightning swaps)
+- **Where does the liquidity come from?**
+- **Who is facilitating lightning payments?**
+
+</div>
+
+</div>
+
+
+
 
 ---
 layout: center
