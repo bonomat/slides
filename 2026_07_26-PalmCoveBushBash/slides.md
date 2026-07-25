@@ -645,7 +645,7 @@ anchors Carol/Alice/Bob's branches on-chain, shortening THEIR exits.
 
 [//]: # (Slide: Spark: trust & reality check)
 
-# Spark: what you actually trust
+# Spark: Summary
 
 <div class="grid grid-cols-2 gap-6 pt-4">
 
@@ -655,18 +655,18 @@ anchors Carol/Alice/Bob's branches on-chain, shortening THEIR exits.
 
 - Instant, free Spark→Spark transfers, **no liquidity provisioning**, no rounds, no expiry.
 - Offline receive; no on-chain footprint to get paid.
-- Lightning via SSPs (0.25%), no channels for the user.
-- **Stablecoins live**: BTKN tokens (**USDT** and **USDB**), implemented by: Wallet of Satoshi, Blitz, Breez
+- Lightning via SSPs: 0.25% + routing out, 0.15% in. No channels for the user.
+- Unilateral exit: yes, chain of txs
+- **Stablecoin**: BTKN tokens (**USDT** and **USDB**), implemented by: WoS, Blitz, Breez, B
 
 </div>
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
+<div v-click class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
 **Cons**
 
 - Security = SE **actually deleted** the old key.
 - Federation is 3 companies. Liveness of the federation required for every transfer.
-- Unilateral exit: yes, chain of txs
 - No scripts, no contracts. Multisig only.
 - Closed source spark core (btc custody, seed storage, lightning swaps)
 - **Where does the liquidity come from?**
@@ -705,7 +705,7 @@ layoutClass: gap-8
 
 - Proposed by **Burak (2023)**: one UTXO among many users, renew it in **rounds**.
 - The **Ark server** periodically broadcasts **round tx** that funds a **shared output**, fronting the liquidity.
-- This output splits into a **pre-signed tree** (**VTXOs**: virtual UTXOs owned by users).
+- This output splits into a pre-signed tree (VTXOs).
 - Every tree node: cooperative **n-of-n** (everyone below + server) or **timelocked recovery**.
 - VTXOs **expire**: after the round's lifetime the server **sweeps** the shared output to recover its liquidity; users *
   *refresh** into a new round before that.
@@ -787,18 +787,6 @@ to make the tree non-interactive; without them, everyone signs.
   <rect class="at-branch" x="320" y="200" width="320" height="70" rx="10" />
   <text class="at-bt" x="480" y="228" text-anchor="middle">pre-signed tree of branch txs</text>
   <text class="at-bs" x="480" y="250" text-anchor="middle">signed by everyone before the round tx broadcasts</text>
-  <rect class="at-note" x="40" y="185" width="240" height="112" rx="8" />
-  <text class="at-nt" x="52" y="209" text-anchor="start">💰 Why front liquidity?</text>
-  <text class="at-ns" x="52" y="231" text-anchor="start">Users swap old VTXOs for new ones.</text>
-  <text class="at-ns" x="52" y="248" text-anchor="start">The server must fund the new round</text>
-  <text class="at-ns" x="52" y="265" text-anchor="start">tx now, but only collects the old</text>
-  <text class="at-ns" x="52" y="282" text-anchor="start">round's coins later.</text>
-  <rect class="at-note" x="680" y="185" width="240" height="112" rx="8" />
-  <text class="at-nt" x="692" y="209" text-anchor="start">⏳ Why expiry?</text>
-  <text class="at-ns" x="692" y="231" text-anchor="start">Expiry is when the server sweeps</text>
-  <text class="at-ns" x="692" y="248" text-anchor="start">the old round and gets its capital</text>
-  <text class="at-ns" x="692" y="265" text-anchor="start">back. Without it, every round locks</text>
-  <text class="at-ns" x="692" y="282" text-anchor="start">the server's money forever.</text>
   <circle class="at-leaf" cx="160" cy="350" r="32" />
   <text class="at-lt" x="160" y="346" text-anchor="middle">Alice</text>
   <text class="at-ls" x="160" y="362" text-anchor="middle">25k VTXO</text>
@@ -818,11 +806,6 @@ to make the tree non-interactive; without them, everyone signs.
   <text class="at-lt" x="235" y="456" text-anchor="middle">Alice</text>
   <text class="at-ls" x="235" y="472" text-anchor="middle">15k change</text>
   <text class="at-ols" x="165" y="510" text-anchor="middle">out-of-round spend: instant, off-chain</text>
-  <rect class="at-note" x="480" y="420" width="450" height="88" rx="8" />
-  <text class="at-nt" x="492" y="444" text-anchor="start">🔁 This layer behaves like a statechain</text>
-  <text class="at-ns" x="492" y="466" text-anchor="start">The server co-signs the handover and promises not to sign a conflict.</text>
-  <text class="at-ns" x="492" y="483" text-anchor="start">Until Erin refreshes into a round, she trusts server + sender</text>
-  <text class="at-ns" x="492" y="500" text-anchor="start">not to collude, just like statechain key deletion.</text>
   <text class="at-annot" x="480" y="532" text-anchor="middle">same virtual-tree trick as Spark, but: the anchor expires, and the whole tree is signed by everyone up front</text>
 </svg>
 
@@ -914,7 +897,7 @@ mnemonic AND a backup of the wallet's data directory.
 
 </div>
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
+<div v-click class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
 **Cons**
 
@@ -1049,7 +1032,7 @@ recoverable → spent.
 
 </div>
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
+<div v-click class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
 **Cons**
 
@@ -1105,7 +1088,7 @@ class: text-center
 | **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | **~30 days**, refresh in rounds        |
 | **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                    |
 | **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                         |
-| **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
+| **Lightning**       | via SSPs, 0.25%+routing out / 0.15% in                                         | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
 | **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                            |
 | **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                            |
 | **Open source**     | client SDKs only, server closed                           | **fully open source**                                        | **fully open source**                                  |
