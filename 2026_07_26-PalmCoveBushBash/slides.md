@@ -1204,10 +1204,17 @@ Arkade = programmability.
     </marker>
   </defs>
 
+  <!-- Start -->
+  <rect class="dt-start" x="14" y="4" width="106" height="48" rx="24"/>
+  <text class="dt-st" x="67" y="33">Start</text>
+
   <!-- Q1 -->
-  <rect class="dt-q" x="170" y="4" width="400" height="48" rx="8"/>
-  <text class="dt-t" x="370" y="33">Like to support the PayPal mafia?</text>
   <g v-click="1">
+    <line class="dt-l" x1="120" y1="28" x2="164" y2="28" marker-end="url(#dt-arr)"/>
+    <rect class="dt-q" x="170" y="4" width="400" height="48" rx="8"/>
+    <text class="dt-t" x="370" y="33">Like to support the PayPal mafia?</text>
+  </g>
+  <g v-click="2">
     <line class="dt-l" x1="570" y1="28" x2="694" y2="28" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="632" y="20">yes</text>
     <rect class="dt-r spark" x="700" y="4" width="200" height="48" rx="8"/>
@@ -1215,7 +1222,7 @@ Arkade = programmability.
   </g>
 
   <!-- Q2 -->
-  <g v-click="2">
+  <g v-click="3">
     <line class="dt-l" x1="370" y1="52" x2="370" y2="88" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl no" x="352" y="75">no</text>
     <rect class="dt-q" x="170" y="92" width="400" height="48" rx="8"/>
@@ -1223,7 +1230,7 @@ Arkade = programmability.
   </g>
 
   <!-- Q3 -->
-  <g v-click="3">
+  <g v-click="4">
     <line class="dt-l" x1="300" y1="140" x2="300" y2="176" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="282" y="163">yes</text>
     <line class="dt-l" x1="440" y1="140" x2="440" y2="176" marker-end="url(#dt-arr)"/>
@@ -1231,7 +1238,7 @@ Arkade = programmability.
     <rect class="dt-q" x="170" y="180" width="400" height="48" rx="8"/>
     <text class="dt-t" x="370" y="209">Techie and like pain?</text>
   </g>
-  <g v-click="4">
+  <g v-click="5">
     <line class="dt-l" x1="570" y1="204" x2="694" y2="204" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="632" y="196">yes</text>
     <rect class="dt-r node" x="700" y="180" width="200" height="48" rx="8"/>
@@ -1239,13 +1246,13 @@ Arkade = programmability.
   </g>
 
   <!-- Q4 -->
-  <g v-click="5">
+  <g v-click="6">
     <line class="dt-l" x1="370" y1="228" x2="370" y2="264" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl no" x="352" y="251">no</text>
     <rect class="dt-q" x="170" y="268" width="400" height="48" rx="8"/>
     <text class="dt-t" x="370" y="297">Accept trust for Lightning payments?</text>
   </g>
-  <g v-click="6">
+  <g v-click="7">
     <line class="dt-l" x1="570" y1="292" x2="694" y2="292" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="632" y="284">yes</text>
     <rect class="dt-r bark" x="700" y="268" width="200" height="48" rx="8"/>
@@ -1253,13 +1260,13 @@ Arkade = programmability.
   </g>
 
   <!-- Q5 -->
-  <g v-click="7">
+  <g v-click="8">
     <line class="dt-l" x1="370" y1="316" x2="370" y2="352" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl no" x="352" y="339">no</text>
     <rect class="dt-q" x="170" y="356" width="400" height="48" rx="8"/>
     <text class="dt-t" x="370" y="385">Advanced use cases, like trading?</text>
   </g>
-  <g v-click="8">
+  <g v-click="9">
     <line class="dt-l" x1="570" y1="380" x2="694" y2="380" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="632" y="372">yes (also no)</text>
     <rect class="dt-r arkade" x="700" y="356" width="200" height="48" rx="8"/>
@@ -1270,6 +1277,8 @@ Arkade = programmability.
 <style>
 .dt-svg { max-width: 800px; margin: 8px auto 0; display: block; }
 .dt-svg .dt-q { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.25); }
+.dt-svg .dt-start { fill: rgba(194,232,33,0.12); stroke: #c2e821; stroke-width: 1.5; }
+.dt-svg .dt-st { fill: #c2e821; font-size: 17px; font-weight: 700; text-anchor: middle; }
 .dt-svg .dt-t { fill: #fff; font-size: 17px; text-anchor: middle; }
 .dt-svg .dt-l { stroke: rgba(255,255,255,0.55); stroke-width: 1.5; }
 .dt-svg .dt-lbl { font-size: 13px; }
