@@ -517,7 +517,7 @@ timelocks so the newest owner can always confirm before older owners.
 
 # The Spark tree: trust the depositor
 
-<svg viewBox="0 0 960 540" class="sr-svg" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 960 640" class="sr-svg" xmlns="http://www.w3.org/2000/svg">
   <line class="sr-line" x1="480" y1="118" x2="480" y2="200" />
   <line class="sr-divider" x1="30" y1="162" x2="930" y2="162" />
   <text class="sr-dt" x="920" y="155" text-anchor="end">everything below stays off-chain ↓</text>
@@ -556,11 +556,38 @@ timelocks so the newest owner can always confirm before older owners.
   <circle class="sr-more" cx="790" cy="466" r="26" />
   <text class="sr-mt" x="790" y="471" text-anchor="middle">…</text>
   <text class="sr-ms" x="700" y="516" text-anchor="middle">split further, on demand, as payments happen</text>
-  <text class="sr-annot" x="290" y="530" text-anchor="middle">leaves change hands by key handover; the root never notices</text>
+  <line class="sr-line" x1="160" y1="500" x2="110" y2="562" />
+  <line class="sr-line" x1="160" y1="500" x2="210" y2="562" />
+  <line class="sr-line" x1="360" y1="500" x2="310" y2="562" />
+  <line class="sr-line" x1="360" y1="500" x2="410" y2="562" />
+  <circle class="sr-leaf" cx="110" cy="594" r="32" />
+  <text class="sr-lt" x="110" y="590" text-anchor="middle">Carol</text>
+  <text class="sr-ls" x="110" y="606" text-anchor="middle">1k · CSV exit</text>
+  <circle class="sr-leaf" cx="210" cy="594" r="32" />
+  <text class="sr-lt" x="210" y="590" text-anchor="middle">Alice</text>
+  <text class="sr-ls" x="210" y="606" text-anchor="middle">3k · CSV exit</text>
+  <circle class="sr-leaf" cx="310" cy="594" r="32" />
+  <text class="sr-lt" x="310" y="590" text-anchor="middle">Dave</text>
+  <text class="sr-ls" x="310" y="606" text-anchor="middle">2k · CSV exit</text>
+  <circle class="sr-leaf" cx="410" cy="594" r="32" />
+  <text class="sr-lt" x="410" y="590" text-anchor="middle">Bob</text>
+  <text class="sr-ls" x="410" y="606" text-anchor="middle">4k · CSV exit</text>
+  <g v-click>
+    <line class="sr-hl-line" x1="480" y1="118" x2="480" y2="200" />
+    <line class="sr-hl-line" x1="480" y1="278" x2="260" y2="330" />
+    <line class="sr-hl-line" x1="260" y1="386" x2="360" y2="432" />
+    <line class="sr-hl-line" x1="360" y1="500" x2="310" y2="562" />
+    <rect class="sr-hl" x="303" y="193" width="354" height="92" rx="12" />
+    <rect class="sr-hl" x="183" y="323" width="154" height="70" rx="10" />
+    <circle class="sr-hl" cx="360" cy="466" r="41" />
+    <circle class="sr-hl" cx="310" cy="594" r="39" />
+    <text class="sr-hlt" x="660" y="586" text-anchor="middle">Dave's unilateral exit: 3 pre-signed txs</text>
+    <text class="sr-hlt" x="660" y="606" text-anchor="middle">go on-chain, Dave pays the fees, per tx a CSV wait</text>
+  </g>
 </svg>
 
 <style>
-.sr-svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; font-family: 'Geist', -apple-system, sans-serif; }
+.sr-svg { display: block; width: 100%; max-width: 620px; height: auto; margin: 0 auto; font-family: 'Geist', -apple-system, sans-serif; }
 .sr-svg .sr-line { stroke: rgba(194,232,33,0.5); stroke-width: 1.5; }
 .sr-svg .sr-root { fill: rgba(194,232,33,0.15); stroke: #c2e821; stroke-width: 3; }
 .sr-svg .sr-rt { fill: #c2e821; font-size: 19px; font-weight: 700; }
@@ -581,6 +608,9 @@ timelocks so the newest owner can always confirm before older owners.
 .sr-svg .sr-mt { fill: rgba(255,255,255,0.6); font-size: 16px; font-weight: 700; }
 .sr-svg .sr-ms { fill: rgba(255,255,255,0.5); font-size: 11px; font-style: italic; }
 .sr-svg .sr-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
+.sr-svg .sr-hl { fill: none; stroke: #ef4444; stroke-width: 3; }
+.sr-svg .sr-hl-line { stroke: #ef4444; stroke-width: 3; }
+.sr-svg .sr-hlt { fill: #ef4444; font-size: 13px; font-weight: 700; }
 </style>
 
 <!--
@@ -602,6 +632,14 @@ broadcast in normal operation. Unilateral exit = broadcast the path
 root to your leaf, tx by tx, then wait out the CSV. Deeper leaf =
 more txs = pricier exit. Splitting a leaf = pre-signing new child txs
 below it. Same virtual-tree trick as Bark's round trees.
+
+Click reveals Dave's exit path in red: split tx + branch tx + leaf tx =
+3 broadcasts (CPFP fees on Dave) to recover 2k sats. Exit costs scale
+with depth and depth is where small payments live: the guarantee is
+real but regressive. Whales exit cheap, sats exit expensive; below
+~16k sats the beta won't even do it. Fair point across the board
+though: Ark tree unrolls have the same shape. Side effect: Dave's exit
+anchors Carol/Alice/Bob's branches on-chain, shortening THEIR exits.
 -->
 ---
 
