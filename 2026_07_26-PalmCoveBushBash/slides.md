@@ -6,7 +6,6 @@ highlighter: shiki
 lineNumbers: false
 info: |
   ## Sp/B/ark/ade
-  Three ways to share a UTXO.
   BushBash Palm Cove · 26 July 2026
 drawings:
   persist: false
@@ -19,17 +18,17 @@ toc: false
 
 # Sp/B/ark/ade
 
-### *Three ways to share a UTXO.*
+[//]: # (### *Three ways to share a UTXO.*)
 
 <div class="pt-8 opacity-80">
 Bitcoin L2s without a soft fork: what they promise, what you trust
 </div>
 
 <div class="pt-12 text-sm opacity-60">
-@bonomat - Philipp
+@bonomat
 </div>
 <div class="pt-2 text-xs opacity-60">
-BushBash Palm Cove · Sunday, 26 July 2026
+BushBash Palm Cove · July 2026
 </div>
 
 <!--
@@ -148,7 +147,7 @@ open/close, online requirement) so the limitations slide lands.
 
 [//]: # (Slide: Lightning limitations)
 
-# Where Lightning hurts
+# Why Not Lightning
 
 - 💸 **A channel per user**: Onboarding the next billion = billions of channel opens.
 - 📥 **Inbound liquidity**: You can't *receive* until someone locks coins toward you. New users must buy or beg for
@@ -681,7 +680,6 @@ layoutClass: gap-8
 - Every tree node: cooperative **n-of-n** (everyone below + server) or **timelocked recovery**.
 - VTXOs **expire**: after the round's lifetime the server **sweeps** the shared output to recover its liquidity; users *
   *refresh** into a new round before that.
-- Old-for-new swap is atomic via **hash-locked forfeits**.
 
 ::right::
 
@@ -849,7 +847,7 @@ interactivity, not this capital float.
 
 [//]: # (Slide: Bark implementation)
 
-# Bark: Ark on mainnet
+# Bark: Ark + Satechains
 
 - **Second** (Steven, Erik, Neil, ex-Blockstream).
 - First public Ark mainnet: **June 2026**.
@@ -872,7 +870,7 @@ mnemonic AND a backup of the wallet's data directory.
 
 [//]: # (Slide: Bark: expiry, arkoor, the honest costs)
 
-# Bark: the fine print
+# Bark: Summary
 
 <div class="grid grid-cols-2 gap-6 pt-4">
 
@@ -940,9 +938,6 @@ layoutClass: gap-8
 
 - Built by **Ark Labs**. Mainnet quietly since **Aug 2025** (Baltic Honeybadger), public beta **Oct 2025**.
 - Same Ark base as Bark: **VTXOs** in batch outputs, commitment txs, forfeits, expiry + renewal, unilateral exit.
-- On top: a **Virtual Mempool**: a DAG of chained off-chain txs. Operator co-sign = *preconfirmation*, instantly
-  spendable.
-- **Checkpoint txs** + forfeits protect the operator; **intent delegation** renews your VTXOs while you're offline.
 - **Arkade Script**: Bitcoin Script + introspection opcodes → **covenants**: vaults, swaps, channels.
 - **Arkade Assets**: issued assets living on VTXOs; **USDT** coming (Tether-backed).
 
@@ -1010,7 +1005,7 @@ recoverable → spent.
 
 [//]: # (Slide: Arkade: the fine print)
 
-# Arkade: the fine print
+# Arkade: Summary
 
 <div class="grid grid-cols-2 gap-6 pt-4">
 
@@ -1073,18 +1068,18 @@ class: text-center
 
 <div class="compare-table text-xs pt-2">
 
-|                     | **Spark**                                                 | **Bark**                                                     | **Arkade**                                                     |
-|---------------------|-----------------------------------------------------------|--------------------------------------------------------------|----------------------------------------------------------------|
-| **Design**          | Statechains, key handover                                 | Ark, pre-signed trees, no covenants                          | Ark + virtual mempool + scripts                                |
-| **Operator**        | Federation: Lightspark, Flashnet, Breez                   | Single server, **self-hostable**                             | Single operator (Ark Labs) + TEE signer                        |
-| **You trust…**      | threshold *deleted* old key shares (unverifiable)         | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion |
-| **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | batch expiry, renew via batch swap / delegation                |
-| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                            |
-| **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                                 |
-| **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                             |
-| **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                                    |
-| **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                                    |
-| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin         |
+|                     | **Spark**                                                 | **Bark**                                                     | **Arkade**                                             |
+|---------------------|-----------------------------------------------------------|--------------------------------------------------------------|--------------------------------------------------------|
+| **Design**          | Statechains, key handover                                 | Ark + statechains                                            | Ark + satetchain + scripts                             |
+| **Operator**        | Federation: Lightspark, Flashnet, Breez                   | Single operator                                              | Single operator (Ark Labs) + TEE signer                |
+| **You trust…**      | threshold *deleted* old key shares (unverifiable)         | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion   |
+| **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | **~30 days**, refresh in rounds        |
+| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                    |
+| **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                         |
+| **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
+| **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                            |
+| **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                            |
+| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin |
 
 </div>
 
@@ -1103,51 +1098,200 @@ Arkade = programmability.
 
 ---
 
-[//]: # (Slide: same dream, three bets)
+[//]: # ([//]: # &#40;Slide: same dream, three bets&#41;)
 
-# Same dream, three bets
+[//]: # ()
 
-<div class="grid grid-cols-3 gap-4 pt-6 text-sm">
+[//]: # (# Same dream, three bets)
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+[//]: # ()
 
-**Spark bets on UX**
+[//]: # (<div class="grid grid-cols-3 gap-4 pt-6 text-sm">)
 
-If the federation behaves, you get the best payments experience on Bitcoin: free, instant, offline, with real
-stablecoins. The cost: finality you can't prove.
+[//]: # ()
 
-</div>
+[//]: # (<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">)
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+[//]: # ()
 
-**Bark bets on Bitcoin**
+[//]: # (**Spark bets on UX**)
 
-Pure pre-signed transactions, real exits, self-hostable, and a roadmap that gets *better* if CTV/CSFS activate. The
-cost: expiry, rounds, liveness.
+[//]: # ()
 
-</div>
+[//]: # (If the federation behaves, you get the best payments experience on Bitcoin: free, instant, offline, with real)
 
-<div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
+[//]: # (stablecoins. The cost: finality you can't prove.)
 
-**Arkade bets on builders**
+[//]: # ()
 
-Covenants and assets today via an emulated script layer. If you want to *build* (swaps, vaults, channels), this is the
-sandbox. The cost: operator + TEE trust.
+[//]: # (</div>)
 
-</div>
+[//]: # ()
 
-</div>
+[//]: # (<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">)
 
-<div class="pt-8 text-center text-lg">
-None of them needed a soft fork. All of them get <strong>better</strong> with one.
-</div>
+[//]: # ()
+
+[//]: # (**Bark bets on Bitcoin**)
+
+[//]: # ()
+
+[//]: # (Pure pre-signed transactions, real exits, self-hostable, and a roadmap that gets *better* if CTV/CSFS activate. The)
+
+[//]: # (cost: expiry, rounds, liveness.)
+
+[//]: # ()
+
+[//]: # (</div>)
+
+[//]: # ()
+
+[//]: # (<div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">)
+
+[//]: # ()
+
+[//]: # (**Arkade bets on builders**)
+
+[//]: # ()
+
+[//]: # (Covenants and assets today via an emulated script layer. If you want to *build* &#40;swaps, vaults, channels&#41;, this is the)
+
+[//]: # (sandbox. The cost: operator + TEE trust.)
+
+[//]: # ()
+
+[//]: # (</div>)
+
+[//]: # ()
+
+[//]: # (</div>)
+
+[//]: # ()
+
+[//]: # (<div class="pt-8 text-center text-lg">)
+
+[//]: # (None of them needed a soft fork. All of them get <strong>better</strong> with one.)
+
+[//]: # (</div>)
+
+[//]: # ()
+
+[//]: # (<!--)
+
+[//]: # (Closing framing: these are not three competitors so much as three)
+
+[//]: # (positions on the trust-vs-capability curve, all waiting for covenants)
+
+[//]: # (to move the whole curve up. CTV/CSFS helps all three: Bark loses)
+
+[//]: # (interactivity, Arkade lifts scripts to consensus, Spark could harden)
+
+[//]: # (exits.)
+
+[//]: # (-->)
+
+[//]: # (---)
+
+[//]: # (Slide: decision tree)
+
+# Which one is for you?
+
+<svg class="dt-svg" viewBox="0 0 960 416" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dt-arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="rgba(255,255,255,0.55)"/>
+    </marker>
+  </defs>
+
+  <!-- Q1 -->
+  <rect class="dt-q" x="170" y="4" width="400" height="48" rx="8"/>
+  <text class="dt-t" x="370" y="33">Like to support the PayPal mafia?</text>
+  <g v-click="1">
+    <line class="dt-l" x1="570" y1="28" x2="694" y2="28" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl yes" x="632" y="20">yes</text>
+    <rect class="dt-r spark" x="700" y="4" width="200" height="48" rx="8"/>
+    <text class="dt-rt spark" x="800" y="34">Spark</text>
+  </g>
+
+  <!-- Q2 -->
+  <g v-click="2">
+    <line class="dt-l" x1="370" y1="52" x2="370" y2="88" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl no" x="352" y="75">no</text>
+    <rect class="dt-q" x="170" y="92" width="400" height="48" rx="8"/>
+    <text class="dt-t" x="370" y="121">You are a Bitcoin maxi?</text>
+  </g>
+
+  <!-- Q3 -->
+  <g v-click="3">
+    <line class="dt-l" x1="300" y1="140" x2="300" y2="176" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl yes" x="282" y="163">yes</text>
+    <line class="dt-l" x1="440" y1="140" x2="440" y2="176" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl no-r" x="458" y="163">no</text>
+    <rect class="dt-q" x="170" y="180" width="400" height="48" rx="8"/>
+    <text class="dt-t" x="370" y="209">Techie and like pain?</text>
+  </g>
+  <g v-click="4">
+    <line class="dt-l" x1="570" y1="204" x2="694" y2="204" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl yes" x="632" y="196">yes</text>
+    <rect class="dt-r node" x="700" y="180" width="200" height="48" rx="8"/>
+    <text class="dt-rt node" x="800" y="210">Run your own node</text>
+  </g>
+
+  <!-- Q4 -->
+  <g v-click="5">
+    <line class="dt-l" x1="370" y1="228" x2="370" y2="264" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl no" x="352" y="251">no</text>
+    <rect class="dt-q" x="170" y="268" width="400" height="48" rx="8"/>
+    <text class="dt-t" x="370" y="297">Accept trust for Lightning payments?</text>
+  </g>
+  <g v-click="6">
+    <line class="dt-l" x1="570" y1="292" x2="694" y2="292" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl yes" x="632" y="284">yes</text>
+    <rect class="dt-r bark" x="700" y="268" width="200" height="48" rx="8"/>
+    <text class="dt-rt bark" x="800" y="298">Bark</text>
+  </g>
+
+  <!-- Q5 -->
+  <g v-click="7">
+    <line class="dt-l" x1="370" y1="316" x2="370" y2="352" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl no" x="352" y="339">no</text>
+    <rect class="dt-q" x="170" y="356" width="400" height="48" rx="8"/>
+    <text class="dt-t" x="370" y="385">Advanced use cases, like trading?</text>
+  </g>
+  <g v-click="8">
+    <line class="dt-l" x1="570" y1="380" x2="694" y2="380" marker-end="url(#dt-arr)"/>
+    <text class="dt-lbl yes" x="632" y="372">yes (also no)</text>
+    <rect class="dt-r arkade" x="700" y="356" width="200" height="48" rx="8"/>
+    <text class="dt-rt arkade" x="800" y="386">Arkade</text>
+  </g>
+</svg>
+
+<style>
+.dt-svg { max-width: 800px; margin: 8px auto 0; display: block; }
+.dt-svg .dt-q { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.25); }
+.dt-svg .dt-t { fill: #fff; font-size: 17px; text-anchor: middle; }
+.dt-svg .dt-l { stroke: rgba(255,255,255,0.55); stroke-width: 1.5; }
+.dt-svg .dt-lbl { font-size: 13px; }
+.dt-svg .dt-lbl.yes { fill: #c2e821; text-anchor: middle; }
+.dt-svg .dt-lbl.no { fill: rgba(255,255,255,0.6); text-anchor: end; }
+.dt-svg .dt-lbl.no-r { fill: rgba(255,255,255,0.6); text-anchor: start; }
+.dt-svg .dt-r { fill: rgba(255,255,255,0.05); stroke-width: 2; }
+.dt-svg .dt-r.spark, .dt-svg .dt-r.bark { stroke: #c2e821; }
+.dt-svg .dt-r.arkade { stroke: #f7931a; }
+.dt-svg .dt-r.node { stroke: rgba(255,255,255,0.6); }
+.dt-svg .dt-rt { font-size: 20px; font-weight: 700; text-anchor: middle; }
+.dt-svg .dt-rt.spark, .dt-svg .dt-rt.bark { fill: #c2e821; }
+.dt-svg .dt-rt.arkade { fill: #f7931a; }
+.dt-svg .dt-rt.node { fill: #fff; font-size: 16px; }
+</style>
 
 <!--
-Closing framing: these are not three competitors so much as three
-positions on the trust-vs-capability curve, all waiting for covenants
-to move the whole curve up. CTV/CSFS helps all three: Bark loses
-interactivity, Arkade lifts scripts to consensus, Spark could harden
-exits.
+The jokes: question 2 changes nothing, yes or no you fall through
+(both arrows point down). Question 3, techie and like pain, sends you
+to run your own node. Landing: if you're fine with stablecoins from
+the Lightspark/PayPal crowd, Spark. If you accept your Ark server
+doubling as your LN gateway, Bark. Everything else, including "no",
+lands on Arkade. That's the builder pitch in one slide.
 -->
 
 ---
