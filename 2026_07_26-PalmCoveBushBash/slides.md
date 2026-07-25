@@ -1079,6 +1079,7 @@ class: text-center
 | **Lightning**       | via SSPs, 0.25%                                           | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
 | **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                            |
 | **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                            |
+| **Open source**     | client SDKs only, server closed                           | **fully open source**                                        | **fully open source**                                  |
 | **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin |
 
 </div>
