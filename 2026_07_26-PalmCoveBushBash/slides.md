@@ -523,7 +523,7 @@ timelocks so the newest owner can always confirm before older owners.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**The good**
+**Pros**
 
 - Instant, free Spark→Spark transfers, **no liquidity provisioning**, no rounds, no expiry.
 - Offline receive; no on-chain footprint to get paid.
@@ -534,28 +534,20 @@ timelocks so the newest owner can always confirm before older owners.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
-**The ugly**
+**Cons**
 
 - Security = SE **actually deleted** the old key.
 - Federation is 3 companies. Liveness of the federation required for every transfer.
-- Unilateral exit: beta, chain of txs, uneconomical below **~16k sats**.
-- No scripts, no contracts. Payments only.
-- **If SE keeps shares and colludes with past owner → **your coin can be double-spent**.**
+- Unilateral exit: yes, chain of txs
+- No scripts, no contracts. Multisig only.
+- Closed source spark core (btc custody, seed storage, lightning swaps)
+- **Where does the liquidity come from?**
+- **Who is facilitating lightning payments?**
 
 </div>
 
 </div>
 
-<div class="pt-4 text-center text-sm opacity-70">
-Statechains trade <em>provable</em> finality for UX. Spark makes that trade very well, but it is the trade.
-</div>
-
-<!--
-Trust is "moment in time": only needed during a transfer, and forward
-security holds IF deletion happened. But no one can audit an absence of
-bytes. Bitcoin Layers and Bitcoin Magazine both flag this as the core
-criticism. Mainnet beta since April 2025.
--->
 
 ---
 
@@ -876,7 +868,7 @@ mnemonic AND a backup of the wallet's data directory.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**The good**
+**Pros**
 
 - Board/refresh VTXOs are **trustless**: real unilateral exit, pure Bitcoin txs.
 - Instant **arkoor** payments; offline receive.
@@ -887,7 +879,7 @@ mnemonic AND a backup of the wallet's data directory.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
-**The catch**
+**Cons**
 
 - VTXOs **expire (~30 days)**: Liquidity cost each refresh (~0.07%).
 - Refresh needs **online during a round** (can be delegated).
@@ -1011,7 +1003,7 @@ recoverable → spent.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
 
-**The good**
+**Pros**
 
 - Everything Ark gives: instant preconfirmed payments, offline receive, unilateral exit.
 - **Covenants today**: Arkade Script sees the spending tx; vaults, non-interactive swaps, channels *inside* VTXOs.
@@ -1022,7 +1014,7 @@ recoverable → spent.
 
 <div class="p-4 rounded bg-white/5 border-l-4 border-[#ef4444]/60">
 
-**The catch**
+**Cons**
 
 - **Single operator** (Ark Labs); preconfirmations trust it not to co-sign a conflict.
 - Covenants are **not L1-enforced**: they run in a **TEE co-signer** (the Emulator, attested)
