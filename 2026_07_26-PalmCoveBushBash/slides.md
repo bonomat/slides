@@ -1159,10 +1159,14 @@ class: text-center
 
 **Try it**
 
-- Arkade wallet: [arkade.space](https://arkade.space)
+- Spark wallets:
+  - Wallet of Satoshi: [walletofsatoshi.com](https://walletofsatoshi.com)
+  - Blitz: [blitz-wallet.com](https://blitz-wallet.com)
+  - Breez SDK: [sdk.breez.technology](https://sdk.breez.technology)
 - Bark wallets:
   - Noah: [github.com/smolcars/noah](https://github.com/smolcars/noah)
   - Arkee: [arke.cash](https://arke.cash)
+- Arkade wallet: [arkade.space](https://arkade.space)
 
 </div>
 
