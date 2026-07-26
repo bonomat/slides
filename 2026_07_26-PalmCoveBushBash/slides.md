@@ -254,15 +254,9 @@ class: text-center
 
 # Technical Comparison
 
-<div class="text-lg opacity-70 mt-4 font-normal">
-Same promise, three architectures
-</div>
-
 ---
 
 [//]: # (Slide: Family tree)
-
-# The family tree
 
 <svg viewBox="0 0 760 340" class="tree-svg" xmlns="http://www.w3.org/2000/svg">
   <line class="tr-line" x1="210" y1="104" x2="140" y2="216" />
