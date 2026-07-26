@@ -179,7 +179,7 @@ class: text-center
 # The New L2s
 
 <div class="text-lg opacity-70 mt-4 font-normal">
-One shared UTXO to solve everything™
+Shared UTXOs to solve everything™
 </div>
 
 ---
@@ -1275,7 +1275,7 @@ Arkade = programmability.
     <line class="dt-l" x1="300" y1="140" x2="300" y2="176" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="282" y="163">yes</text>
     <line class="dt-l" x1="440" y1="140" x2="440" y2="176" marker-end="url(#dt-arr)"/>
-    <text class="dt-lbl no-r" x="458" y="163">no</text>
+    <text class="dt-lbl no-r" x="458" y="163">not yet</text>
     <rect class="dt-q" x="170" y="180" width="400" height="48" rx="8"/>
     <text class="dt-t" x="370" y="209">Techie and like pain?</text>
   </g>
