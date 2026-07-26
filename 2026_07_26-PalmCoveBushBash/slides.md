@@ -31,11 +31,6 @@ Bitcoin L2s without a soft fork: what they promise, what you trust
 BushBash Palm Cove · July 2026
 </div>
 
-<!--
-Disclosure up front: I build Satora on Arkade, so I'm biased.
-I'll be as unfair to everyone equally as I can manage.
--->
-
 ---
 layout: center
 class: text-center
@@ -56,11 +51,6 @@ class: text-center
   border-radius: 8px;
 }
 </style>
-
-<!--
-Two of the three protocols literally descend from the Ark paper,
-and Spark is what you build when you don't want to wait for the flood.
--->
 
 ---
 layout: center
@@ -137,12 +127,6 @@ layoutClass: gap-8
 .ln-svg .ln-htlc { fill: rgba(255,255,255,0.6); font-size: 11px; font-style: italic; }
 </style>
 
-<!--
-Keep this fast, most of the room knows Lightning. The point of the
-slide is to set up the *structure* (per-pair channel, on-chain
-open/close, online requirement) so the limitations slide lands.
--->
-
 ---
 
 [//]: # (Slide: Lightning limitations)
@@ -160,12 +144,6 @@ open/close, online requirement) so the limitations slide lands.
 <div class="pt-8 text-center text-sm opacity-80">
 In practice most users ended up on <strong>custodial</strong> Lightning wallets, the very thing we were trying to avoid.
 </div>
-
-<!--
-The custodial punchline is the real motivation for everything that
-follows: the market voted for UX over self-custody. The new L2s try to
-give both.
--->
 
 ---
 layout: center
@@ -237,12 +215,6 @@ How do they work and differ?
 
 </div>
 
-<!--
-All three share the same skeleton: shared on-chain output, off-chain
-ownership transfer, pre-signed escape hatch. The differences are
-entirely in HOW ownership moves and WHAT you must trust meanwhile.
--->
-
 ---
 layout: center
 class: text-center
@@ -293,16 +265,6 @@ class: text-center
 .tree-svg .tr-cs { fill: #737373; font-size: 10.5px; }
 .tree-svg .tr-annot { fill: rgba(255,255,255,0.6); font-size: 11px; font-style: italic; }
 </style>
-
-<!--
-The joke writes itself: Ark is ark. The useful insight: Spark is the
-only pure statechain. Bark and Arkade both settle through Ark rounds
-(batch output, pre-signed exit trees) but their instant payments
-(arkoor / preconfirmations) are statechain-flavored: the server co-signs
-a handover and you trust it not to sign a conflicting one until the
-next round settles you. So the real spectrum is how much statechain
-trust you hold, and for how long.
--->
 
 ---
 
@@ -390,36 +352,6 @@ trust you hold, and for how long.
 .sc-svg .sc-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
 </style>
 
-<!--
-Classic statechains are indivisible: you hand over the whole coin.
-Spark fixes this with the tree on the left: root = the on-chain UTXO,
-branches = internal txs with no timelocks connecting root to leaves,
-leaves = user-owned txs each with a relative-timelock exit. Leaves
-split instantly for payments and merge back together; child keys
-mathematically combine to equal parent keys, so value moves flexibly
-without touching the chain. Exit = broadcast the branch chain
-root-to-leaf. (Source: spark.money/research/what-is-spark-bitcoin-layer-2)
-
-Then the right side, per leaf: Alice deposits into a 2-of-2 with the
-Spark Entity and pre-signs an exit tx (timelock 400). To pay Bob, the SE
-tweaks its key share so Alice's key no longer completes the aggregate,
-deletes the old share, and co-signs a NEW exit for Bob with a lower
-timelock (300). Same again for Carol (200). Decrementing timelocks mean
-the latest owner can always confirm their exit before any earlier
-owner's stale exit becomes valid. The entire security model hangs on
-that deletion actually happening, which sets up the Spark trust slide.
-
-Q&A ammo, "don't the timelocks run out after N transfers?": no
-timebomb. The timelocks are RELATIVE (CSV): X blocks after the parent
-branch tx is mined, so nothing counts down while the coin is off-chain
-(this is Spark's fix over Mercury statechains, which used absolute
-timelocks). The decrement only orders the broadcast race: current
-owner's lower CSV confirms first. It does cap the number of transfers
-per leaf though; when headroom runs low, the wallet swaps value into a
-fresh leaf (leaves split/merge off-chain with SE cooperation, new leaf
-= full timelock). Exact step size and floor are not published.
--->
-
 ---
 layout: center
 class: text-center
@@ -499,12 +431,6 @@ The coin never moves. <strong>Who can sign for it</strong> moves.
 .spark-svg .sp-del { fill: #f7931a; font-size: 11px; font-weight: 600; }
 </style>
 
-<!--
-FROST detail if asked: SO key is Shamir-shared across operators, any
-threshold t-of-n reconstructs; tweaks are applied to the shares without
-ever exposing the tweak itself. Exit txs use decrementing relative
-timelocks so the newest owner can always confirm before older owners.
--->
 ---
 
 [//]: # (Slide: Spark tree and the root)
@@ -607,34 +533,6 @@ timelocks so the newest owner can always confirm before older owners.
 .sr-svg .sr-hlt { fill: #ef4444; font-size: 13px; font-weight: 700; }
 </style>
 
-<!--
-The root detail that surprises people: it starts as a 2-of-2 aggregate
-between the depositor and the SE, they pre-sign the branch txs, and then
-the SE DESTROYS its root key share. From that moment the pre-signed
-tree is the only possible way to spend the UTXO: covenant-like behavior
-without a covenant. No absolute timelock anywhere means the tree can sit
-off-chain forever: this is exactly why Spark has no expiry while Ark
-rounds do (the Ark server needs its fronted liquidity back, Spark fronts
-nothing). Leaves at the bottom keep changing hands via key handover;
-the root never notices.
-
-Q&A ammo, "does the root UTXO have multiple outputs?": no, one output.
-The tree is entirely virtual: the branch tx is a pre-signed,
-unbroadcast tx that WOULD spend the root and create N outputs; each of
-those feeds the next pre-signed tx down to the leaves. Nothing is
-broadcast in normal operation. Unilateral exit = broadcast the path
-root to your leaf, tx by tx, then wait out the CSV. Deeper leaf =
-more txs = pricier exit. Splitting a leaf = pre-signing new child txs
-below it. Same virtual-tree trick as Bark's round trees.
-
-Click reveals Dave's exit path in red: split tx + branch tx + leaf tx =
-3 broadcasts (CPFP fees on Dave) to recover 2k sats. Exit costs scale
-with depth and depth is where small payments live: the guarantee is
-real but regressive. Whales exit cheap, sats exit expensive; below
-~16k sats the beta won't even do it. Fair point across the board
-though: Ark tree unrolls have the same shape. Side effect: Dave's exit
-anchors Carol/Alice/Bob's branches on-chain, shortening THEIR exits.
--->
 ---
 
 [//]: # (Slide: Spark: trust & reality check)
@@ -669,9 +567,6 @@ anchors Carol/Alice/Bob's branches on-chain, shortening THEIR exits.
 </div>
 
 </div>
-
-
-
 
 ---
 layout: center
@@ -747,15 +642,6 @@ Unilateral exit = broadcast your branch, wait out a CSV delay, leave. Works unti
 .bark-svg .bk-line { stroke: #c2e821; stroke-width: 1.5; }
 .bark-svg .bk-annot { fill: rgba(255,255,255,0.6); font-size: 11px; font-style: italic; }
 </style>
-
-<!--
-Rounds have 5 phases: intent → tree signing → round tx broadcast →
-forfeit signing → claim. Trees are wide (quad) to keep exit depth
-logarithmic: 256 users = 5 txs deep. The expiry is the crucial
-difference vs Spark: the server fronts every round's liquidity and the
-sweep path is how it gets it back. Original Ark wanted covenants (CTV)
-to make the tree non-interactive; without them, everyone signs.
--->
 
 ---
 
@@ -843,37 +729,6 @@ to make the tree non-interactive; without them, everyone signs.
 .at-svg .at-hls { fill: #ef4444; font-size: 12px; }
 </style>
 
-<!--
-Deliberately the same layout as the Spark tree slide two chapters
-earlier, so the audience can diff them visually. Three differences to
-say out loud: (1) the root is the SERVER's money, not the depositor's,
-which is why it must expire and be swept back; (2) the tree is fully
-signed up front by every participant in the round, n-of-n, which is
-the interactivity cost covenants would remove; (3) leaves are VTXOs
-that must refresh into a new round before expiry or the sweep eats
-them.
-
-Q&A ammo, "why can't users provide the liquidity on-chain?": boarding
-IS user-funded (round tx spends the user's own coins). The fronting is
-only for refreshes: the refresher's value is locked in the OLD round's
-shared output, spendable only n-of-n by everyone in that round
-(unobtainable: offline users, people who exited) or via the server's
-timelocked sweep. So the user forfeits the old claim to the server
-(user+server sigs only) and the server pays fresh value now, recovering
-the swept old output at expiry. That timing gap is the float, and it's
-why refresh is priced like a loan. CTV removes the signing
-interactivity, not this capital float.
-
-Click reveals Erin's exit path in red, mirroring Dave's on the Spark
-slide. Timelock story differs from Spark: NO timelock between tree
-levels (broadcast the whole chain back to back), one CSV (~144 blocks,
-about a day) on the final VTXO output so forfeited coins can be
-disputed, and the hard deadline that everything must confirm before
-the ~30-day round expiry or the server sweep takes it. Erin's arkoor
-coin adds one extra tx on top of the tree unroll. Same regressive
-economics as Spark: fees scale with depth, small coins exit at a loss.
--->
-
 ---
 
 [//]: # (Slide: Bark implementation)
@@ -889,14 +744,6 @@ economics as Spark: fees scale with depth, small coins exit at a loss.
 - Payments = **arkoor** (*"Ark out-of-round"*): instant, server co-signs, statechain-flavored until refreshed.
 - In production: Arkee, Bark, Noah
 
-<!--
-Terminology note: the docs dropped the old "clArk / covenantless Ark"
-branding; it's just the Ark protocol, implemented by bark (client) and
-captaind (server). The arkoor line is the "Bark = Ark + statechain"
-claim from the family tree slide, paid off. Wallet restore needs
-mnemonic AND a backup of the wallet's data directory.
--->
-
 ---
 
 [//]: # (Slide: Bark: expiry, arkoor, the honest costs)
@@ -911,6 +758,7 @@ mnemonic AND a backup of the wallet's data directory.
 
 - Board/refresh VTXOs are **trustless**: real unilateral exit, pure Bitcoin txs.
 - Instant **arkoor** payments; offline receive.
+- **Custom finality**: join a round anytime; the refresh removes all trust in former senders.
 - Lightning both ways via server as gateway (HTLC-on-VTXO), no channels.
 - Open protocol, **self-hostable server** (`captaind`), Rust, full SDK.
 
@@ -935,13 +783,6 @@ mnemonic AND a backup of the wallet's data directory.
 Focused on fast and easy payments.
 
 </div>
-
-<!--
-Refresh cost formula: amount × (days_to_expiry/365) × opportunity rate.
-LN receive has its own wrinkle: server fronts the HTLC with an
-"ephemeral key" it promises to delete, and receive-HTLC VTXOs live only
-~3 days. Second raised $5.1M; team of 11.
--->
 
 ---
 layout: center
@@ -1025,13 +866,6 @@ layoutClass: gap-8
 .arkade-diagram .caption-hl { color: #c2e821; font-weight: 600; }
 </style>
 
-<!--
-Deliberately the same diagram as my Byron Bay talk; Arkade regulars
-have seen this. Batch root is n-of-n MuSig2 of all owners + operator;
-sub-dust VTXOs via OP_RETURN; VTXO states: preconfirmed → settled →
-recoverable → spent.
--->
-
 ---
 
 [//]: # (Slide: Arkade: the fine print)
@@ -1045,6 +879,7 @@ recoverable → spent.
 **Pros**
 
 - Everything Ark gives: instant preconfirmed payments, offline receive, unilateral exit.
+- **Custom finality**: settle into a batch anytime; removes all trust in former senders.
 - **Covenants today**: Arkade Script sees the spending tx; vaults, non-interactive swaps, channels *inside* VTXOs.
 - **Assets on VTXOs**, same exit guarantees; USDT coming.
 - Lightning via **independent swap providers**: Satora, Boltz.
@@ -1068,17 +903,6 @@ recoverable → spent.
 Focused on builders: a programmable execution layer on Bitcoin.
 
 </div>
-
-<!--
-This is the same Introspector/emulator story from my Prague and Byron
-talks: a co-signer that only signs if the committed script evaluates
-true. Arkade Script = Bitcoin Script + Elements-style introspection
-opcodes (OP_INSPECTOUTPUTVALUE, OP_INSPECTINPUTSCRIPTPUBKEY, ...).
-Contract catalog in the docs: escrow, HTLC, Spilman + Dryja-Poon
-channels, chain swaps, non-interactive swaps (Banco). If a TEE-skeptic
-asks: yes, SGX-style attestation is the trust anchor; exit path never
-depends on it.
--->
 
 ---
 layout: center
@@ -1107,6 +931,7 @@ class: text-center
 | **Open source**     | client/server, spark core closed                   | **fully open source**                                        | **fully open source**                                 |
 | **Operator**        | Federation: Lightspark, Flashnet, Breez                 | Single operator                                              | Single operator (Ark Labs) + TEE signer               |
 | **You trust…**      | threshold *deleted* old key shares (unverifiable)       | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion  |
+| **Custom finality** | none, deletion trust forever                            | ✅ refresh into a round drops all sender trust                | ✅ settle into a batch drops all sender trust          |
 | **Expiry**          | none, leaves live forever                               | **~30 days**, refresh in rounds                              | **~30 days**, refresh in rounds                       |
 | **Unilateral exit** | pre-signed chain, decrementing timelocks | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                   |
 | **Offline receive** | ✅ fully                                                 | ✅ preconfirmed                               | ✅ preconfirmed                                        |
@@ -1124,13 +949,6 @@ class: text-center
 .compare-table td, .compare-table th { padding: 4px 8px !important; line-height: 1.35; }
 .compare-table tr td:first-child { color: #c2e821; white-space: nowrap; }
 </style>
-
-<!--
-Slow down here, this is the slide people photograph.
-Point out the diagonal: each column is strongest exactly where the
-others are weakest. Spark = UX + stablecoins, Bark = sovereignty,
-Arkade = programmability.
--->
 
 ---
 
@@ -1212,19 +1030,8 @@ Arkade = programmability.
 
 [//]: # ()
 
-[//]: # (<!--)
-
-[//]: # (Closing framing: these are not three competitors so much as three)
-
-[//]: # (positions on the trust-vs-capability curve, all waiting for covenants)
-
-[//]: # (to move the whole curve up. CTV/CSFS helps all three: Bark loses)
-
-[//]: # (interactivity, Arkade lifts scripts to consensus, Spark could harden)
-
-[//]: # (exits.)
-
-[//]: # (-->)
+[//]: # (
+)
 
 [//]: # (---)
 
@@ -1239,11 +1046,11 @@ Arkade = programmability.
     </marker>
   </defs>
 
-  <!-- Start -->
+  
   <rect class="dt-start" x="14" y="4" width="106" height="48" rx="24"/>
   <text class="dt-st" x="67" y="33">Start</text>
 
-  <!-- Q1 -->
+  
   <g v-click="1">
     <line class="dt-l" x1="120" y1="28" x2="164" y2="28" marker-end="url(#dt-arr)"/>
     <rect class="dt-q" x="170" y="4" width="400" height="48" rx="8"/>
@@ -1256,7 +1063,7 @@ Arkade = programmability.
     <text class="dt-rt spark" x="800" y="34">Spark</text>
   </g>
 
-  <!-- Q2 -->
+  
   <g v-click="3">
     <line class="dt-l" x1="370" y1="52" x2="370" y2="88" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl no" x="352" y="75">no</text>
@@ -1264,7 +1071,7 @@ Arkade = programmability.
     <text class="dt-t" x="370" y="121">You are a Bitcoin maxi?</text>
   </g>
 
-  <!-- Q3 -->
+  
   <g v-click="4">
     <line class="dt-l" x1="300" y1="140" x2="300" y2="176" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl yes" x="282" y="163">yes</text>
@@ -1280,7 +1087,7 @@ Arkade = programmability.
     <text class="dt-rt node" x="800" y="210">Run your own node</text>
   </g>
 
-  <!-- Q4 -->
+  
   <g v-click="6">
     <line class="dt-l" x1="370" y1="228" x2="370" y2="264" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl no" x="352" y="251">no</text>
@@ -1294,7 +1101,7 @@ Arkade = programmability.
     <text class="dt-rt bark" x="800" y="298">Bark</text>
   </g>
 
-  <!-- Q5 -->
+  
   <g v-click="8">
     <line class="dt-l" x1="370" y1="316" x2="370" y2="352" marker-end="url(#dt-arr)"/>
     <text class="dt-lbl no" x="352" y="339">no</text>
@@ -1330,14 +1137,36 @@ Arkade = programmability.
 .dt-svg .dt-rt.node { fill: #fff; font-size: 16px; }
 </style>
 
-<!--
-The jokes: question 2 changes nothing, yes or no you fall through
-(both arrows point down). Question 3, techie and like pain, sends you
-to run your own node. Landing: if you're fine with stablecoins from
-the Lightspark/PayPal crowd, Spark. If you accept your Ark server
-doubling as your LN gateway, Bark. Everything else, including "no",
-lands on Arkade. That's the builder pitch in one slide.
--->
+---
+
+[//]: # (Slide: resources)
+
+# Resources
+
+<div class="grid grid-cols-2 gap-6 pt-6">
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#c2e821]/60">
+
+**Docs**
+
+- Spark: [docs.spark.money](https://docs.spark.money)
+- Bark: [second.tech/docs](https://second.tech/docs)
+- Arkade: [docs.arkadeos.com](https://docs.arkadeos.com)
+
+</div>
+
+<div class="p-4 rounded bg-white/5 border-l-4 border-[#f7931a]/60">
+
+**Try it**
+
+- Arkade wallet: [arkade.space](https://arkade.space)
+- Bark wallets:
+  - Noah: [github.com/smolcars/noah](https://github.com/smolcars/noah)
+  - Arkee: [arke.cash](https://arke.cash)
+
+</div>
+
+</div>
 
 ---
 layout: center
