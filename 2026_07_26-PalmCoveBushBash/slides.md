@@ -1105,19 +1105,23 @@ class: text-center
 
 <div class="compare-table text-xs pt-2">
 
-|                     | **Spark**                                                 | **Bark**                                                     | **Arkade**                                             |
-|---------------------|-----------------------------------------------------------|--------------------------------------------------------------|--------------------------------------------------------|
-| **Design**          | Statechains, key handover                                 | Ark + statechains                                            | Ark + satetchain + scripts                             |
-| **Operator**        | Federation: Lightspark, Flashnet, Breez                   | Single operator                                              | Single operator (Ark Labs) + TEE signer                |
-| **You trust…**      | threshold *deleted* old key shares (unverifiable)         | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion   |
-| **Expiry**          | none, leaves live forever                                 | **~30 days**, refresh in rounds                              | **~30 days**, refresh in rounds        |
-| **Unilateral exit** | pre-signed chain, decrementing timelocks; beta, ≳16k sats | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                    |
-| **Offline receive** | ✅ fully                                                   | ✅ arkoor (trust until refresh)                               | ✅ preconfirmed                                         |
-| **Lightning**       | via SSPs, 0.25%+routing out / 0.15% in                                         | server is the LN gateway                                     | Satora, Boltz swaps, virtual HTLCs                     |
-| **Assets**          | BTKN: **USDT + USDB live**                                | none                                                         | Arkade Assets, USDT planned                            |
-| **Programmability** | none                                                      | Bitcoin Script only                                          | **introspection covenants**                            |
-| **Open source**     | client SDKs only, server closed                           | **fully open source**                                        | **fully open source**                                  |
-| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                   | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin |
+<v-clicks>
+
+|                     | **Spark**                                               | **Bark**                                                     | **Arkade**                                            |
+|---------------------|---------------------------------------------------------|--------------------------------------------------------------|-------------------------------------------------------|
+| **Design**          | Statechains, key handover                               | Ark + statechains                                            | Ark + satetchain + scripts                            |
+| **Open source**     | client/server, spark core closed                   | **fully open source**                                        | **fully open source**                                 |
+| **Operator**        | Federation: Lightspark, Flashnet, Breez                 | Single operator                                              | Single operator (Ark Labs) + TEE signer               |
+| **You trust…**      | threshold *deleted* old key shares (unverifiable)       | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion  |
+| **Expiry**          | none, leaves live forever                               | **~30 days**, refresh in rounds                              | **~30 days**, refresh in rounds                       |
+| **Unilateral exit** | pre-signed chain, decrementing timelocks | unroll tree, ~144-block CSV                                  | unroll tree + chain, 1008-block CSV                   |
+| **Offline receive** | ✅ fully                                                 | ✅ preconfirmed                               | ✅ preconfirmed                                        |
+| **Lightning**       | via SSPs, 0.25%+routing out / 0.15% in                  | server is the LN gateway, 0.2%-0.5%                          | Satora, Boltz swaps (0.1% routing out / 0.25% in)     |
+| **Assets**          | BTKN: **USDT + USDB live**                              | none                                                         | Arkade Assets, USDT planned                           |
+| **Programmability** | none                                                    | Bitcoin Script only                                          | **introspection covenants**                           |
+| **Mainnet**         | beta since Apr 2025 · WoS, Theya, Blitz                 | since Jun 2026 · Noah, Arkee, BTCPay                         | Aug 2025 / beta Oct 2025 · Satora, Boltz, Bull Bitcoin |
+
+</v-clicks>
 
 </div>
 
