@@ -807,6 +807,18 @@ to make the tree non-interactive; without them, everyone signs.
   <text class="at-ls" x="235" y="472" text-anchor="middle">15k change</text>
   <text class="at-ols" x="165" y="510" text-anchor="middle">out-of-round spend: instant, off-chain</text>
   <text class="at-annot" x="480" y="532" text-anchor="middle">same virtual-tree trick as Spark, but: the anchor expires, and the whole tree is signed by everyone up front</text>
+  <g v-click>
+    <line class="at-hl-line" x1="480" y1="118" x2="480" y2="200" />
+    <line class="at-hl-line" x1="480" y1="270" x2="160" y2="318" />
+    <line class="at-hl-line" x1="160" y1="382" x2="95" y2="432" />
+    <rect class="at-hl" x="314" y="194" width="332" height="82" rx="12" />
+    <circle class="at-hl" cx="160" cy="350" r="39" />
+    <circle class="at-hl" cx="95" cy="460" r="35" />
+    <text class="at-hlt" x="700" y="420" text-anchor="middle">Erin's unilateral exit: unroll the branch txs,</text>
+    <text class="at-hlt" x="700" y="440" text-anchor="middle">then Alice's old leaf tx, then the arkoor tx</text>
+    <text class="at-hls" x="700" y="464" text-anchor="middle">no timelock between levels · final output: ~144-block CSV</text>
+    <text class="at-hls" x="700" y="482" text-anchor="middle">and all of it must confirm before the ~30-day expiry</text>
+  </g>
 </svg>
 
 <style>
@@ -831,6 +843,10 @@ to make the tree non-interactive; without them, everyone signs.
 .at-svg .at-lt { fill: #000; font-size: 13px; font-weight: 700; }
 .at-svg .at-ls { fill: #737373; font-size: 10px; }
 .at-svg .at-annot { fill: rgba(255,255,255,0.6); font-size: 12px; font-style: italic; }
+.at-svg .at-hl { fill: none; stroke: #ef4444; stroke-width: 3; }
+.at-svg .at-hl-line { stroke: #ef4444; stroke-width: 3; }
+.at-svg .at-hlt { fill: #ef4444; font-size: 13px; font-weight: 700; }
+.at-svg .at-hls { fill: #ef4444; font-size: 12px; }
 </style>
 
 <!--
@@ -853,6 +869,15 @@ timelocked sweep. So the user forfeits the old claim to the server
 the swept old output at expiry. That timing gap is the float, and it's
 why refresh is priced like a loan. CTV removes the signing
 interactivity, not this capital float.
+
+Click reveals Erin's exit path in red, mirroring Dave's on the Spark
+slide. Timelock story differs from Spark: NO timelock between tree
+levels (broadcast the whole chain back to back), one CSV (~144 blocks,
+about a day) on the final VTXO output so forfeited coins can be
+disputed, and the hard deadline that everything must confirm before
+the ~30-day round expiry or the server sweep takes it. Erin's arkoor
+coin adds one extra tx on top of the tree unroll. Same regressive
+economics as Spark: fees scale with depth, small coins exit at a loss.
 -->
 
 ---
@@ -1070,7 +1095,7 @@ class: text-center
 
 <div class="text-sm opacity-50 tracking-[0.3em] mb-8">CHAPTER 07 / 07</div>
 
-# Head to Head
+# Summary
 
 ---
 
