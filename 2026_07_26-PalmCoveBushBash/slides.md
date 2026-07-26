@@ -884,7 +884,7 @@ economics as Spark: fees scale with depth, small coins exit at a loss.
 
 [//]: # (Slide: Bark implementation)
 
-# Bark: Ark + Satechains
+# Bark: Ark + Statechains
 
 - **Second** (Steven, Erik, Neil, ex-Blockstream).
 - First public Ark mainnet: **June 2026**.
@@ -1109,7 +1109,7 @@ class: text-center
 
 |                     | **Spark**                                               | **Bark**                                                     | **Arkade**                                            |
 |---------------------|---------------------------------------------------------|--------------------------------------------------------------|-------------------------------------------------------|
-| **Design**          | Statechains, key handover                               | Ark + statechains                                            | Ark + satetchain + scripts                            |
+| **Design**          | Statechains, key handover                               | Ark + statechains                                            | Ark + statechain + scripts                            |
 | **Open source**     | client/server, spark core closed                   | **fully open source**                                        | **fully open source**                                 |
 | **Operator**        | Federation: Lightspark, Flashnet, Breez                 | Single operator                                              | Single operator (Ark Labs) + TEE signer               |
 | **You trust…**      | threshold *deleted* old key shares (unverifiable)       | trustless once refreshed; arkoor: sender+server no-collusion | trustless once refreshed; sender+server no-collusion  |
