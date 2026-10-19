@@ -368,6 +368,8 @@ Design property, not a legal claim. Do not say "regulatory advantage" on stage.
 - Each role can be run by a different, independent party.
 - Striker never holds funds and never takes the other side of a trade.
 - Read it as layers: you, Striker and the maker talk on top; Arkade settles underneath.
+- The dashed Maker box splits too: the market maker prices with a quote key,
+  the owner holds the liquidity with an owner key. Next slide explains how.
 - Say, don't show: FTX was venue, market maker and custodian in one.
   When one party holds every role, nobody checks anybody.
 
@@ -377,7 +379,7 @@ on the trading platform for crypto-assets they operate". Non-custodial design is
 deciding factor in US money-transmission guidance. Not legal advice; no safe harbour
 is guaranteed (CLARITY Act failed cloture 49-50 on 15 Sept 2026, short of the 60 needed).
 
-Transition: "And the split goes one level deeper: inside the maker role itself."
+Transition: "That split inside the maker is the part nobody else can do. Let me show you."
 -->
 
 ---
