@@ -1,0 +1,344 @@
+---
+theme: seriph
+title: Striker — Request-for-quote swaps on Arkade
+info: |
+  15 minutes · high-level technical builder pitch
+colorSchema: dark
+background: '#101612'
+transition: slide-left
+class: text-center
+drawings:
+  persist: false
+---
+
+# Striker
+
+## Ask for a price. Get a signed one. Swap.
+
+Request-for-quote swaps on Arkade
+
+Arkade Day · Lugano · 21 October 2026
+
+<!--
+00:00–00:30 · 30 s
+
+Say:
+- "I'm going to show you a different way to price swaps on Arkade."
+- Name, one line about who you are. Nothing else.
+
+Delivery: don't read the slide. Pause after the title.
+-->
+
+---
+layout: center
+---
+
+# A swap is only as good as its price
+
+<v-clicks>
+
+Fresh when you ask.
+
+Firm when you sign.
+
+The same for every user.
+
+</v-clicks>
+
+<!--
+00:30–01:30 · 60 s
+
+Hook. Make the audience feel the problem before any mechanism.
+- Ask the room: "Who has hit 'swap' and got a worse price than they saw?"
+- Three properties we want. Reveal one per click; they're the yardstick for the rest of the talk.
+- Fresh: reflects the market now. Firm: what you see is what you get. Same for everyone:
+  a slow phone shouldn't get worse execution than a bot.
+
+Do not mention Striker mechanics yet.
+-->
+
+---
+
+# Arkade already makes swaps non-interactive
+
+**Banco** · offers locked in a covenant, filled by anyone
+
+**Solvers** · fill offers from the Arkade stream
+
+**Solver registry** · open, forkable market discovery
+
+<!--
+01:30–03:00 · 90 s
+
+Credit first. This is the foundation; we build on it, not around it.
+- Banco: the offer-poster funds a covenant ("pay me X of asset Y"), walks away; anyone
+  can fill it. Atomic, no counterparty signature at fill time. Partial fills supported.
+- intent-solver + solver-registry: solvers advertise markets and fees in a public,
+  forkable list; wallets pick a market and fund an offer.
+- For Lightning, on-chain and EVM corridors, Arkade already uses request-for-quote over nostr.
+
+Message: "Everything we did stands on this. Thank you, Ark Labs."
+Visual: three boxes, Arkade at the bottom as the base layer.
+-->
+
+---
+
+# A resting offer is a stale price
+
+The rate is fixed in the covenant.
+
+To change it, the maker has to spend the VTXO.
+
+**So the maker can't really go offline.**
+
+<!--
+03:00–04:30 · 90 s
+
+The first limitation of resting offers for liquidity providers. Keep it neutral:
+this is a property of the design, not a flaw in Banco.
+- A Banco offer commits the price when it is funded (wantAmount or a fixed ratio).
+- Markets move. To reprice, the maker cancels and re-funds: an Arkade transaction each time.
+- Banco's cancel leaf is optional and CLTV-locked: maker + Arkade server, only after
+  the offer's cancelDelay timestamp. With no cancelDelay there is no cancel path at all;
+  the offer can only be filled. (arkade-os/banco src/offer.ts, commit 428ae68.)
+  Short timelock = churn; long timelock = stuck with a stale price.
+- So a professional maker stays online and watches anyway.
+
+Transition line: "If the maker is online anyway, why not just ask them?"
+
+Visual: a price chart drifting away from a flat line labelled "your offer".
+-->
+
+---
+
+# Every taker rebuilds the order book
+
+<v-clicks>
+
+Scan the Arkade stream for offers.
+
+Track which are still unspent.
+
+Race everyone else to fill the good ones.
+
+</v-clicks>
+
+**Load on the server. Slow clients lose.**
+
+<!--
+04:30–05:30 · 60 s
+
+The second limitation, on the taker side.
+- Resting offers are discovered by reading Arkade transactions, so every client
+  maintains its own local view of the book.
+- That's repeated work and load on the Arkade server, per client.
+- An offer is a single VTXO: the first valid fill wins. A phone on a bad connection
+  loses races to a bot sitting next to the server. That breaks "same for every user".
+
+Visual: many small clients all pulling from one server; one slow client highlighted.
+-->
+
+---
+
+# Striker: ask, and get a signed quote
+
+**Wallet → Striker → Maker**
+
+<v-clicks>
+
+1. The wallet asks for a price.
+2. The maker returns a signed quote with an expiry.
+3. The wallet checks it, signs, and Striker settles on Arkade.
+
+</v-clicks>
+
+<!--
+05:30–07:00 · 90 s
+
+The core idea. Request/response instead of scanning.
+- One request, one fresh answer. No local order book; the client does no scanning.
+- The quote is firm: signed by the maker, valid until its expiry.
+- Everyone gets the same answer at the same moment: fast or slow client, same price.
+- Maker and wallet never talk directly; Striker relays.
+- Today it's request/response; streaming quotes over a websocket is a natural next step.
+
+Visual: the animated swap diagram from the protocol page.
+-->
+
+---
+
+# Liquidity stays put. The price lives in a signature.
+
+| | Resting offer | Striker quote |
+| --- | --- | --- |
+| Change the price | Spend the VTXO | Sign a new quote |
+| Price stops being valid | Cancel transaction | Expiry, or epoch bump |
+| Maker online | To reprice | To quote |
+
+<!--
+07:00–08:30 · 90 s
+
+How it works, one level down. No code, no opcodes.
+- The maker deposits liquidity once, into a covenant pool.
+- The covenant accepts a fill only with a valid maker signature on the quote,
+  before its expiry, paying the maker at that price. Expiry is checked inside the
+  covenant against the Emulator's clock (OP_CHECKTIME), not a time the filler chooses.
+- The remainder returns to the same pool, so one deposit serves many fills.
+- Repricing is free: sign a new quote. Short expiries make old quotes die on their own.
+- Emergency stop: bump the pool's epoch, which retires every outstanding quote at once.
+  That one does need a cooperative spend with the Arkade server.
+- After quoting, the maker can even go offline until the quote expires.
+
+Pitch line: "Banco puts the price in the script. Striker puts it in a signature."
+-->
+
+---
+
+# Nobody has to trust Striker
+
+<v-clicks>
+
+Striker can't take your funds.
+
+Striker can't change the price you signed.
+
+If a swap settles, it settles at the signed price.
+
+</v-clicks>
+
+**Anyone can run a Striker. Anyone can run a maker.**
+
+<!--
+08:30–09:30 · 60 s
+
+Trust minimization, Arkade's ethos. Say "trust-minimized", never "trustless".
+- The wallet verifies the maker's signature before authorizing anything.
+- The wallet's covenant only releases funds if it receives at least the signed amount.
+- What remains trusted, say it before someone asks:
+  Striker can refuse or delay an order; then the wallet refunds itself.
+  A maker can cancel quotes before they are filled, by spending the pool VTXO.
+  Refunds and cancellation currently need the Arkade server's cooperation.
+- Striker is open source; nothing about it is privileged.
+-->
+
+---
+
+# Separate roles, separate parties
+
+| Role | Who |
+| --- | --- |
+| Settles | Arkade |
+| Prices | Makers |
+| Routes | Striker |
+| Holds the coins | You |
+
+**No one is both the venue and the counterparty.**
+
+<!--
+09:30–10:00 · 30 s
+
+Design property, not a legal claim. Do not say "regulatory advantage" on stage.
+- Each role can be run by a different, independent party.
+- Striker never holds funds and never takes the other side of a trade.
+- Contrast, if useful: FTX was exchange, market maker and custodian in one.
+- Today one operator runs Striker, the maker and the Emulator; the separation
+  holds structurally, and becomes real as independent parties run each role.
+
+Q&A only, if asked about regulation: separating venue from dealing and custody is what
+regulators require of incumbents (e.g. MiCA Art. 76(5)); non-custodial design is the
+deciding factor in US money-transmission guidance. Not legal advice; no safe harbour
+is guaranteed (CLARITY Act failed cloture on 15 Sept 2026).
+-->
+
+---
+layout: center
+---
+
+# Live on Mutinynet
+
+BTC ↔ demo USD
+
+<!--
+10:00–11:00 · 60 s
+
+Demo. Pre-recorded fallback ready; no faucet or setup on stage.
+1. Type an amount: the quote appears instantly, with its expiry ticking.
+2. Wait for it to refresh: a new quote, new price, no transaction.
+3. Swap. Show the result and the receipt.
+
+Say: "That price came from a live feed, was signed by a maker a second ago,
+and settled atomically on Arkade."
+
+Demo USD is an 8-decimal test token, not real dollars or USDt.
+-->
+
+---
+
+# Signed quotes open up more markets
+
+| Market | What the quote carries |
+| --- | --- |
+| Binary options | Strike, expiry, payout |
+| Prediction markets | Event, odds |
+| AMM-style pools | Price from a curve the maker computes |
+| Futures | Mark price, margin terms |
+
+<!--
+11:00–12:30 · 90 s
+
+The ambition. Frame as ideas for anyone building on Arkade, not a Striker roadmap.
+- Anything where the price moves faster than you want to move coins fits signed quotes
+  over covenant-held collateral.
+- Lead with one: a fully collateralized binary option paid in sats.
+  Both sides' collateral locked at entry; resolved by a price attestation.
+- Be honest about the hard parts: each needs its own collateral rules and,
+  for outcomes, an oracle. Futures (margin, liquidation) are the hardest.
+
+Visual: the binary-option chart mock-up, labelled "concept".
+-->
+
+---
+
+# Complements, not replaces
+
+**Banco** · resting orders, set and forget
+
+**Striker** · firm prices for liquidity that moves
+
+<!--
+12:30–13:30 · 60 s
+
+Position explicitly, so nobody leaves thinking it's either/or.
+- Banco suits makers who want a fixed price and to walk away, and stream-filled solver flows.
+- Striker suits active market makers whose price changes constantly.
+- Both settle on the same Arkade covenants and could share discovery:
+  a Striker maker could list in the solver registry.
+- Same direction Arkade already took for corridors: request-for-quote. We brought it to spot.
+
+What's left on our side: durable order recovery (orders are in memory today),
+multiple makers per request, streaming quotes.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+# Build on Arkade
+
+Run a maker · Run a Striker · Build the next market
+
+[striker.mutinynet.subms.dev](https://striker.mutinynet.subms.dev/) · [github.com/bonomat/striker](https://github.com/bonomat/striker)
+
+<!--
+13:30–15:00 · 90 s (includes buffer)
+
+Close with one call to action; repeat the takeaway.
+- "Banco puts the price in the script. Striker puts it in a signature.
+  Both stand on Arkade, and there's room for a lot more on top."
+- Ask: market makers, run a maker; wallet builders, integrate quotes;
+  contract designers, pick a market from the table and build it.
+- QR code to the app and repo. Thank Ark Labs by name.
+
+Stop talking. Go to Q&A.
+-->
