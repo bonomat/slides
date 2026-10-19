@@ -39,22 +39,16 @@ layout: center
 
 # A swap is only as good as its price
 
-<v-clicks>
-
-Fresh when you ask.
-
-Firm when you sign.
-
-The same for every user.
-
-</v-clicks>
+- Fresh when you ask.
+- Firm when you sign.
+- The same for every user.
 
 <!--
 00:30–01:30 · 60 s
 
 Hook. Make the audience feel the problem before any mechanism.
 - Ask the room: "Who has hit 'swap' and got a worse price than they saw?"
-- Three properties we want. Reveal one per click; they're the yardstick for the rest of the talk.
+- Three properties we want, all on screen at once; they're the yardstick for the rest of the talk.
 - Fresh: reflects the market now. Firm: what you see is what you get. Same for everyone:
   a slow phone shouldn't get worse execution than a bot.
 
@@ -215,6 +209,7 @@ Liquidity stays put; only the price moves.
 
 # Nobody has to trust Striker
 
+<div>
 <v-clicks>
 
 Striker can't take your funds.
@@ -224,6 +219,7 @@ Striker can't change the price you signed.
 If a swap settles, it settles at the signed price.
 
 </v-clicks>
+</div>
 
 **Anyone can run a Striker. Anyone can run a maker.**
 
@@ -378,9 +374,13 @@ Chart: point at the strike line and the expiry line. Price above strike at expir
 
 # Complements, not replaces
 
+<div>
+
 **Banco** · resting orders, set and forget
 
 **Striker** · firm prices for liquidity that moves
+
+</div>
 
 <!--
 12:30–13:30 · 60 s
