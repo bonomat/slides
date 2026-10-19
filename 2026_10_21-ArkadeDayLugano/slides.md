@@ -367,7 +367,8 @@ Trust minimization, Arkade's ethos. Say "trust-minimized", never "trustless".
 Design property, not a legal claim. Do not say "regulatory advantage" on stage.
 - Each role can be run by a different, independent party.
 - Striker never holds funds and never takes the other side of a trade.
-- Point at the right side: FTX was venue, market maker and custodian in one.
+- Read it as layers: you, Striker and the maker talk on top; Arkade settles underneath.
+- Say, don't show: FTX was venue, market maker and custodian in one.
   When one party holds every role, nobody checks anybody.
 
 Q&A only, if asked about regulation: regulators already make incumbents separate the
