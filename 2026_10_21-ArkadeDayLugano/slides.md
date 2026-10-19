@@ -13,11 +13,15 @@ drawings:
 
 # Striker
 
-## Ask for a price. Get a signed one. Swap.
+## Put the price in a signature.
 
-Request-for-quote swaps on Arkade
+<div class="mt-10">
+  <Byline />
+</div>
 
+<div class="absolute bottom-8 left-0 right-0 text-center text-sm opacity-50">
 Arkade Day · Lugano · 21 October 2026
+</div>
 
 <!--
 00:00–00:30 · 30 s
@@ -412,6 +416,10 @@ Run a maker · Run a Striker · Build the next market
     <img src="/qr-repo.svg" class="w-36 h-36 rounded-lg" />
     <span class="text-sm opacity-80">github.com/bonomat/striker</span>
   </a>
+</div>
+
+<div class="mt-8">
+  <Byline handles />
 </div>
 
 <!--
