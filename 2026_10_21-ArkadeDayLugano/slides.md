@@ -13,7 +13,7 @@ drawings:
 
 # Striker
 
-## Put the price in a signature.
+## Signed, sealed, swapped.
 
 <div class="mt-10">
   <Byline />
