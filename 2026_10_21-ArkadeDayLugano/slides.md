@@ -538,60 +538,6 @@ These are invitations to build on Arkade, not features I'm saying this swap scri
 
 ---
 
-# Private negotiation. Verifiable settlement.
-
-<div class="grid grid-cols-3 gap-5 mt-10">
-<div class="maker-card">
-<div class="maker-label">Request</div>
-
-Share the trade with selected makers.
-
-</div>
-<div class="maker-card">
-<div class="maker-label">Agree</div>
-
-Sign the terms without broadcasting the order.
-
-</div>
-<div class="maker-card">
-<div class="maker-label">Settle</div>
-
-Prove confidential payments satisfy the terms.
-
-</div>
-</div>
-
-<div class="mt-8 text-center">
-
-**A design direction, not a privacy feature we have today.**
-
-</div>
-<div class="mt-3 text-sm text-center opacity-70">
-
-Intents can use private delivery too. Confidential settlement needs additional proofs.
-
-</div>
-
-<!--
-13:00–14:00 · 60 seconds
-
-There's another direction worth exploring: privacy.
-
-Striker doesn't need to broadcast an order for everyone to inspect. A wallet could request a quote privately and reveal the trade only to selected makers.
-
-On a confidential settlement layer, we could then prove that the agreed payments happened without publishing their amounts.
-
-But signatures alone don't give us that. Our current quote reveals the amounts, and our covenant reads them directly. Hiding both requires commitments and proofs connecting the signed terms to the payments.
-
-And this isn't an argument that Intents cannot be private. Intents can use encrypted requests or selective disclosure too.
-
-The opportunity is private negotiation with verifiable settlement. Privacy from the public is one goal; privacy from Striker or the operator is a harder, separate goal.
-
-[References — not spoken: https://elementsproject.org/features/confidential-transactions ; https://arkadeos.com/blog/open-markets ]
--->
-
----
-
 # Complements, not replaces
 
 <div>
@@ -603,15 +549,13 @@ The opportunity is private negotiation with verifiable settlement. Privacy from 
 </div>
 
 <!--
-14:00–14:30 · 30 seconds
+13:00–14:00 · 60 s
 
-So: complements, not replaces.
-
-Arkade Intents connects applications and providers. Striker explores signed prices backed by covenant-held liquidity. Neither idea requires every negotiation to be public.
-
-We build on Arkade's settlement and programming tools. Discovery, quote interfaces and confidential execution are places for these approaches to meet.
-
-The goal is more ways to build on a shared foundation, rather than another isolated trading stack.
+Position explicitly, so nobody leaves thinking it's either/or.
+- Intents is the open market: corridors to Lightning, on-chain and EVM, and anyone can be a solver.
+- Striker suits active market makers who want to commit to a price without moving coins.
+- Both settle on the same Arkade covenants. Ideas, not promises: a Striker maker could
+  list in the solver registry, and a Striker could answer Intents' request-for-quote path.
 -->
 
 ---
@@ -641,13 +585,14 @@ Run a maker · Run a Striker · Build the next market
 </div>
 
 <!--
-14:30–15:00 · 30 seconds
+14:00–15:00 · 60 s (includes buffer)
 
-The maker commits first, and the price lives in a signature.
+Close with one call to action; repeat the takeaway.
+- "With Striker, the maker commits first, and the price lives in a signature.
+  It all stands on Arkade, and there's room for a lot more on top."
+- Ask: market makers, run a maker; wallet builders, integrate quotes;
+  contract designers, pick a market from the table and build it.
+- QR codes: left is the app, right is the repo. Thank Ark Labs by name.
 
-If you build wallets, integrate quotes. If you work on liquidity, run a maker. If you design contracts or privacy protocols, help us build the next market.
-
-The left QR code opens the demo. The right opens the source.
-
-Thank you to Ark Labs for the foundation, and thank you for listening.
+Stop talking. Go to Q&A.
 -->
