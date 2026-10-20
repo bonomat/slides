@@ -263,7 +263,7 @@ One request. A firm price. Then you fund.
 </div>
 
 <!--
-05:35–07:00 · 85 s
+05:35–06:50 · 75 s
 
 The core idea. The maker commits before the user does.
 - One request, one fresh answer. Striker asks the makers and returns the best quote.
@@ -279,6 +279,34 @@ The core idea. The maker commits before the user does.
   needs to know which coin is current.
 
 Clicks: 1 ask, 2 signed quote, 3 sign and settle, 4 the closing line.
+-->
+
+---
+
+# The covenant: coins with rules
+
+<CovenantPool />
+
+<!--
+06:50–07:40 · 50 s
+
+What a covenant is, in one breath: a script on a coin that says how it may be spent,
+and checks the spending transaction itself. Not "who signs", but "what the spend does".
+On Arkade, the Emulator co-signs a spend only if it passes the script.
+
+The maker's pool is one coin under such a script. On every spend it checks:
+- The maker signed this quote (OP_CHECKSIGFROMSTACK against the maker's key).
+- The quote hasn't expired, checked against the Emulator's clock, not a time the filler picks.
+- The outputs pay you your amount and the maker theirs, at the quoted price.
+- The change goes back into the exact same script: the pool lives on, smaller.
+
+That last rule is the trick: one deposit serves many fills, and anyone can follow the
+pool on Arkade and see its balance.
+
+Your side is a covenant too: your coins only move if you receive at least the quoted
+amount. Otherwise you take them back.
+
+Keep it high level. No opcodes on stage unless someone asks.
 -->
 
 ---
@@ -311,17 +339,10 @@ Striker makes signed spot request enforceable.
 </div>
 
 <!--
-07:00–08:30 · 90 s
+07:40–08:30 · 50 s
 
 The title is the pitch line. Say it out loud, then pause before the table.
 
-How it works, one level down. No code, no opcodes.
-- The maker deposits liquidity once, into a covenant pool.
-- The covenant accepts a fill only with a valid maker signature on the quote,
-  before its expiry, paying the maker at that price. Expiry is checked inside the
-  covenant against the Emulator's clock (OP_CHECKTIME), not a time the filler chooses.
-- The remainder returns to the same pool, so one deposit serves many fills.
-  Anyone can follow the pool on Arkade and see its balance.
 - Repricing is free: sign a new quote. Short expiries make old quotes die on their own.
 - Emergency stop: bump the pool's epoch, which retires every outstanding quote at once.
   That one does need a cooperative spend with the Arkade server.
