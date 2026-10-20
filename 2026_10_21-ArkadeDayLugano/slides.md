@@ -122,6 +122,8 @@ Insert coin. Hope for a fill. There's a small arcade joke here.
 -->
 
 ---
+layout: center
+---
 
 # Anyone can list. Nobody has to fill.
 
@@ -149,6 +151,8 @@ If nobody fills, I can cancel. My point isn't that the coins are lost. It's the 
 -->
 
 ---
+layout: center
+---
 
 # Your client does the pricing
 
@@ -175,6 +179,8 @@ A safety cushion helps the offer fill, but the user pays for that uncertainty. T
 I'd rather ask the counterparty: what price will you commit to right now?
 -->
 
+---
+layout: center
 ---
 
 # Solvers trade from a hot wallet
@@ -372,6 +378,8 @@ That requires Arkade server cooperation, and it can race a fill. It isn't an ins
 -->
 
 ---
+layout: center
+---
 
 # Nobody has to trust Striker
 
@@ -536,6 +544,8 @@ Prediction markets add event resolution. Futures add margin and liquidation. A m
 These are invitations to build on Arkade, not features I'm saying this swap script already implements.
 -->
 
+---
+layout: center
 ---
 
 # Complements, not replaces
