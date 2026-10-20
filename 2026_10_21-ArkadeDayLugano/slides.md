@@ -37,12 +37,12 @@ I'll show you what we've built, why we built it, and what you could build with t
 layout: center
 ---
 
-<SectionDivider n="01" label="Why" title="A match made on another layer" />
+<SectionDivider n="01" label="Why" title="Trade like a CEX. Keep your keys." />
 
 <!--
 00:30–00:35 · 5 seconds
 
-A match made on another layer. Let's start with the price.
+Trade like a CEX. Keep your keys. That's the bar. Let's start with the price.
 -->
 
 ---
