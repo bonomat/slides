@@ -285,7 +285,18 @@ Clicks: 1 ask, 2 signed quote, 3 sign and settle, 4 the closing line.
 
 # The covenant: coins with rules
 
-<CovenantPool />
+```sh
+# pool script (simplified)
+<maker_pk> OP_CHECKSIGFROMSTACK    # the maker signed this quote
+quote.expiry > now                 # the quote hasn't expired
+outputs pay the quote              # you get yours, the maker gets theirs
+change -> same pool script         # the rest goes back into the pool
+
+# witness
+sig( "sell 2,000 USD for 0.02 BTC", valid 10 s )
+```
+
+<CovenantPool :rules="false" />
 
 <!--
 06:50–07:40 · 50 s
@@ -306,7 +317,8 @@ pool on Arkade and see its balance.
 Your side is a covenant too: your coins only move if you receive at least the quoted
 amount. Otherwise you take them back.
 
-Keep it high level. No opcodes on stage unless someone asks.
+The code is deliberately simplified: real Arkade Script also introspects assets, amounts
+and the epoch. Read only the comments out loud; the code is there for the builders.
 -->
 
 ---

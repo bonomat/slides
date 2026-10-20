@@ -1,4 +1,5 @@
 <script setup lang="ts">
+withDefaults(defineProps<{ rules?: boolean }>(), { rules: true })
 const checks = [
   'The maker signed this quote',
   'The quote hasn\'t expired',
@@ -6,13 +7,13 @@ const checks = [
   'The rest goes back into the same pool',
 ]
 const pools = ['10,000 USD', '8,000 USD', '5,500 USD']
-const sizes = ['9.5rem', '8.4rem', '7.3rem']
+const sizes = ['7.6rem', '7rem', '6.6rem']
 const fills = ['fill 2,000', 'fill 2,500']
 </script>
 
 <template>
   <div class="cov">
-    <div class="rules">
+    <div v-if="rules" class="rules">
       <div class="rules-head">Every spend of the pool must pass</div>
       <ul>
         <li v-for="c in checks" :key="c">{{ c }}</li>
