@@ -372,26 +372,33 @@ Trust minimization, Arkade's ethos. Say "trust-minimized", never "trustless".
 </div>
 
 <!--
-09:30–10:00 · 30 s
+09:30–11:00 · 90 s (includes the hidden key-split slide's time)
 
 Design property, not a legal claim. Do not say "regulatory advantage" on stage.
 - Each role can be run by a different, independent party.
 - Striker never holds funds and never takes the other side of a trade.
 - Read it as layers: you, Striker and the maker talk on top; Arkade settles underneath.
-- The maker splits in two: the market maker prices and can make offers,
-  the coin owner can move the funds. Next slide explains how.
 - Say, don't show: FTX was venue, market maker and custodian in one.
   When one party holds every role, nobody checks anybody.
+
+Then point at the maker's split. This is the part nobody else can do:
+- Coin owner keeps the owner key, cold: withdraws, and revokes every quote at once.
+- Market maker gets a quote key: signs quotes, can't move the funds.
+- Analogy: an exchange API key with "trade" on and "withdraw" off, but enforced
+  by a covenant, not by the exchange's policy.
+- It answers the hot-wallet problem: a compromised quoting server can't drain the pool.
+- If asked "can't the quote key sign a terrible price?": the covenant enforces a minimum
+  price and a maximum size per fill. Worst case is bounded, not a stolen pool.
 
 Q&A only, if asked about regulation: regulators already make incumbents separate the
 venue from dealing. MiCA Art. 76(5): a platform operator "shall not deal on own account
 on the trading platform for crypto-assets they operate". Non-custodial design is the
 deciding factor in US money-transmission guidance. Not legal advice; no safe harbour
 is guaranteed (CLARITY Act failed cloture 49-50 on 15 Sept 2026, short of the 60 needed).
-
-Transition: "That split inside the maker is the part nobody else can do. Let me show you."
 -->
 
+---
+hide: true
 ---
 
 # Lend your liquidity, keep custody
