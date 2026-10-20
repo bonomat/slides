@@ -245,7 +245,6 @@ Get a laugh, then the point lands.
   the solver fills it. That's the order-book convention: whoever rests is the maker.
 - Striker uses the request-for-quote convention: the market maker is the one who answers
   with a firm price and the liquidity behind it.
-- Both are right. Don't say theirs is wrong.
 
 Line: "On Intents, you are the maker: you post and wait. On Striker, the maker quotes
 you and commits. That flip is the whole talk."
@@ -286,6 +285,8 @@ Clicks: 1 ask, 2 signed quote, 3 sign and settle, 4 the closing line.
 
 # The maker commits first.
 
+<div class="compare">
+
 | | Arkade Intents today | Striker |
 | --- | --- | --- |
 | Who sets the price | Your client, from a feed | The maker who fills |
@@ -294,9 +295,18 @@ Clicks: 1 ask, 2 signed quote, 3 sign and settle, 4 the closing line.
 | Liquidity | Not visible | Public pool balance |
 | Who shops for prices | Your client | Striker |
 
+</div>
+
+<style>
+.compare th { font-weight: 700; color: #e5e7eb; }
+.compare th:last-child { color: #6ee7a0; }
+.compare td:first-child { font-weight: 700; color: #9ca3af; }
+.compare td:last-child { color: #6ee7a0; }
+</style>
+
 <div class="mt-4 text-sm opacity-70">
 
-Signed spot quotes are on Arkade's roadmap. Striker makes them enforceable.
+Striker makes signed spot request enforceable.
 
 </div>
 
