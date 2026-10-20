@@ -203,12 +203,12 @@ Keep that question in mind. We'll come back to it.
 layout: center
 ---
 
-<SectionDivider n="04" label="The solution" title="Player 2 has entered the game" />
+<SectionDivider n="04" label="The solution" title="Price first. Pay second." />
 
 <!--
 05:00–05:05 · 5 seconds
 
-Player two has entered the game. This time, the liquidity provider commits first.
+Price first. Pay second. This time, the liquidity provider commits before you do.
 -->
 
 ---
