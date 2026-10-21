@@ -26,11 +26,7 @@ Arkade Day · Lugano · 21 October 2026
 <!--
 00:00–00:30 · 30 seconds
 
-Hi, I'm Philipp, also known as bonomat, from Satora.
-
-Striker is an experiment in request-for-quote swaps on Arkade. The idea is simple: before I agree to a trade, I want the person selling to me to commit to a price.
-
-I'll show you what we've built, why we built it, and what you could build with the same pattern.
+Hi all
 -->
 
 ---
