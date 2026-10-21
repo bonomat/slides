@@ -580,9 +580,9 @@ class: text-center
 Run a maker · Run a Striker · Build the next market
 
 <div class="flex justify-center gap-16 mt-6">
-  <a href="https://striker.mutinynet.subms.dev/" class="flex flex-col items-center gap-2 !border-none">
+  <a href="https://striker.mutinynet.satora.io/" class="flex flex-col items-center gap-2 !border-none">
     <img src="/qr-app.svg" class="w-36 h-36 rounded-lg" />
-    <span class="text-sm opacity-80">striker.mutinynet.subms.dev</span>
+    <span class="text-sm opacity-80">striker.mutinynet.satora.io</span>
   </a>
   <a href="https://github.com/bonomat/striker" class="flex flex-col items-center gap-2 !border-none">
     <img src="/qr-repo.svg" class="w-36 h-36 rounded-lg" />
