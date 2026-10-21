@@ -516,8 +516,14 @@ That's the working swap. Now, what could we build next?
 
 # Signed quotes open up more markets
 
+<style>
+.markets th { font-weight: 700; color: #e5e7eb; }
+.markets td:first-child { font-weight: 700; color: #9ca3af; }
+.markets td:last-child { color: #6ee7a0; }
+</style>
+
 <div class="grid grid-cols-[3fr_2fr] gap-8 items-center mt-4">
-<div>
+<div class="markets">
 
 | Market | What the quote carries |
 | --- | --- |
