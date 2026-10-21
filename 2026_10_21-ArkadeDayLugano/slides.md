@@ -537,7 +537,7 @@ That's the working swap. Now, what could we build next?
 </div>
 
 <!--
-12:05–13:00 · 55 seconds
+12:05–13:30 · 85 seconds
 
 Signed terms over covenant-held collateral suggest more applications than spot swaps.
 
@@ -552,6 +552,7 @@ These are invitations to build on Arkade, not features I'm saying this swap scri
 
 ---
 layout: center
+hide: true
 ---
 
 # Complements, not replaces
@@ -565,7 +566,7 @@ layout: center
 </div>
 
 <!--
-13:00–14:00 · 60 s
+hidden · was 60 seconds, now split between markets and closing
 
 Position explicitly, so nobody leaves thinking it's either/or.
 - Intents is the open market: corridors to Lightning, on-chain and EVM, and anyone can be a solver.
@@ -583,8 +584,6 @@ class: text-center
 
 *The maker commits first. The price lives in a signature.*
 
-Run a maker · Run a Striker · Build the next market
-
 <div class="flex justify-center gap-16 mt-6">
   <a href="https://striker.mutinynet.satora.io/" class="flex flex-col items-center gap-2 !border-none">
     <img src="/qr-app.svg" class="w-36 h-36 rounded-lg" />
@@ -601,7 +600,7 @@ Run a maker · Run a Striker · Build the next market
 </div>
 
 <!--
-14:00–15:00 · 60 s (includes buffer)
+13:30–15:00 · 90 seconds (includes buffer)
 
 Close with one call to action; repeat the takeaway.
 - "With Striker, the maker commits first, and the price lives in a signature.
